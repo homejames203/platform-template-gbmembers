@@ -1,0 +1,153 @@
+<tree schema_version="1.0">
+    <sourceName>-</sourceName>
+    <sourceGroup>-</sourceGroup>
+    <definitionId>routine_kinetic_request_ce_submission_retrieve_associated_attributes_v1</definitionId>
+    <type>Global Routine</type>
+    <status>Active</status>
+    <taskTree builder_version="" schema_version="1.0" version="">
+        <name>Retrieve a Submissions Attributes</name>
+        <author></author>
+        <notes></notes>
+        <lastID>41</lastID>
+        <taskDefinition id="routine_kinetic_request_ce_submission_retrieve_associated_attributes_v1" name="Retrieve a Submissions Attributes" schema_version="1.0" version="1">
+            <visible>false</visible>
+            <deferrable>true</deferrable>
+            <parameters>
+                <parameter id="Space Slug" label="Space Slug" required="false" tooltip="Slug of the space to find the submission in"></parameter>
+                <parameter id="Submission Id" label="Submission Id" required="true" tooltip="Id of the submission to retrieve"></parameter>
+            </parameters>
+            <handler name="system_tree_call" version="1"></handler>
+            <results format="xml">
+                <result name="Submission Values" tooltip="Question Answer Values associated with the submission"></result>
+                <result name="Form Slug" tooltip="Slug of the form associated with the submission"></result>
+                <result name="Form Attributes" tooltip="Attributes of the form associated with the submission"></result>
+                <result name="Kapp Slug" tooltip="Slug of the kapp associated with the submission"></result>
+                <result name="Kapp Attributes" tooltip="Attributes of the kapp associated with the submission"></result>
+                <result name="Space Slug" tooltip="Slug of the space associated with the submission"></result>
+                <result name="Space Attributes" tooltip="Attributes of the kapp associated with the submission"></result>
+                <result name="Type" tooltip="Form type associated with the submission"></result>
+            </results>
+        </taskDefinition>
+        <request>
+            <task definition_id="system_start_v1" id="start" name="Start" x="99" y="66">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters></parameters>
+                <messages></messages>
+                <dependents>
+                    <task label="" type="Complete" value="">kinetic_request_ce_submission_retrieve_associated_attributes_v1_37</task>
+                </dependents>
+            </task>
+            <task definition_id="routine_handler_failure_error_process_v1" id="routine_handler_failure_error_process_v1_10" name="Error Process" x="528" y="54">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>true</defers>
+                <deferrable>true</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Error Message" label="Error Message" menu="" required="false" tooltip="Error Message ">&lt;%=@results['Retrieve Submission']['Handler Error Message']%&gt;</parameter>
+                    <parameter id="Handler Name" label="Handler Name" menu="" required="false" tooltip="">kinetic_request_ce_submission_retrieve_associated_attributes_v1</parameter>
+                    <parameter id="Run Id" label="Run Id" menu="" required="false" tooltip="">&lt;%=@run['Id']%&gt;</parameter>
+                    <parameter id="Inputs JSON" label="Inputs JSON" menu="" required="false" tooltip="">&lt;%=@inputs.to_json%&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">routine_kinetic_request_ce_submission_retrieve_v1_33</task>
+                </dependents>
+            </task>
+            <task definition_id="routine_kinetic_request_ce_submission_retrieve_v1" id="routine_kinetic_request_ce_submission_retrieve_v1_33" name="Retry" x="715" y="64">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>true</defers>
+                <deferrable>true</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Space Slug" label="Space Slug" menu="" required="false" tooltip="Slug of the space to find the submission in">&lt;%=@results['Error Process']['Space Slug']%&gt;</parameter>
+                    <parameter id="Submission Id" label="Submission Id" menu="" required="true" tooltip="Id of the submission to retrieve">&lt;%=@results['Error Process']['Submission Id']%&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">system_tree_return_v1_41</task>
+                </dependents>
+            </task>
+            <task definition_id="kinetic_request_ce_submission_retrieve_associated_attributes_v1" id="kinetic_request_ce_submission_retrieve_associated_attributes_v1_37" name="Retrieve Submission" x="297" y="54">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="error_handling" label="Error Handling" menu="Error Message,Raise Error" required="true" tooltip="Determine what to return if an error is encountered.">Error Message</parameter>
+                    <parameter id="space_slug" label="Space Slug" menu="" required="false" tooltip="The Space the submission is being retrieved from.">&lt;%=@inputs['Space Slug']%&gt;</parameter>
+                    <parameter id="submission_id" label="Submission Id" menu="" required="true" tooltip="The id of the submission being retrieved.">&lt;%=@inputs['Submission Id']%&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="Error" type="Complete" value="!@results['Retrieve Submission']['Handler Error Message'].nil?">routine_handler_failure_error_process_v1_10</task>
+                    <task label="No Error" type="Complete" value="@results['Retrieve Submission']['Handler Error Message'].nil?">system_tree_return_v1_40</task>
+                </dependents>
+            </task>
+            <task definition_id="system_tree_return_v1" id="system_tree_return_v1_40" name="Return" x="297" y="209">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Submission Values" label="Submission Values" menu="" required="false" tooltip="Question Answer Values associated with the submission">&lt;%=@results['Retrieve Submission']['Submission Values']%&gt;</parameter>
+                    <parameter id="Form Slug" label="Form Slug" menu="" required="false" tooltip="Slug of the form associated with the submission">&lt;%=@results['Retrieve Submission']['Form Slug']%&gt;</parameter>
+                    <parameter id="Form Attributes" label="Form Attributes" menu="" required="false" tooltip="Attributes of the form associated with the submission">&lt;%=@results['Retrieve Submission']['Form Attributes']%&gt;</parameter>
+                    <parameter id="Kapp Slug" label="Kapp Slug" menu="" required="false" tooltip="Slug of the kapp associated with the submission">&lt;%=@results['Retrieve Submission']['Kapp Slug']%&gt;</parameter>
+                    <parameter id="Kapp Attributes" label="Kapp Attributes" menu="" required="false" tooltip="Attributes of the kapp associated with the submission">&lt;%=@results['Retrieve Submission']['Kapp Attributes']%&gt;</parameter>
+                    <parameter id="Space Slug" label="Space Slug" menu="" required="false" tooltip="Slug of the space associated with the submission">&lt;%=@results['Retrieve Submission']['Space Slug']%&gt;</parameter>
+                    <parameter id="Space Attributes" label="Space Attributes" menu="" required="false" tooltip="Attributes of the kapp associated with the submission">&lt;%=@results['Retrieve Submission']['Space Attributes']%&gt;</parameter>
+                    <parameter id="Type" label="Type" menu="" required="false" tooltip="Form type associated with the submission">&lt;%=@results['Retrieve Submission']['Type']%&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents></dependents>
+            </task>
+            <task definition_id="system_tree_return_v1" id="system_tree_return_v1_41" name="Return From Error" x="892" y="56">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Submission Values" label="Submission Values" menu="" required="false" tooltip="Question Answer Values associated with the submission">&lt;%=@results['Retry']['Submission Values']%&gt;</parameter>
+                    <parameter id="Form Slug" label="Form Slug" menu="" required="false" tooltip="Slug of the form associated with the submission">&lt;%=@results['Retry']['Form Slug']%&gt;</parameter>
+                    <parameter id="Form Attributes" label="Form Attributes" menu="" required="false" tooltip="Attributes of the form associated with the submission">&lt;%=@results['Retry']['Form Attributes']%&gt;</parameter>
+                    <parameter id="Kapp Slug" label="Kapp Slug" menu="" required="false" tooltip="Slug of the kapp associated with the submission">&lt;%=@results['Retry']['Kapp Slug']%&gt;</parameter>
+                    <parameter id="Kapp Attributes" label="Kapp Attributes" menu="" required="false" tooltip="Attributes of the kapp associated with the submission">&lt;%=@results['Retry']['Kapp Attributes']%&gt;</parameter>
+                    <parameter id="Space Slug" label="Space Slug" menu="" required="false" tooltip="Slug of the space associated with the submission">&lt;%=@results['Retry']['Space Slug']%&gt;</parameter>
+                    <parameter id="Space Attributes" label="Space Attributes" menu="" required="false" tooltip="Attributes of the kapp associated with the submission">&lt;%=@results['Retry']['Space Attributes']%&gt;</parameter>
+                    <parameter id="Type" label="Type" menu="" required="false" tooltip="Form type associated with the submission">&lt;%=@results['Retry']['Type']%&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents></dependents>
+            </task>
+        </request>
+    </taskTree>
+</tree>

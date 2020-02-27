@@ -1,0 +1,196 @@
+<tree schema_version="1.0">
+    <sourceName>Kinetic Request CE</sourceName>
+    <sourceGroup>Submissions > admin > request-a-new-team</sourceGroup>
+    <type>Tree</type>
+    <status>Active</status>
+    <taskTree builder_version="" schema_version="1.0" version="">
+        <name>Submitted</name>
+        <author></author>
+        <notes></notes>
+        <lastID>15</lastID>
+        <request>
+            <task definition_id="system_start_v1" id="start" name="Start" x="198" y="21">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters></parameters>
+                <messages></messages>
+                <dependents>
+                    <task label="" type="Complete" value="">routine_kd_update_submission_status_v2_14</task>
+                </dependents>
+            </task>
+            <task definition_id="routine_kd_default_catalog_submission_v1" id="routine_kd_default_catalog_submission_v1_2" name="Default Submission Process" x="198" y="281">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>true</defers>
+                <deferrable>true</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Source Data" label="Source Data" menu="" required="true" tooltip="Source Data from Parent Submission @source['Data']">&lt;%=@source['Data']%&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">routine_kd_update_submission_status_v2_15</task>
+                </dependents>
+            </task>
+            <task definition_id="routine_kinetic_request_ce_submission_close_v1" id="routine_kinetic_request_ce_submission_close_v1_8" name="Close Submission" x="198" y="490">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>true</defers>
+                <deferrable>true</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Space Slug" label="Space Slug" menu="" required="false" tooltip="Slug of the space the submission exists in">&lt;%= @space['Slug']%&gt;</parameter>
+                    <parameter id="Submission Id" label="Submission Id" menu="" required="true" tooltip="Id of the submission to close">&lt;%= @submission['Id']%&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="Approved or Completed" type="Complete" value="@results['Default Submission Process']['Approval Decision'] != &quot;Denied&quot;">routine_kd_notification_send_using_template_v1_11</task>
+                    <task label="" type="Complete" value="">utilities_echo_v1_13</task>
+                </dependents>
+            </task>
+            <task definition_id="routine_kd_notification_send_using_template_v1" id="routine_kd_notification_send_using_template_v1_11" name="Notify - Completed" x="286" y="612">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>true</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Recipient List" label="Recipient List" menu="" required="true" tooltip="Comma separated list of recipients (Usernames, SMTP Addresses, and/or Team Names)">&lt;%= @submission['Created By']%&gt;</parameter>
+                    <parameter id="Notification Template Name" label="Notification Template Name" menu="" required="true" tooltip="">&lt;%=
+                      ### CONFIGURE ###
+                      attr_name = "Notification Template Name - Complete"
+                      backup = "Catalog Item Submission Completed"
+                      ### END CONFIGURE ###
+                    
+                      value = [
+                        @values.has_key?(attr_name) ? @values[attr_name] : nil,
+                        @form_attributes.has_key?(attr_name) ? @form_attributes[attr_name] : nil,
+                        @kapp_attributes.has_key?(attr_name) ? @kapp_attributes[attr_name] : nil,
+                        backup
+                      ].flatten.find do |attribute|
+                        attribute != nil
+                      end
+                    %&gt;</parameter>
+                    <parameter id="JSON Vars" label="JSON Vars" menu="" required="false" tooltip="JSON input of miscellaneous values.  These values are used to replace placeholder content in notification messages."></parameter>
+                    <parameter id="System" label="System" menu="" required="false" tooltip="System to search for ID. Defaults to Request">Kinetic Request</parameter>
+                    <parameter id="Space Slug" label="Space Slug" menu="" required="true" tooltip="Space Slug of the submission to get values for. Used to retrieve Request submissions, notification templates, users.">&lt;%= @space['Slug']%&gt;</parameter>
+                    <parameter id="ID" label="ID" menu="" required="false" tooltip="Id of the submission to get values for, required if using those or attachments in the message">&lt;%= @submission['Id']%&gt;</parameter>
+                    <parameter id="Admin Kapp Slug" label="Admin Kapp Slug" menu="" required="true" tooltip="Slug of this spaces admin kapp (typically admin)">&lt;%= @space_attributes['Admin Kapp Slug']%&gt;</parameter>
+                    <parameter id="Kapp Slug Initiating Notification" label="Kapp Slug Initiating Notification" menu="" required="true" tooltip="The slug of the Kapp sending the notification (ex: catalog, queue, etc.)">&lt;%= @kapp['Slug']%&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents></dependents>
+            </task>
+            <task definition_id="routine_kd_notification_send_using_template_v1" id="routine_kd_notification_send_using_template_v1_12" name="Notify - Submitted" x="198" y="188">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>true</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Recipient List" label="Recipient List" menu="" required="true" tooltip="Comma separated list of recipients (Usernames, SMTP Addresses, and/or Team Names)">&lt;%= @submission['Created By']%&gt;</parameter>
+                    <parameter id="Notification Template Name" label="Notification Template Name" menu="" required="true" tooltip="">&lt;%=
+                      ### CONFIGURE ###
+                      attr_name = "Notification Template Name - Create"
+                      backup = "Catalog Item Submission Confirmation"
+                      ### END CONFIGURE ###
+                    
+                      value = [
+                        @values.has_key?(attr_name) ? @values[attr_name] : nil,
+                        @form_attributes.has_key?(attr_name) ? @form_attributes[attr_name] : nil,
+                        @kapp_attributes.has_key?(attr_name) ? @kapp_attributes[attr_name] : nil,
+                        backup
+                      ].flatten.find do |attribute|
+                        attribute != nil
+                      end
+                    %&gt;</parameter>
+                    <parameter id="JSON Vars" label="JSON Vars" menu="" required="false" tooltip="JSON input of miscellaneous values.  These values are used to replace placeholder content in notification messages."></parameter>
+                    <parameter id="System" label="System" menu="" required="false" tooltip="System to search for ID. Defaults to Request">Kinetic Request</parameter>
+                    <parameter id="Space Slug" label="Space Slug" menu="" required="true" tooltip="Space Slug of the submission to get values for. Used to retrieve Request submissions, notification templates, users.">&lt;%= @space['Slug']%&gt;</parameter>
+                    <parameter id="ID" label="ID" menu="" required="false" tooltip="Id of the submission to get values for, required if using those or attachments in the message">&lt;%= @submission['Id']%&gt;</parameter>
+                    <parameter id="Admin Kapp Slug" label="Admin Kapp Slug" menu="" required="true" tooltip="Slug of this spaces admin kapp (typically admin)">&lt;%= @space_attributes['Admin Kapp Slug']%&gt;</parameter>
+                    <parameter id="Kapp Slug Initiating Notification" label="Kapp Slug Initiating Notification" menu="" required="true" tooltip="The slug of the Kapp sending the notification (ex: catalog, queue, etc.)">&lt;%= @kapp['Slug']%&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">routine_kd_default_catalog_submission_v1_2</task>
+                </dependents>
+            </task>
+            <task definition_id="utilities_echo_v1" id="utilities_echo_v1_13" name="END" x="111" y="638">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="input" label="Input" menu="" required="true" tooltip="">Completed</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents></dependents>
+            </task>
+            <task definition_id="routine_kd_update_submission_status_v2" id="routine_kd_update_submission_status_v2_14" name="Status - Submitted" x="199" y="99">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>true</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Space Slug" label="Space Slug" menu="" required="false" tooltip="The Slug of the Space this submission belongs to">&lt;%= @space['Slug']%&gt;</parameter>
+                    <parameter id="Submission Id" label="Submission Id" menu="" required="true" tooltip="Id of the Submission that is being updated">&lt;%= @submission['Id']%&gt;</parameter>
+                    <parameter id="Status" label="Status" menu="" required="true" tooltip="Status to set the submission to. (e.g. Submitted, In Progress">Submitted</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">routine_kd_notification_send_using_template_v1_12</task>
+                </dependents>
+            </task>
+            <task definition_id="routine_kd_update_submission_status_v2" id="routine_kd_update_submission_status_v2_15" name="Status - Completed" x="198" y="396">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>true</defers>
+                <deferrable>true</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Space Slug" label="Space Slug" menu="" required="false" tooltip="The Slug of the Space this submission belongs to">&lt;%= @space['Slug']%&gt;</parameter>
+                    <parameter id="Submission Id" label="Submission Id" menu="" required="true" tooltip="Id of the Submission that is being updated">&lt;%= @submission['Id']%&gt;</parameter>
+                    <parameter id="Status" label="Status" menu="" required="true" tooltip="Status to set the submission to. (e.g. Submitted, In Progress">&lt;%=@results['Default Submission Process']['Approval Decision'] == "Denied" ? "Denied" : "Completed"%&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">routine_kinetic_request_ce_submission_close_v1_8</task>
+                </dependents>
+            </task>
+        </request>
+    </taskTree>
+</tree>

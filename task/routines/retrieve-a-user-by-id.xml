@@ -1,0 +1,198 @@
+<tree schema_version="1.0">
+    <sourceName>-</sourceName>
+    <sourceGroup>-</sourceGroup>
+    <definitionId>routine_kinetic_request_ce_user_retrieve_v1</definitionId>
+    <type>Global Routine</type>
+    <status>Active</status>
+    <taskTree builder_version="" schema_version="1.0" version="">
+        <name>Retrieve a User by Id</name>
+        <author></author>
+        <notes></notes>
+        <lastID>36</lastID>
+        <taskDefinition id="routine_kinetic_request_ce_user_retrieve_v1" name="Retrieve a User by Id" schema_version="1.0" version="1">
+            <visible>false</visible>
+            <deferrable>true</deferrable>
+            <parameters>
+                <parameter id="Space Slug" label="Space Slug" required="false" tooltip="Slug of the space in which the user exists"></parameter>
+                <parameter id="Username" label="Username" required="true" tooltip="Username of the user to retrieve"></parameter>
+            </parameters>
+            <handler name="system_tree_call" version="1"></handler>
+            <results format="xml">
+                <result name="Username" tooltip="Username of the User"></result>
+                <result name="Display Name" tooltip="Display Name of the User"></result>
+                <result name="Email" tooltip="Email of the user"></result>
+                <result name="Preferred Locale" tooltip="Preferred Locale associated with the user"></result>
+                <result name="Created At" tooltip="When the user was created"></result>
+                <result name="Created By" tooltip="Who created the user"></result>
+                <result name="Updated At" tooltip="When the user was last updated"></result>
+                <result name="Updated By" tooltip="Who last updated the user"></result>
+                <result name="Enabled" tooltip="Is the user enabled"></result>
+                <result name="Attributes" tooltip="Attributes associated with the user"></result>
+                <result name="Profile Attributes" tooltip="Profile Attributes associated with the user"></result>
+                <result name="Memberships" tooltip="Memberships associated with the users"></result>
+                <result name="Exists" tooltip="If the user exists or not"></result>
+            </results>
+        </taskDefinition>
+        <request>
+            <task definition_id="system_start_v1" id="start" name="Start" x="99" y="66">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters></parameters>
+                <messages></messages>
+                <dependents>
+                    <task label="User Provided" type="Complete" value="!@inputs['Username'].nil? &amp;&amp; !@inputs['Username'].strip != &quot;&quot;">kinetic_request_ce_user_retrieve_v2_28</task>
+                    <task label="No User Provided" type="Complete" value="@inputs['Username'].nil? || @inputs['Username'].strip == &quot;&quot;">system_tree_return_v1_35</task>
+                </dependents>
+            </task>
+            <task definition_id="routine_handler_failure_error_process_v1" id="routine_handler_failure_error_process_v1_10" name="Error Process" x="572" y="63">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>true</defers>
+                <deferrable>true</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Error Message" label="Error Message" menu="" required="false" tooltip="Error Message ">&lt;%=@results['Retrieve User']['Handler Error Message']%&gt;</parameter>
+                    <parameter id="Handler Name" label="Handler Name" menu="" required="false" tooltip="">kinetic_request_ce_user_retrieve_v1</parameter>
+                    <parameter id="Run Id" label="Run Id" menu="" required="false" tooltip="">&lt;%=@run['Id']%&gt;</parameter>
+                    <parameter id="Inputs JSON" label="Inputs JSON" menu="" required="false" tooltip="">&lt;%=@inputs.to_json%&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">routine_kinetic_request_ce_user_retrieve_v1_33</task>
+                </dependents>
+            </task>
+            <task definition_id="kinetic_request_ce_user_retrieve_v2" id="kinetic_request_ce_user_retrieve_v2_28" name="Retrieve User" x="370" y="66">
+                <version>2</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="error_handling" label="Error Handling" menu="Error Message,Raise Error" required="true" tooltip="Determine what to return if an error is encountered.">Error Message</parameter>
+                    <parameter id="space_slug" label="Space Slug" menu="" required="false" tooltip="The Space the submission is being retrieved from.">&lt;%=@inputs['Space Slug']%&gt;</parameter>
+                    <parameter id="username" label="Username:" menu="" required="true" tooltip="The unique username for the user.">&lt;%=@inputs['Username']%&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="Error" type="Complete" value="!@results['Retrieve User']['Handler Error Message'].nil?">routine_handler_failure_error_process_v1_10</task>
+                    <task label="No Error" type="Complete" value="@results['Retrieve User']['Handler Error Message'].nil? &amp;&amp; @results['Retrieve User']['Exists'] == &quot;true&quot;">system_tree_return_v1_34</task>
+                    <task label="User Doesn't Exist" type="Complete" value="@results['Retrieve User']['Handler Error Message'].nil? &amp;&amp; @results['Retrieve User']['Exists'] == &quot;false&quot;">system_tree_return_v1_35</task>
+                </dependents>
+            </task>
+            <task definition_id="routine_kinetic_request_ce_user_retrieve_v1" id="routine_kinetic_request_ce_user_retrieve_v1_33" name="Retry" x="737" y="75">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>true</defers>
+                <deferrable>true</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Space Slug" label="Space Slug" menu="" required="false" tooltip="Slug of the space in which the user exists">&lt;%=@results['Error Process']['Space Slug']%&gt;</parameter>
+                    <parameter id="Username" label="Username" menu="" required="true" tooltip="Username of the user to retrieve">&lt;%=@results['Error Process']['Username']%&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">system_tree_return_v1_36</task>
+                </dependents>
+            </task>
+            <task definition_id="system_tree_return_v1" id="system_tree_return_v1_34" name="Return" x="484" y="280">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Username" label="Username" menu="" required="false" tooltip="Username of the User">&lt;%=@results['Retrieve User']['Username']%&gt;</parameter>
+                    <parameter id="Display Name" label="Display Name" menu="" required="false" tooltip="Display Name of the User">&lt;%=@results['Retrieve User']['Display Name']%&gt;</parameter>
+                    <parameter id="Email" label="Email" menu="" required="false" tooltip="Email of the user">&lt;%=@results['Retrieve User']['Email']%&gt;</parameter>
+                    <parameter id="Preferred Locale" label="Preferred Locale" menu="" required="false" tooltip="Preferred Locale associated with the user">&lt;%=@results['Retrieve User']['Preferred Locale']%&gt;</parameter>
+                    <parameter id="Created At" label="Created At" menu="" required="false" tooltip="When the user was created">&lt;%=@results['Retrieve User']['Created At']%&gt;</parameter>
+                    <parameter id="Created By" label="Created By" menu="" required="false" tooltip="Who created the user">&lt;%=@results['Retrieve User']['Created By']%&gt;</parameter>
+                    <parameter id="Updated At" label="Updated At" menu="" required="false" tooltip="When the user was last updated">&lt;%=@results['Retrieve User']['Updated At']%&gt;</parameter>
+                    <parameter id="Updated By" label="Updated By" menu="" required="false" tooltip="Who last updated the user">&lt;%=@results['Retrieve User']['Updated By']%&gt;</parameter>
+                    <parameter id="Enabled" label="Enabled" menu="" required="false" tooltip="Is the user enabled">&lt;%=@results['Retrieve User']['Enabled']%&gt;</parameter>
+                    <parameter id="Attributes" label="Attributes" menu="" required="false" tooltip="Attributes associated with the user">&lt;%=@results['Retrieve User']['Attributes']%&gt;</parameter>
+                    <parameter id="Profile Attributes" label="Profile Attributes" menu="" required="false" tooltip="Profile Attributes associated with the user">&lt;%=@results['Retrieve User']['Profile Attributes']%&gt;</parameter>
+                    <parameter id="Memberships" label="Memberships" menu="" required="false" tooltip="Memberships associated with the users">&lt;%=@results['Retrieve User']['Memberships']%&gt;</parameter>
+                    <parameter id="Exists" label="Exists" menu="" required="false" tooltip="If the user exists or not">true</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents></dependents>
+            </task>
+            <task definition_id="system_tree_return_v1" id="system_tree_return_v1_35" name="Return no user found" x="124" y="347">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Username" label="Username" menu="" required="false" tooltip="Username of the User"></parameter>
+                    <parameter id="Display Name" label="Display Name" menu="" required="false" tooltip="Display Name of the User"></parameter>
+                    <parameter id="Email" label="Email" menu="" required="false" tooltip="Email of the user"></parameter>
+                    <parameter id="Preferred Locale" label="Preferred Locale" menu="" required="false" tooltip="Preferred Locale associated with the user"></parameter>
+                    <parameter id="Created At" label="Created At" menu="" required="false" tooltip="When the user was created"></parameter>
+                    <parameter id="Created By" label="Created By" menu="" required="false" tooltip="Who created the user"></parameter>
+                    <parameter id="Updated At" label="Updated At" menu="" required="false" tooltip="When the user was last updated"></parameter>
+                    <parameter id="Updated By" label="Updated By" menu="" required="false" tooltip="Who last updated the user"></parameter>
+                    <parameter id="Enabled" label="Enabled" menu="" required="false" tooltip="Is the user enabled"></parameter>
+                    <parameter id="Attributes" label="Attributes" menu="" required="false" tooltip="Attributes associated with the user"></parameter>
+                    <parameter id="Profile Attributes" label="Profile Attributes" menu="" required="false" tooltip="Profile Attributes associated with the user"></parameter>
+                    <parameter id="Memberships" label="Memberships" menu="" required="false" tooltip="Memberships associated with the users"></parameter>
+                    <parameter id="Exists" label="Exists" menu="" required="false" tooltip="If the user exists or not">false</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents></dependents>
+            </task>
+            <task definition_id="system_tree_return_v1" id="system_tree_return_v1_36" name="Return From Error" x="896" y="66">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Username" label="Username" menu="" required="false" tooltip="Username of the User">&lt;%=@results['Retry']['Username']%&gt;</parameter>
+                    <parameter id="Display Name" label="Display Name" menu="" required="false" tooltip="Display Name of the User">&lt;%=@results['Retry']['Display Name']%&gt;</parameter>
+                    <parameter id="Email" label="Email" menu="" required="false" tooltip="Email of the user">&lt;%=@results['Retry']['Email']%&gt;</parameter>
+                    <parameter id="Preferred Locale" label="Preferred Locale" menu="" required="false" tooltip="Preferred Locale associated with the user">&lt;%=@results['Retry']['Preferred Locale']%&gt;</parameter>
+                    <parameter id="Created At" label="Created At" menu="" required="false" tooltip="When the user was created">&lt;%=@results['Retry']['Created At']%&gt;</parameter>
+                    <parameter id="Created By" label="Created By" menu="" required="false" tooltip="Who created the user">&lt;%=@results['Retry']['Created By']%&gt;</parameter>
+                    <parameter id="Updated At" label="Updated At" menu="" required="false" tooltip="When the user was last updated">&lt;%=@results['Retry']['Updated By']%&gt;</parameter>
+                    <parameter id="Updated By" label="Updated By" menu="" required="false" tooltip="Who last updated the user">&lt;%=@results['Retry']['Updated By']%&gt;</parameter>
+                    <parameter id="Enabled" label="Enabled" menu="" required="false" tooltip="Is the user enabled">&lt;%=@results['Retry']['Enabled']%&gt;</parameter>
+                    <parameter id="Attributes" label="Attributes" menu="" required="false" tooltip="Attributes associated with the user">&lt;%=@results['Retry']['Attributes']%&gt;</parameter>
+                    <parameter id="Profile Attributes" label="Profile Attributes" menu="" required="false" tooltip="Profile Attributes associated with the user">&lt;%=@results['Retrieve User']['Profile Attributes']%&gt;</parameter>
+                    <parameter id="Memberships" label="Memberships" menu="" required="false" tooltip="Memberships associated with the users">&lt;%=@results['Retry']['Memberships']%&gt;</parameter>
+                    <parameter id="Exists" label="Exists" menu="" required="false" tooltip="If the user exists or not">&lt;%=@results['Retry']['Exists']%&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents></dependents>
+            </task>
+        </request>
+    </taskTree>
+</tree>

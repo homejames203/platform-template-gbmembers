@@ -1,0 +1,647 @@
+<tree schema_version="1.0">
+    <sourceName>Kinetic Response</sourceName>
+    <sourceGroup>User</sourceGroup>
+    <definitionId>routine_kinetic_response_user_notification_vars</definitionId>
+    <type>Local Routine</type>
+    <status>Active</status>
+    <taskTree builder_version="" schema_version="1.0" version="">
+        <name>Notification Variables</name>
+        <author></author>
+        <notes></notes>
+        <lastID>50</lastID>
+        <taskDefinition id="routine_kinetic_response_user_notification_vars" name="Notification Variables" schema_version="1.0" version="1">
+            <visible>false</visible>
+            <deferrable>true</deferrable>
+            <parameters>
+                <parameter id="Web Server Url" label="Web Server Url" required="true" tooltip=""></parameter>
+                <parameter id="Space Slug" label="Space Slug" required="true" tooltip=""></parameter>
+                <parameter id="Send To" label="Send To" required="true" tooltip=""></parameter>
+                <parameter id="Event" label="Event" required="true" tooltip=""></parameter>
+                <parameter id="Invited By" label="Invited By" required="false" tooltip=""></parameter>
+                <parameter id="Issue" label="Issue" required="false" tooltip=""></parameter>
+                <parameter id="Issues" label="Issues" required="false" tooltip=""></parameter>
+                <parameter id="Messages" label="Messages" required="false" tooltip=""></parameter>
+            </parameters>
+            <handler name="system_tree_call" version="1"></handler>
+            <results format="xml">
+                <result name="Subject" tooltip=""></result>
+                <result name="Summary" tooltip=""></result>
+                <result name="Body" tooltip=""></result>
+                <result name="Button Label" tooltip=""></result>
+                <result name="Button Url" tooltip=""></result>
+                <result name="Status" tooltip=""></result>
+            </results>
+        </taskDefinition>
+        <request>
+            <task definition_id="system_start_v1" id="start" name="Start" x="40" y="13">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters></parameters>
+                <messages></messages>
+                <dependents>
+                    <task label="" type="Complete" value="">kinetic_commons_module_v1_36</task>
+                </dependents>
+            </task>
+            <task definition_id="utilities_echo_v1" id="utilities_echo_v1_1" name="Discussion Update" x="844" y="386">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>true</visible>
+                <parameters>
+                    <parameter id="input" label="Input" menu="" required="true" tooltip="">&lt;%
+module NotificationVariables
+  def self.url_base(inputs)
+    inputs.nil? ? 'invalid' : "#{inputs['Web Server Url']}/"
+  end
+
+  def self.build_issue_url(inputs, issue)
+    issue.nil? ? url_base() : "#{url_base(inputs)}#/discussions/#{issue['guid']}"
+  end
+end
+
+issues = []
+updated_issues = []
+
+@issues.each do |i|
+  next if i.nil? || i['issue'].nil?
+  issue = i['issue']
+  issue_url = NotificationVariables.build_issue_url(@inputs, issue)
+  msgs = []
+
+  i['messages'].each do |m|
+    if m['type'] == 'Message'
+      msgs &lt;&lt; &lt;&lt;~MSG
+        &lt;div style="margin-bottom:0.5em;"&gt;
+            &lt;div&gt;
+              &lt;strong&gt;#{::Kinetic::Commons.escape(m['user']['name'])}&lt;/strong&gt;
+              &lt;span&gt;${appearance('#{m['created_at']} ${format('Month DD, YYYY (no time)')}')}&lt;/span&gt;
+            &lt;/div&gt;
+            &lt;div&gt;
+              #{::Kinetic::Commons.md_to_html(m['body'], :input =&gt; "GFM")}
+            &lt;/div&gt;
+        &lt;/div&gt;
+      MSG
+    elsif m['type'] == 'SystemMessage' &amp;&amp; m['messageable_type'] == "Upload"
+      upload_title = m['messageable']['file_content_type'] =~/image/i ? 'Uploaded image' : 'Uploaded file'
+      file_name = m['messageable']['file_file_name']
+      file_description = m['messageable']['description']
+      link = "#{@inputs['Web Server Url']}/kinetic-response/issues/#{issue['guid']}/uploads/#{m['messageable']['guid']}"
+      if file_description.strip.size == 0
+        msg_body = &lt;&lt;~MSGBODY
+          &lt;div style="margin-bottom:0.5em;"&gt;
+            #{upload_title}:
+            &lt;em&gt;&lt;a href="#{link}" target="_blank"&gt;#{::Kinetic::Commons.escape(file_name)}&lt;/a&gt;&lt;/em&gt;
+          &lt;/div&gt;
+        MSGBODY
+      else
+        msg_body = &lt;&lt;~MSGBODY
+          &lt;div style="margin-bottom:0.5em;"&gt;
+            #{upload_title}:
+            &lt;em&gt;&lt;a href="#{link}" target="_blank"&gt;#{::Kinetic::Commons.escape(file_name)}&lt;/a&gt;&lt;/em&gt;
+            &lt;blockquote style="margin:0 0 20px;padding: 10px 20px;border-left:5px solid #eeeeee;"&gt;#{::Kinetic::Commons.escape(file_description)}&lt;/blockquote&gt;
+          &lt;/div&gt;
+        MSGBODY
+      end
+
+      msgs &lt;&lt; &lt;&lt;~MSG
+        &lt;div style="margin-bottom:0.5em;"&gt;
+          &lt;div&gt;
+              &lt;strong&gt;#{::Kinetic::Commons.escape(m['user']['name'])}&lt;/strong&gt;
+              &lt;span&gt;${appearance('#{m['created_at']} ${format('Month DD, YYYY (no time)')}')}&lt;/span&gt;
+          &lt;/div&gt;
+          &lt;div&gt;
+              #{msg_body}
+          &lt;/div&gt;
+        &lt;/div&gt;
+      MSG
+    end
+  end
+
+  if msgs.size &gt; 0
+    updated_issues &lt;&lt; issue
+    issues &lt;&lt; &lt;&lt;~ISSUE 
+      &lt;div&gt;
+        &lt;h3&gt;&lt;a href="#{issue_url}" target="_blank"&gt;#{::Kinetic::Commons.escape(issue['description'])}&lt;/a&gt;&lt;/h3&gt;
+        &lt;div&gt;
+          #{msgs.join("\n")}
+        &lt;/div&gt;
+      &lt;/div&gt;
+    ISSUE
+  end
+end
+
+
+summary = &lt;&lt;~SUMMARY
+&lt;p&gt;
+  One or more kinops discussions you are participating in has had activity that you may want to follow-up with:
+&lt;/p&gt;
+SUMMARY
+
+body = &lt;&lt;~BODY
+  #{summary}
+  &lt;hr/&gt;
+  #{issues.join("\n&lt;hr/&gt;\n")}
+BODY
+%&gt;
+
+&lt;%= {
+  "Subject" =&gt; "kinops discussion updates",
+  "Summary" =&gt; summary,
+  "Body" =&gt; body,
+  "Button Label" =&gt; "Read more...",
+  "Button Url" =&gt; updated_issues.size == 1 ? NotificationVariables.build_issue_url(@inputs, updated_issues[0]) : NotificationVariables.url_base(@inputs)
+}.to_json %&gt;
+</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">system_tree_return_v1_42</task>
+                </dependents>
+            </task>
+            <task definition_id="utilities_echo_v1" id="utilities_echo_v1_4" name="Targeted User Invite" x="352" y="484">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>true</visible>
+                <parameters>
+                    <parameter id="input" label="Input" menu="" required="true" tooltip="">&lt;%
+subject = "Invitation to join kinops \"#{::Kinetic::Commons.escape(@issue['name'])}\" discussion"
+
+summary = &lt;&lt;~SUMMARY
+&lt;p&gt;
+  You have been invited to participate in the &lt;strong&gt;#{::Kinetic::Commons.escape(@issue['name'])}&lt;/strong&gt; discussion by &lt;a href="mailto:#{@inputs['Invited By']}" target="_blank"&gt;#{::Kinetic::Commons.escape(@inputs['Invited By'])}.&lt;/a&gt;
+&lt;/p&gt;
+SUMMARY
+
+body = &lt;&lt;~BODY
+#{summary}
+BODY
+
+if !@note.nil? &amp;&amp; @note.size &gt; 0
+body &lt;&lt; &lt;&lt;~NOTE
+&lt;p&gt;
+  Notes from the organizer:&lt;br/&gt;
+  &lt;pre&gt;#{::Kinetic::Commons.md_to_html(@note, :input =&gt; "GFM")}&lt;/pre&gt;
+&lt;/p&gt;
+NOTE
+end
+%&gt;
+
+&lt;%= {
+"Subject" =&gt; subject, 
+"Summary" =&gt; summary,
+"Body" =&gt; body,
+"Button Label" =&gt; "Join the Discussion",
+"Button Url" =&gt; "#{@inputs['Web Server Url']}/#/discussions/#{@issue['guid']}"
+}.to_json %&gt;
+</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">system_tree_return_v1_45</task>
+                </dependents>
+            </task>
+            <task definition_id="utilities_echo_v1" id="utilities_echo_v1_5" name="Discussion Involvement" x="615" y="453">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>true</visible>
+                <parameters>
+                    <parameter id="input" label="Input" menu="" required="true" tooltip="">&lt;%
+issue_url = "#{@inputs['Web Server Url']}/#/discussions/#{@issue['guid']}"
+msgs = []
+@messages.each do |m|
+  if m['type'] == 'Message'
+    msgs &lt;&lt; &lt;&lt;~MSG
+      &lt;div style="margin-bottom:0.5em;"&gt;
+        &lt;div&gt;
+          &lt;strong&gt;#{::Kinetic::Commons.escape(m['user']['name'])}&lt;/strong&gt;
+          &lt;span&gt;${appearance('#{m['created_at']} ${format('Month DD, YYYY (no time)')}')}&lt;/span&gt;
+        &lt;/div&gt;
+        &lt;div&gt;
+          #{::Kinetic::Commons.md_to_html(m['body'], :input =&gt; "GFM")}
+        &lt;/div&gt;
+      &lt;/div&gt;
+    MSG
+  elsif m['type'] == 'SystemMessage' &amp;&amp; m['messageable_type'] == "Upload"
+    upload_title = m['messageable']['file_content_type'] =~/image/i ? 'Uploaded image' : 'Uploaded file'
+    file_name = m['messageable']['file_file_name']
+    file_description = m['messageable']['description']
+    link = "#{@inputs['Web Server Url']}/#{@inputs['Space Slug']}/kinetic-response/issues/#{@issue['guid']}/uploads/#{m['messageable']['guid']}"
+    if file_description.strip.size == 0
+      msg_body = &lt;&lt;~MSGBODY
+        &lt;div style="margin-bottom:0.5em;"&gt;
+          #{upload_title}:
+          &lt;em&gt;&lt;a href="#{link}" target="_blank"&gt;#{::Kinetic::Commons.escape(file_name)}&lt;/a&gt;&lt;/em&gt;
+        &lt;/div&gt;
+      MSGBODY
+    else
+      msg_body = &lt;&lt;~MSGBODY
+        &lt;div style="margin-bottom:0.5em;"&gt;
+          #{upload_title}:
+          &lt;em&gt;&lt;a href="#{link}" target="_blank"&gt;#{::Kinetic::Commons.escape(file_name)}&lt;/a&gt;&lt;/em&gt;
+          &lt;blockquote style="margin:0 0 20px;padding: 10px 20px;border-left:5px solid #eeeeee;"&gt;#{::Kinetic::Commons.escape(file_description)}&lt;/blockquote&gt;
+        &lt;/div&gt;
+      MSGBODY
+    end
+
+    msgs &lt;&lt; &lt;&lt;~MSG
+      &lt;div style="margin-bottom:0.5em;"&gt;
+        &lt;div&gt;
+          &lt;strong&gt;#{::Kinetic::Commons.escape(m['user']['name'])}&lt;/strong&gt;
+          &lt;span&gt;${appearance('#{m['created_at']} ${format('Month DD, YYYY (no time)')}')}&lt;/span&gt;
+        &lt;/div&gt;
+        &lt;div&gt;
+          #{msg_body}
+        &lt;/div&gt;
+      &lt;/div&gt;
+    MSG
+  end
+end
+
+subject = "kinops \"#{::Kinetic::Commons.escape(@issue['name'])}\" discussion update"
+summary = &lt;&lt;~SUMMARY
+&lt;p&gt;
+  The &lt;strong&gt;#{::Kinetic::Commons.escape(@issue['name'])}&lt;/strong&gt; kinops discussion you are participating in has had activity that you may want to follow-up with:
+&lt;/p&gt;
+SUMMARY
+
+body = &lt;&lt;~BODY
+#{summary}
+
+&lt;div&gt;
+  #{msgs.join("\n")}
+&lt;/div&gt;
+BODY
+%&gt;
+
+&lt;%= {
+"Subject" =&gt; subject,
+"Summary" =&gt; summary,
+"Body" =&gt; body,
+"Button Label" =&gt; "Read more...",
+"Button Url" =&gt; "#{issue_url}"
+}.to_json %&gt;
+</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">system_tree_return_v1_43</task>
+                </dependents>
+            </task>
+            <task definition_id="kinetic_request_ce_user_retrieve_v2" id="kinetic_request_ce_user_retrieve_v2_13" name="Retrieve Invited User" x="342" y="233">
+                <version>2</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>true</visible>
+                <parameters>
+                    <parameter id="error_handling" label="Error Handling" menu="Error Message,Raise Error" required="true" tooltip="Determine what to return if an error is encountered.">Error Message</parameter>
+                    <parameter id="space_slug" label="Space Slug" menu="" required="false" tooltip="The Space the submission is being retrieved from.">&lt;%=@inputs['Space Slug']%&gt;</parameter>
+                    <parameter id="username" label="Username:" menu="" required="true" tooltip="The unique username for the user.">&lt;%=@inputs['Send To']%&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">utilities_echo_v1_41</task>
+                </dependents>
+            </task>
+            <task definition_id="utilities_echo_v1" id="utilities_echo_v1_16" name="New User Invite" x="198" y="231">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>true</visible>
+                <parameters>
+                    <parameter id="input" label="Input" menu="" required="true" tooltip="">&lt;%
+subject = "Invitation to join kinops #{::Kinetic::Commons.escape(@issue['name'])} discussion"
+summary = &lt;&lt;~SUMMARY
+&lt;p&gt;
+  You have been invited to participate in the &lt;strong&gt;#{::Kinetic::Commons.escape(@issue['name'])}&lt;/strong&gt; discussion by &lt;a href="mailto:#{@inputs['Invited By']}" target="_blank"&gt;#{::Kinetic::Commons.escape(@inputs['Invited By'])}.&lt;/a&gt;
+&lt;/p&gt;
+SUMMARY
+
+body = &lt;&lt;~BODY
+#{summary}
+BODY
+
+if !@note.nil? &amp;&amp; @note.size &gt; 0
+body &lt;&lt; &lt;&lt;~NOTE
+&lt;p&gt;
+  Notes from the organizer:&lt;br/&gt;
+  &lt;pre&gt;#{::Kinetic::Commons.md_to_html(@note, :input =&gt; "GFM")}&lt;/pre&gt;
+&lt;/p&gt;
+NOTE
+end
+%&gt;
+
+&lt;%= {
+"Subject" =&gt; subject, 
+"Summary" =&gt; summary,
+"Body" =&gt; body,
+"Button Label" =&gt; "Create Account",
+"Button Url" =&gt; "#{@inputs['Web Server Url']}/#/discussions/#{@issue['guid']}"
+}.to_json %&gt;
+</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">system_tree_return_v1_44</task>
+                </dependents>
+            </task>
+            <task definition_id="system_noop_v1" id="system_noop_v1_23" name="Targeted Invite" x="342" y="131">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters></parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">kinetic_request_ce_user_retrieve_v2_13</task>
+                </dependents>
+            </task>
+            <task definition_id="utilities_echo_v1" id="utilities_echo_v1_31" name="Involvement Message Filter" x="614" y="208">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>true</visible>
+                <parameters>
+                    <parameter id="input" label="Input" menu="" required="true" tooltip="">&lt;%
+msg_count = 0
+whitelist = ["Upload"]
+@messages.each do |m|
+  if m['type'] == 'Message' || whitelist.include?(m['messageable_type'])
+    msg_count += 1
+  end
+end
+%&gt;
+&lt;%= msg_count %&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="Has Messages" type="Complete" value="@results['Involvement Message Filter']['output'].to_i &gt; 0">system_noop_v1_32</task>
+                    <task label="No Messages" type="Complete" value="@results['Involvement Message Filter']['output'].to_i == 0">system_join_v1_50</task>
+                </dependents>
+            </task>
+            <task definition_id="system_noop_v1" id="system_noop_v1_32" name="Has Involvement Messages" x="615" y="340">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters></parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">utilities_echo_v1_5</task>
+                </dependents>
+            </task>
+            <task definition_id="utilities_echo_v1" id="utilities_echo_v1_33" name="Update Message Filter" x="848" y="22">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>true</visible>
+                <parameters>
+                    <parameter id="input" label="Input" menu="" required="true" tooltip="">&lt;%
+msg_count = 0
+whitelist = ["Upload"]
+@issues.each do |d|
+  d['messages'].each do |m|
+    if m['type'] == 'Message' || whitelist.include?(m['messageable_type'])
+      msg_count += 1
+    end
+  end
+end
+%&gt;
+&lt;%= msg_count %&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="Has Messages" type="Complete" value="@results['Update Message Filter']['output'].to_i &gt; 0">system_noop_v1_34</task>
+                    <task label="No Messages" type="Complete" value="@results['Update Message Filter']['output'].to_i == 0">system_join_v1_50</task>
+                </dependents>
+            </task>
+            <task definition_id="system_noop_v1" id="system_noop_v1_34" name="Has Update Messages" x="844" y="253">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters></parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">utilities_echo_v1_1</task>
+                </dependents>
+            </task>
+            <task definition_id="kinetic_commons_module_v1" id="kinetic_commons_module_v1_36" name="Kinetic Commons Module" x="201" y="11">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters></parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="Immediate" type="Complete" value="['digest immediate','host immediate'].include?(@inputs['Event'])">utilities_echo_v1_33</task>
+                    <task label="Involvement" type="Complete" value="@inputs['Event'] == 'notify involvement'">utilities_echo_v1_31</task>
+                    <task label="New User Invite" type="Complete" value="@inputs['Event'] == 'new user invitation'">utilities_echo_v1_16</task>
+                    <task label="Targeted User Invite" type="Complete" value="@inputs['Event'] == 'targeted invitation'">system_noop_v1_23</task>
+                </dependents>
+            </task>
+            <task definition_id="system_tree_return_v1" id="system_tree_return_v1_40" name="Do Not Send" x="748" y="180">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Subject" label="Subject" menu="" required="false" tooltip=""></parameter>
+                    <parameter id="Summary" label="Summary" menu="" required="false" tooltip=""></parameter>
+                    <parameter id="Body" label="Body" menu="" required="false" tooltip=""></parameter>
+                    <parameter id="Button Label" label="Button Label" menu="" required="false" tooltip=""></parameter>
+                    <parameter id="Button Url" label="Button Url" menu="" required="false" tooltip=""></parameter>
+                    <parameter id="Status" label="Status" menu="" required="false" tooltip="">Do Not Send</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents></dependents>
+            </task>
+            <task definition_id="utilities_echo_v1" id="utilities_echo_v1_41" name="User Created at Least 5 Min Ago" x="354" y="338">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>true</visible>
+                <parameters>
+                    <parameter id="input" label="Input" menu="" required="true" tooltip="">&lt;%=!@results['Retrieve Invited User'].nil? &amp;&amp; !@results['Retrieve Invited User']['Username'].nil? &amp;&amp; Time.now &gt; (Time.parse(@results['Retrieve Invited User']['Created At']) + 300)%&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="True" type="Complete" value="@results['User Created at Least 5 Min Ago']['output'] == 'true'">utilities_echo_v1_4</task>
+                    <task label="False" type="Complete" value="@results['User Created at Least 5 Min Ago']['output'] == 'false'">system_join_v1_50</task>
+                </dependents>
+            </task>
+            <task definition_id="system_tree_return_v1" id="system_tree_return_v1_42" name="Discussion Update Return" x="854" y="568">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Subject" label="Subject" menu="" required="false" tooltip="">&lt;%=JSON.parse(@results['Discussion Update']['output'])['Subject']%&gt;</parameter>
+                    <parameter id="Summary" label="Summary" menu="" required="false" tooltip="">&lt;%=JSON.parse(@results['Discussion Update']['output'])['Summary']%&gt;</parameter>
+                    <parameter id="Body" label="Body" menu="" required="false" tooltip="">&lt;%=JSON.parse(@results['Discussion Update']['output'])['Body']%&gt;</parameter>
+                    <parameter id="Button Label" label="Button Label" menu="" required="false" tooltip="">&lt;%=JSON.parse(@results['Discussion Update']['output'])['Button Label']%&gt;</parameter>
+                    <parameter id="Button Url" label="Button Url" menu="" required="false" tooltip="">&lt;%=JSON.parse(@results['Discussion Update']['output'])['Button Url']%&gt;</parameter>
+                    <parameter id="Status" label="Status" menu="" required="false" tooltip="">Send</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents></dependents>
+            </task>
+            <task definition_id="system_tree_return_v1" id="system_tree_return_v1_43" name="Discussion Involvement Return" x="615" y="572">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Subject" label="Subject" menu="" required="false" tooltip="">&lt;%=JSON.parse(@results['Discussion Involvement']['output'])['Subject']%&gt;</parameter>
+                    <parameter id="Summary" label="Summary" menu="" required="false" tooltip="">&lt;%=JSON.parse(@results['Discussion Involvement']['output'])['Summary']%&gt;</parameter>
+                    <parameter id="Body" label="Body" menu="" required="false" tooltip="">&lt;%=JSON.parse(@results['Discussion Involvement']['output'])['Body']%&gt;</parameter>
+                    <parameter id="Button Label" label="Button Label" menu="" required="false" tooltip="">&lt;%=JSON.parse(@results['Discussion Involvement']['output'])['Button Label']%&gt;</parameter>
+                    <parameter id="Button Url" label="Button Url" menu="" required="false" tooltip="">&lt;%=JSON.parse(@results['Discussion Involvement']['output'])['Button Url']%&gt;</parameter>
+                    <parameter id="Status" label="Status" menu="" required="false" tooltip="">Send</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents></dependents>
+            </task>
+            <task definition_id="system_tree_return_v1" id="system_tree_return_v1_44" name="New User Invite Return" x="198" y="572">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Subject" label="Subject" menu="" required="false" tooltip="">&lt;%=JSON.parse(@results['New User Invite']['output'])['Subject']%&gt;</parameter>
+                    <parameter id="Summary" label="Summary" menu="" required="false" tooltip="">&lt;%=JSON.parse(@results['New User Invite']['output'])['Summary']%&gt;</parameter>
+                    <parameter id="Body" label="Body" menu="" required="false" tooltip="">&lt;%=JSON.parse(@results['New User Invite']['output'])['Body']%&gt;</parameter>
+                    <parameter id="Button Label" label="Button Label" menu="" required="false" tooltip="">&lt;%=JSON.parse(@results['New User Invite']['output'])['Button Label']%&gt;</parameter>
+                    <parameter id="Button Url" label="Button Url" menu="" required="false" tooltip="">&lt;%=JSON.parse(@results['New User Invite']['output'])['Button Url']%&gt;</parameter>
+                    <parameter id="Status" label="Status" menu="" required="false" tooltip="">Send</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents></dependents>
+            </task>
+            <task definition_id="system_tree_return_v1" id="system_tree_return_v1_45" name="Targeted User Invite Return" x="354" y="572">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Subject" label="Subject" menu="" required="false" tooltip="">&lt;%=JSON.parse(@results['Targeted User Invite']['output'])['Subject']%&gt;</parameter>
+                    <parameter id="Summary" label="Summary" menu="" required="false" tooltip="">&lt;%=JSON.parse(@results['Targeted User Invite']['output'])['Summary']%&gt;</parameter>
+                    <parameter id="Body" label="Body" menu="" required="false" tooltip="">&lt;%=JSON.parse(@results['Targeted User Invite']['output'])['Body']%&gt;</parameter>
+                    <parameter id="Button Label" label="Button Label" menu="" required="false" tooltip="">&lt;%=JSON.parse(@results['Targeted User Invite']['output'])['Button Label']%&gt;</parameter>
+                    <parameter id="Button Url" label="Button Url" menu="" required="false" tooltip="">&lt;%=JSON.parse(@results['Targeted User Invite']['output'])['Button Url']%&gt;</parameter>
+                    <parameter id="Status" label="Status" menu="" required="false" tooltip="">Send</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents></dependents>
+            </task>
+            <task definition_id="system_join_v1" id="system_join_v1_50" name="system_join_v1_50" x="612" y="65">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="type" label="Type:" menu="All,Any,Some" required="true" tooltip="How many dependents must be completed before continuing?">Any</parameter>
+                    <parameter dependsOnId="type" dependsOnValue="Some" id="number" label="Number:" menu="" required="false" tooltip="If some, how many?"></parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">system_tree_return_v1_40</task>
+                </dependents>
+            </task>
+        </request>
+    </taskTree>
+</tree>

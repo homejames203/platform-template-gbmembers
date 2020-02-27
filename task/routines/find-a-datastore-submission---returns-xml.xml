@@ -1,0 +1,145 @@
+<tree schema_version="1.0">
+    <sourceName>-</sourceName>
+    <sourceGroup>-</sourceGroup>
+    <definitionId>routine_kinetic_request_ce_datastore_submission_search_returns_xml_v1</definitionId>
+    <type>Global Routine</type>
+    <status>Active</status>
+    <taskTree builder_version="" schema_version="1.0" version="">
+        <name>Find a Datastore Submission - Returns XML</name>
+        <author></author>
+        <notes></notes>
+        <lastID>33</lastID>
+        <taskDefinition id="routine_kinetic_request_ce_datastore_submission_search_returns_xml_v1" name="Find a Datastore Submission - Returns XML" schema_version="1.0" version="1">
+            <visible>false</visible>
+            <deferrable>true</deferrable>
+            <parameters>
+                <parameter id="Space Slug" label="Space Slug" required="false" tooltip="Slug of the space to search for the submission in"></parameter>
+                <parameter id="Form Slug" label="Form Slug" required="true" tooltip="Slug of the datastore form to search"></parameter>
+                <parameter id="Index" label="Index" required="false" tooltip="Index to use"></parameter>
+                <parameter id="Query" label="Query" required="false" tooltip="The query that will be used to search for the submissions. Ex: values[company]=Kinetic"></parameter>
+                <parameter id="Limit" label="Limit" required="false" tooltip="Limit on number to return"></parameter>
+            </parameters>
+            <handler name="system_tree_call" version="1"></handler>
+            <results format="xml">
+                <result name="Count" tooltip="Number of matching submissions found "></result>
+                <result name="XML Result" tooltip="Returns XML Formatted results"></result>
+            </results>
+        </taskDefinition>
+        <request>
+            <task definition_id="system_start_v1" id="start" name="Start" x="99" y="66">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters></parameters>
+                <messages></messages>
+                <dependents>
+                    <task label="" type="Complete" value="">kinetic_request_ce_datastore_submission_search_v1_32</task>
+                </dependents>
+            </task>
+            <task definition_id="routine_handler_failure_error_process_v1" id="routine_handler_failure_error_process_v1_10" name="Error Process" x="506" y="55">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>true</defers>
+                <deferrable>true</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Error Message" label="Error Message" menu="" required="false" tooltip="Error Message ">&lt;%=@results['Find Submissions']['Handler Error Message']%&gt;</parameter>
+                    <parameter id="Handler Name" label="Handler Name" menu="" required="false" tooltip="">kinetic_request_ce_datastore_submission_search_v1</parameter>
+                    <parameter id="Run Id" label="Run Id" menu="" required="false" tooltip="">&lt;%=@run['Id']%&gt;</parameter>
+                    <parameter id="Inputs JSON" label="Inputs JSON" menu="" required="false" tooltip="">&lt;%=@inputs.to_json%&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">routine_kinetic_request_ce_datastore_submission_search_returns_xml_v1_33</task>
+                </dependents>
+            </task>
+            <task definition_id="system_tree_return_v1" id="system_tree_return_v1_29" name="Return From Error" x="880" y="55">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Count" label="Count" menu="" required="false" tooltip="Number of matching submissions found ">&lt;%=@results['Retry']['Count']%&gt;</parameter>
+                    <parameter id="XML Result" label="XML Result" menu="" required="false" tooltip="Returns XML Formatted results">&lt;%=@results['Retry']['XML Result']%&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents></dependents>
+            </task>
+            <task definition_id="system_tree_return_v1" id="system_tree_return_v1_30" name="Return" x="265" y="231">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Count" label="Count" menu="" required="false" tooltip="Number of matching submissions found ">&lt;%=@results['Find Submissions']['Count']%&gt;</parameter>
+                    <parameter id="XML Result" label="XML Result" menu="" required="false" tooltip="Returns XML Formatted results">&lt;%=@results['Find Submissions']['Result']%&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents></dependents>
+            </task>
+            <task definition_id="kinetic_request_ce_datastore_submission_search_v1" id="kinetic_request_ce_datastore_submission_search_v1_32" name="Find Submissions" x="268" y="45">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="error_handling" label="Error Handling" menu="Error Message,Raise Error" required="true" tooltip="Determine what to return if an error is encountered.">Error Message</parameter>
+                    <parameter id="space_slug" label="Space Slug" menu="" required="false" tooltip="The Space the submission is being retrieved from (defaults to info value if not provided).">&lt;%=@inputs['Space Slug']%&gt;</parameter>
+                    <parameter id="form_slug" label="Datastore Form Slug" menu="" required="false" tooltip="The slug of the Datastore Form to search for submissions in.">&lt;%=@inputs['Form Slug']%&gt;</parameter>
+                    <parameter id="index" label="Index" menu="" required="false" tooltip="The index to use for the search.">&lt;%=@inputs['Index']%&gt;</parameter>
+                    <parameter id="query" label="Query" menu="" required="false" tooltip="The query that will be used to search the submissions. Ex: values[company]=Kinetic">&lt;%=@inputs['Query']%&gt;</parameter>
+                    <parameter id="limit" label="Limit" menu="" required="false" tooltip="An integer representing the max results that the search can return.">&lt;%=@inputs['Limit']%&gt;</parameter>
+                    <parameter id="return_type" label="Return Type" menu="JSON,XML,ID List" required="true" tooltip="The format that the results should be returned in.">XML</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="No Error" type="Complete" value="@results['Find Submissions']['Handler Error Message'].nil?">system_tree_return_v1_30</task>
+                    <task label="Error" type="Complete" value="!@results['Find Submissions']['Handler Error Message'].nil?">routine_handler_failure_error_process_v1_10</task>
+                </dependents>
+            </task>
+            <task definition_id="routine_kinetic_request_ce_datastore_submission_search_returns_xml_v1" id="routine_kinetic_request_ce_datastore_submission_search_returns_xml_v1_33" name="Retry" x="695" y="68">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>true</defers>
+                <deferrable>true</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Space Slug" label="Space Slug" menu="" required="false" tooltip="Slug of the space to search for the submission in">&lt;%=@results['Error Process']['Space Slug']%&gt;</parameter>
+                    <parameter id="Form Slug" label="Form Slug" menu="" required="true" tooltip="Slug of the datastore form to search">&lt;%=@results['Error Process']['Form Slug']%&gt;</parameter>
+                    <parameter id="Index" label="Index" menu="" required="false" tooltip="Index to use">&lt;%=@results['Error Process']['Index']%&gt;</parameter>
+                    <parameter id="Query" label="Query" menu="" required="false" tooltip="The query that will be used to search for the submissions. Ex: values[company]=Kinetic">&lt;%=@results['Error Process']['Query']%&gt;</parameter>
+                    <parameter id="Limit" label="Limit" menu="" required="false" tooltip="Limit on number to return">&lt;%=@results['Error Process']['Limit']%&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">system_tree_return_v1_29</task>
+                </dependents>
+            </task>
+        </request>
+    </taskTree>
+</tree>

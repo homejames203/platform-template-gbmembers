@@ -1,0 +1,212 @@
+<tree schema_version="1.0">
+    <sourceName>-</sourceName>
+    <sourceGroup>-</sourceGroup>
+    <definitionId>routine_kd_manager_approval_v2</definitionId>
+    <type>Global Routine</type>
+    <status>Active</status>
+    <taskTree builder_version="" schema_version="1.0" version="">
+        <name>KD Manager Approval v2</name>
+        <author></author>
+        <notes></notes>
+        <lastID>71</lastID>
+        <taskDefinition id="routine_kd_manager_approval_v2" name="KD Manager Approval v2" schema_version="1.0" version="1">
+            <visible>false</visible>
+            <deferrable>true</deferrable>
+            <parameters>
+                <parameter id="Space Slug" label="Space Slug" required="false" tooltip="The Slug of the Space this submission belongs to"></parameter>
+                <parameter id="Submission Id" label="Submission Id" required="true" tooltip="Id of the parent submission"></parameter>
+                <parameter id="Summary" label="Summary" required="true" tooltip="Short description for approver (used in submission label and email subject)"></parameter>
+                <parameter id="Details" label="Details" required="true" tooltip="Long description for approver"></parameter>
+            </parameters>
+            <handler name="system_tree_call" version="1"></handler>
+            <results format="xml">
+                <result name="Decision" tooltip="The approvers decision (typically “Approved” or “Denied”)"></result>
+                <result name="Denial Reason" tooltip="The reason given for why an approval was denied"></result>
+                <result name="Notes for Customer" tooltip="Any additional comments the approver provided"></result>
+                <result name="Approver Id" tooltip="The Id of the approver who completed the approval"></result>
+                <result name="Approval Submission Id" tooltip="The Id of the approval submission"></result>
+                <result name="Fields JSON" tooltip="A JSON map of questions that were answered on the approval record"></result>
+            </results>
+        </taskDefinition>
+        <request>
+            <task definition_id="system_start_v1" id="start" name="Start" x="97" y="38">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters></parameters>
+                <messages></messages>
+                <dependents>
+                    <task label="" type="Complete" value="">routine_kinetic_request_ce_submission_retrieve_v1_60</task>
+                </dependents>
+            </task>
+            <task definition_id="utilities_echo_v1" id="utilities_echo_v1_52" name="Retrieve Manager" x="395" y="117">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="input" label="Input" menu="" required="true" tooltip="">&lt;%
+            ### CONFIGURE ###
+            attrName = "Manager"
+            backup = ""
+            ### END CONFIGURE ###
+            
+            attributes = JSON.parse(@results['Retrieve Created By User']['Attributes'])
+            value = attributes.find { |attribute| attribute['name'] == attrName }
+            %&gt;&lt;%= value.nil? ? backup : value['values'][0] %&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">kinetic_request_ce_cascading_attribute_value_retrieve_v1_69</task>
+                </dependents>
+            </task>
+            <task definition_id="system_tree_return_v1" id="system_tree_return_v1_58" name="Return" x="846" y="242">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Decision" label="Decision" menu="" required="false" tooltip="The approvers decision (typically “Approved” or “Denied”)">&lt;%=@results['Approval Individual']['Decision']%&gt;</parameter>
+                    <parameter id="Denial Reason" label="Denial Reason" menu="" required="false" tooltip="The reason given for why an approval was denied">&lt;%=@results['Approval Individual']['Denial Reason']%&gt;</parameter>
+                    <parameter id="Notes for Customer" label="Notes for Customer" menu="" required="false" tooltip="Any additional comments the approver provided">&lt;%=@results['Approval Individual']['Notes for Customer']%&gt;</parameter>
+                    <parameter id="Approver Id" label="Approver Id" menu="" required="false" tooltip="The Id of the approver who completed the approval">&lt;%=@results['Approval Individual']['Approver Id']%&gt;</parameter>
+                    <parameter id="Approval Submission Id" label="Approval Submission Id" menu="" required="false" tooltip="The Id of the approval submission">&lt;%=@results['Approval Individual']['Approval Submission Id']%&gt;</parameter>
+                    <parameter id="Fields JSON" label="Fields JSON" menu="" required="false" tooltip="A JSON map of questions that were answered on the approval record">&lt;%=@results['Approval Individual']['Fields JSON']%&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents></dependents>
+            </task>
+            <task definition_id="routine_kinetic_request_ce_submission_retrieve_v1" id="routine_kinetic_request_ce_submission_retrieve_v1_60" name="Retrieve Originating Submission" x="96" y="107">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>true</defers>
+                <deferrable>true</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Space Slug" label="Space Slug" menu="" required="false" tooltip="Slug of the space to find the submission in">&lt;%=@inputs['Space Slug']%&gt;</parameter>
+                    <parameter id="Submission Id" label="Submission Id" menu="" required="true" tooltip="Id of the submission to retrieve">&lt;%=@inputs['Submission Id']%&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">routine_kinetic_request_ce_user_retrieve_v1_62</task>
+                </dependents>
+            </task>
+            <task definition_id="routine_kinetic_request_ce_user_retrieve_v1" id="routine_kinetic_request_ce_user_retrieve_v1_62" name="Retrieve Created By User" x="253" y="110">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>true</defers>
+                <deferrable>true</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Space Slug" label="Space Slug" menu="" required="false" tooltip="Slug of the space in which the user exists">&lt;%=@inputs['Space Slug']%&gt;</parameter>
+                    <parameter id="Username" label="Username" menu="" required="true" tooltip="Username of the user to retrieve">&lt;%=@results['Retrieve Originating Submission']['Created By']%&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">utilities_echo_v1_52</task>
+                </dependents>
+            </task>
+            <task definition_id="kinetic_request_ce_cascading_attribute_value_retrieve_v1" id="kinetic_request_ce_cascading_attribute_value_retrieve_v1_69" name="Days Due" x="549" y="129">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="error_handling" label="Error Handling" menu="Error Message,Raise Error" required="true" tooltip="Determine what to return if an error is encountered.">Error Message</parameter>
+                    <parameter id="start_context" label="Start Context" menu="Submission,Form,Kapp,Space" required="true" tooltip="The lowest level to search. If Submission, only a Submission Id is needed">Submission</parameter>
+                    <parameter id="end_context" label="End Context" menu="Space,Kapp,Form,Submission" required="true" tooltip="The highest level to search. If Submission, only a Submission Id is needed">Space</parameter>
+                    <parameter id="prop_to_find" label="Property To Find" menu="" required="true" tooltip="The Name of the Field/Attribute to search for a match.">Service Days Due</parameter>
+                    <parameter id="backup_if_none" label="Backup Value" menu="" required="false" tooltip="If no Field/Attribute value is returned, use this value">7</parameter>
+                    <parameter id="space_slug" label="Space Slug" menu="" required="false" tooltip="The Slug of the space to find attribute values in.">&lt;%=@inputs['Space Slug']%&gt;</parameter>
+                    <parameter id="kapp_slug" label="Kapp Slug" menu="" required="false" tooltip="The Slug of the kapp to find attribute values in."></parameter>
+                    <parameter id="form_slug" label="Form Slug" menu="" required="false" tooltip="The Slug of the form to find attribute values in."></parameter>
+                    <parameter id="submission_id" label="Submission Id" menu="" required="false" tooltip="The id of the submission to find values in">&lt;%=@inputs['Submission Id']%&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">kinetic_request_ce_cascading_attribute_value_retrieve_v1_70</task>
+                </dependents>
+            </task>
+            <task definition_id="kinetic_request_ce_cascading_attribute_value_retrieve_v1" id="kinetic_request_ce_cascading_attribute_value_retrieve_v1_70" name="Approval Form Slug" x="693" y="122">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="error_handling" label="Error Handling" menu="Error Message,Raise Error" required="true" tooltip="Determine what to return if an error is encountered.">Error Message</parameter>
+                    <parameter id="start_context" label="Start Context" menu="Submission,Form,Kapp,Space" required="true" tooltip="The lowest level to search. If Submission, only a Submission Id is needed">Submission</parameter>
+                    <parameter id="end_context" label="End Context" menu="Space,Kapp,Form,Submission" required="true" tooltip="The highest level to search. If Submission, only a Submission Id is needed">Space</parameter>
+                    <parameter id="prop_to_find" label="Property To Find" menu="" required="true" tooltip="The Name of the Field/Attribute to search for a match.">Approval Form Slug</parameter>
+                    <parameter id="backup_if_none" label="Backup Value" menu="" required="false" tooltip="If no Field/Attribute value is returned, use this value">approval</parameter>
+                    <parameter id="space_slug" label="Space Slug" menu="" required="false" tooltip="The Slug of the space to find attribute values in.">&lt;%=@inputs['Space Slug']%&gt;</parameter>
+                    <parameter id="kapp_slug" label="Kapp Slug" menu="" required="false" tooltip="The Slug of the kapp to find attribute values in."></parameter>
+                    <parameter id="form_slug" label="Form Slug" menu="" required="false" tooltip="The Slug of the form to find attribute values in."></parameter>
+                    <parameter id="submission_id" label="Submission Id" menu="" required="false" tooltip="The id of the submission to find values in">&lt;%=@inputs['Submission Id']%&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">routine_kd_individual_approval_v2_71</task>
+                </dependents>
+            </task>
+            <task definition_id="routine_kd_individual_approval_v2" id="routine_kd_individual_approval_v2_71" name="Approval Individual" x="846" y="120">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>true</defers>
+                <deferrable>true</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Space Slug" label="Space Slug" menu="" required="false" tooltip="The Slug of the Space this submission belongs to">&lt;%=@inputs['Space Slug']%&gt;</parameter>
+                    <parameter id="Submission Id" label="Submission Id" menu="" required="true" tooltip="Id of the parent submission">&lt;%=@inputs['Submission Id']%&gt;</parameter>
+                    <parameter id="Approver Id" label="Approver Id" menu="" required="true" tooltip="CE Login Id of Approver">&lt;%=@results['Retrieve Manager']['output']%&gt;</parameter>
+                    <parameter id="Summary" label="Summary" menu="" required="true" tooltip="Short description for approver (used in submission label and email subject)">&lt;%=@inputs['Summary']%&gt;</parameter>
+                    <parameter id="Details" label="Details" menu="" required="true" tooltip="Long description for approver">&lt;%=
+details = @inputs['Details']
+if @results['Retrieve Manager']['output'].nil? || @results['Retrieve Manager']['output'].strip == ""
+ details = "This request was set to be approved by the submitter's manager; however, none was found. \n\n#{@inputs['Details']}"
+end
+details %&gt;</parameter>
+                    <parameter id="Approval Form Slug" label="Approval Form Slug" menu="" required="true" tooltip="Slug of the form the approval is created for">&lt;%=@results['Approval Form Slug']['Value']%&gt;</parameter>
+                    <parameter id="Days Due" label="Days Due" menu="" required="true" tooltip="Number of days from now the approval is to be completed by">&lt;%=@results['Days Due']['Value'].to_f%&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">system_tree_return_v1_58</task>
+                </dependents>
+            </task>
+        </request>
+    </taskTree>
+</tree>

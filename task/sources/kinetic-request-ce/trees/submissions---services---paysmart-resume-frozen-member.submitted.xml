@@ -1,0 +1,262 @@
+<tree schema_version="1.0">
+    <sourceName>Kinetic Request CE</sourceName>
+    <sourceGroup>Submissions > services > paysmart-resume-frozen-member</sourceGroup>
+    <type>Tree</type>
+    <status>Active</status>
+    <taskTree builder_version="" schema_version="1.0" version="">
+        <name>Submitted</name>
+        <author>unus.gaffoor@kineticdata.com</author>
+        <notes></notes>
+        <lastID>18</lastID>
+        <request>
+            <task definition_id="system_start_v1" id="start" name="Start" x="11" y="11">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters></parameters>
+                <messages></messages>
+                <dependents>
+                    <task label="" type="Complete" value="">gbmembers_billing_service_v1_11</task>
+                </dependents>
+            </task>
+            <task definition_id="kinetic_request_ce_submission_activity_create_v1" id="kinetic_request_ce_submission_activity_create_v1_7" name="Resume Frozen Member" x="441" y="264">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter dependsOnId="" dependsOnValue="" id="error_handling" label="Error Handling" menu="Error Message,Raise Error" required="true" tooltip="Determine what to return if an error is encountered.">Error Message</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="space_slug" label="Space Slug" menu="" required="false" tooltip="The Space the submission exists in (defaults to info value if not provided)."></parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="submission_id" label="Submission Id" menu="" required="true" tooltip="The id of the submission for which the activity is being created for.">&lt;%= @submission['Id']%&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="label" label="Label" menu="" required="false" tooltip="The label for the submission activity.">Resume Frozen Member Requested</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="description" label="Description" menu="" required="false" tooltip="The description of the submission activity."></parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="type" label="Type" menu="" required="false" tooltip="Specifies the a submission activity 'Type', which should indicate what type of data is included.">Success</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="data" label="Data" menu="" required="false" tooltip="Additional data that can be used by resources consuming the submission activity record (for example a Request bundle may render submission details based upon JSON content in the activity data).">{"Message":"Cancellation for &lt;%= @values['Student First Name']%&gt; &lt;%= @values['Student Last Name']%&gt; has been received"}</parameter>
+                </parameters>
+                <messages>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">kinetic_request_ce_submission_update_v1_10</task>
+                    <task label="" type="Complete" value="">utilities_echo_v1_14</task>
+                </dependents>
+            </task>
+            <task definition_id="kinetic_request_ce_submission_create_v1" id="kinetic_request_ce_submission_create_v1_9" name="Create Member Request Activity" x="934" y="266">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>true</visible>
+                <parameters>
+                    <parameter dependsOnId="" dependsOnValue="" id="error_handling" label="Error Handling" menu="Error Message,Raise Error" required="true" tooltip="Determine what to return if an error is encountered.">Error Message</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="space_slug" label="Space Slug" menu="" required="false" tooltip="The Space the submission is being retrieved from (defaults to info value if not provided)."></parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="kapp_slug" label="Kapp Slug" menu="" required="true" tooltip="The slug of the Kapp the submission is for.">gbmembers</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="form_slug" label="Form Slug" menu="" required="true" tooltip="The slug of the form the submission is for.">member-activities</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="values" label="Values" menu="" required="false" tooltip="JSON map of submission field values.">&lt;%=
+content = {}
+content["Form"] = @form['Name']
+content["Date"] = @submission['Submitted At']
+content["url"] = "/#/kapps/services/requests/request/#{@submission['Id']}/review"
+
+values = {}
+values["Member ID"] = @values['Members']
+values["Type"] = "Request"
+values["Direction"] = "Inbound"
+values["Content"] = content.to_json
+
+values.to_json
+%&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="current_page_name" label="Current Page Name" menu="" required="false" tooltip="Set the current page name."></parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="current_page_navigation" label="Current Page Navigation" menu="" required="false" tooltip="Set the current page navigation."></parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="origin_id" label="Origin ID" menu="" required="false" tooltip="Set the origin ID."></parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="parent_id" label="Parent ID" menu="" required="false" tooltip="Set the parent ID."></parameter>
+                </parameters>
+                <messages></messages>
+                <dependents></dependents>
+            </task>
+            <task definition_id="kinetic_request_ce_submission_update_v1" id="kinetic_request_ce_submission_update_v1_10" name="Update Member" x="699" y="266">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>true</visible>
+                <parameters>
+                    <parameter dependsOnId="" dependsOnValue="" id="error_handling" label="Error Handling" menu="Error Message,Raise Error" required="true" tooltip="Determine what to return if an error is encountered.">Error Message</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="space_slug" label="Space Slug" menu="" required="false" tooltip="The Space the submission is being retrieved from (defaults to info value if not provided)."></parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="submission_id" label="Submission Id" menu="" required="true" tooltip="The id of the submission being updated.">&lt;%= @values['Members']%&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="state" label="State" menu="" required="false" tooltip="The value used to set the submission state."></parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="values" label="Values" menu="" required="false" tooltip="A JSON map of field names to values that should be set.">{
+  "Last Payment Date":"&lt;%= @values['Date payment will resume']%&gt;"
+}</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="current_page_name" label="Current Page Name" menu="" required="false" tooltip="Set the current page name."></parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="current_page_navigation" label="Current Page Navigation" menu="" required="false" tooltip="Set the current page navigation."></parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="origin_id" label="Origin ID" menu="" required="false" tooltip="Set the origin ID."></parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="parent_id" label="Parent ID" menu="" required="false" tooltip="Set the parent ID."></parameter>
+                </parameters>
+                <messages>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">kinetic_request_ce_submission_create_v1_9</task>
+                </dependents>
+            </task>
+            <task definition_id="gbmembers_billing_service_v1" id="gbmembers_billing_service_v1_11" name="Resume Member" x="445" y="64">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>true</visible>
+                <parameters>
+                    <parameter dependsOnId="" dependsOnValue="" id="service_value" label="Billing Service Value" menu="" required="true" tooltip="GBMembers Billing Service call value (registerUser,billingInfo,)">resumeSuspended</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="space" label="Space slug" menu="" required="true" tooltip="Space slug for School">&lt;%= @space['Slug']%&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="billing_company" label="Billing Company" menu="" required="true" tooltip="Billing Company that the service will operate against.(eg, PaySmart)">PaySmart</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="json_args" label="JSON arguments" menu="" required="true" tooltip="A JSON structure containing all argument passed to the Billing Service">{
+  "customerId": "&lt;%= @values['Billing Customer Id']%&gt;",
+  "billingService": "PaySmart",
+  "space": "&lt;%= @space['Slug']%&gt;",
+  "effectiveDate": "&lt;%= Date.parse(@values['Date payment will resume'])%&gt;"
+}</parameter>
+                </parameters>
+                <messages>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="Success" type="Complete" value="JSON.parse(@results['Resume Member']['Result JSON'])['error']==0">kinetic_request_ce_submission_activity_create_v1_7</task>
+                    <task label="Error" type="Complete" value="JSON.parse(@results['Resume Member']['Result JSON'])['error']==100">kinetic_request_ce_submission_activity_create_v1_12</task>
+                </dependents>
+            </task>
+            <task definition_id="kinetic_request_ce_submission_activity_create_v1" id="kinetic_request_ce_submission_activity_create_v1_12" name="Cancellation Error" x="854" y="49">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter dependsOnId="" dependsOnValue="" id="error_handling" label="Error Handling" menu="Error Message,Raise Error" required="true" tooltip="Determine what to return if an error is encountered.">Error Message</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="space_slug" label="Space Slug" menu="" required="false" tooltip="The Space the submission exists in (defaults to info value if not provided)."></parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="submission_id" label="Submission Id" menu="" required="true" tooltip="The id of the submission for which the activity is being created for.">&lt;%= @submission['Id']%&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="label" label="Label" menu="" required="false" tooltip="The label for the submission activity.">Cancellation Error</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="description" label="Description" menu="" required="false" tooltip="The description of the submission activity.">Attempt to Cancel &lt;%= @values['Student First Name']%&gt; &lt;%= @values['Student Last Name']%&gt; has failed.&lt;br&gt;
+Error Message: &lt;%=JSON.parse(@results['Edit Payment Type']['Result JSON'])['errorMessage']%&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="type" label="Type" menu="" required="false" tooltip="Specifies the a submission activity 'Type', which should indicate what type of data is included.">Error</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="data" label="Data" menu="" required="false" tooltip="Additional data that can be used by resources consuming the submission activity record (for example a Request bundle may render submission details based upon JSON content in the activity data).">&lt;%=@results['Resume Member']['Result JSON']%&gt;</parameter>
+                </parameters>
+                <messages></messages>
+                <dependents></dependents>
+            </task>
+            <task definition_id="utilities_echo_v1" id="utilities_echo_v1_14" name="Resume Date Delay" x="142" y="199">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>true</visible>
+                <parameters>
+                    <parameter dependsOnId="" dependsOnValue="" id="input" label="Input" menu="" required="true" tooltip="">&lt;%=
+nowDt=DateTime.now
+startDt=Date.parse(@values['Date payment will resume'])
+
+(startDt.mjd - nowDt.mjd)+1
+%&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">system_wait_v1_15</task>
+                </dependents>
+            </task>
+            <task definition_id="system_wait_v1" id="system_wait_v1_15" name="Resume Date Wait" x="138" y="332">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>true</defers>
+                <deferrable>true</deferrable>
+                <visible>true</visible>
+                <parameters>
+                    <parameter dependsOnId="" dependsOnValue="" id="Time to wait" label="Wait time:" menu="" required="true" tooltip="Time you want to wait for deferred task">&lt;%= @results['Resume Date Delay']['output'] %&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="Time unit" label="Time unit:" menu="Second,Minute,Hour,Day,Week" required="true" tooltip="Unit of measurement for time (Seconds, Minutes, Hours, Days, Weeks)">Day</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">gbmembers_billing_service_v1_16</task>
+                </dependents>
+            </task>
+            <task definition_id="gbmembers_billing_service_v1" id="gbmembers_billing_service_v1_16" name="Get Billing Info after Resume Date" x="135" y="440">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>true</visible>
+                <parameters>
+                    <parameter dependsOnId="" dependsOnValue="" id="service_value" label="Billing Service Value" menu="" required="true" tooltip="GBMembers Billing Service call value (registerUser,billingInfo,)">billingInfo</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="space" label="Space slug" menu="" required="true" tooltip="Space slug for School">&lt;%= @space['Slug']%&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="billing_company" label="Billing Company" menu="" required="true" tooltip="Billing Company that the service will operate against.(eg, PaySmart)">PaySmart</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="json_args" label="JSON arguments" menu="" required="true" tooltip="A JSON structure containing all argument passed to the Billing Service">{
+  "customerId": "&lt;%= @values['Billing Customer Id']%&gt;",
+  "billingService": "PaySmart",
+  "space": "&lt;%= @space['Slug']%&gt;"
+}</parameter>
+                </parameters>
+                <messages>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">kinetic_request_ce_submission_update_v1_17</task>
+                </dependents>
+            </task>
+            <task definition_id="kinetic_request_ce_submission_update_v1" id="kinetic_request_ce_submission_update_v1_17" name="Update Status after Resume Date" x="133" y="550">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>true</visible>
+                <parameters>
+                    <parameter dependsOnId="" dependsOnValue="" id="error_handling" label="Error Handling" menu="Error Message,Raise Error" required="true" tooltip="Determine what to return if an error is encountered.">Error Message</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="space_slug" label="Space Slug" menu="" required="false" tooltip="The Space the submission is being retrieved from (defaults to info value if not provided)."></parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="submission_id" label="Submission Id" menu="" required="true" tooltip="The id of the submission being updated.">&lt;%=  @values['Members'] %&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="state" label="State" menu="" required="false" tooltip="The value used to set the submission state."></parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="values" label="Values" menu="" required="false" tooltip="A JSON map of field names to values that should be set.">{
+  "Status":"&lt;%= JSON.parse(@results['Get Billing Info after Resume Date']['Result JSON'])['data']['statusDescription'] %&gt;"
+} 
+</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="current_page_name" label="Current Page Name" menu="" required="false" tooltip="Set the current page name."></parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="current_page_navigation" label="Current Page Navigation" menu="" required="false" tooltip="Set the current page navigation."></parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="origin_id" label="Origin ID" menu="" required="false" tooltip="Set the origin ID."></parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="parent_id" label="Parent ID" menu="" required="false" tooltip="Set the parent ID."></parameter>
+                </parameters>
+                <messages>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">kinetic_request_ce_submission_activity_create_v1_18</task>
+                </dependents>
+            </task>
+            <task definition_id="kinetic_request_ce_submission_activity_create_v1" id="kinetic_request_ce_submission_activity_create_v1_18" name="Display Resume Date Update" x="134" y="655">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter dependsOnId="" dependsOnValue="" id="error_handling" label="Error Handling" menu="Error Message,Raise Error" required="true" tooltip="Determine what to return if an error is encountered.">Error Message</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="space_slug" label="Space Slug" menu="" required="false" tooltip="The Space the submission exists in (defaults to info value if not provided)."></parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="submission_id" label="Submission Id" menu="" required="true" tooltip="The id of the submission for which the activity is being created for.">&lt;%= @submission['Id']%&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="label" label="Label" menu="" required="false" tooltip="The label for the submission activity.">Resume Date reached updating Billing Status</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="description" label="Description" menu="" required="false" tooltip="The description of the submission activity."></parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="type" label="Type" menu="" required="false" tooltip="Specifies the a submission activity 'Type', which should indicate what type of data is included."></parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="data" label="Data" menu="" required="false" tooltip="Additional data that can be used by resources consuming the submission activity record (for example a Request bundle may render submission details based upon JSON content in the activity data).">{"Message":"Last Debit Date &lt;%=  @values['The last debit will be taken on'] %&gt; has been reached. Updated member with Status[&lt;%= JSON.parse(@results['Get Billing Info after Resume Date']['Result JSON'])['data']['statusDescription']%&gt;]"}</parameter>
+                </parameters>
+                <messages>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents></dependents>
+            </task>
+        </request>
+    </taskTree>
+</tree>

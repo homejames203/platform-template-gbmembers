@@ -1,0 +1,121 @@
+<tree schema_version="1.0">
+    <sourceName>-</sourceName>
+    <sourceGroup>-</sourceGroup>
+    <definitionId>routine_kd_update_activity_record_with_latest_approval_information_v2</definitionId>
+    <type>Global Routine</type>
+    <status>Active</status>
+    <taskTree builder_version="" schema_version="1.0" version="">
+        <name>KD Update Activity Record With Latest Approval Information v2</name>
+        <author></author>
+        <notes></notes>
+        <lastID>5</lastID>
+        <taskDefinition id="routine_kd_update_activity_record_with_latest_approval_information_v2" name="KD Update Activity Record With Latest Approval Information v2" schema_version="1.0" version="1">
+            <visible>false</visible>
+            <deferrable>true</deferrable>
+            <parameters>
+                <parameter id="Activity Record Id" label="Activity Record Id" required="true" tooltip="Id of the Activity Record to Update"></parameter>
+                <parameter id="Task Record Id" label="Task Record Id" required="true" tooltip="Id of the Task (approval) record to get update data from"></parameter>
+                <parameter id="Space Slug" label="Space Slug" required="false" tooltip="The Slug of the Space this submission belongs to"></parameter>
+            </parameters>
+            <handler name="system_tree_call" version="1"></handler>
+            <results format="xml"></results>
+        </taskDefinition>
+        <request>
+            <task definition_id="system_start_v1" id="start" name="Start" x="10" y="10">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters></parameters>
+                <messages></messages>
+                <dependents>
+                    <task label="" type="Complete" value="">routine_kinetic_request_ce_submission_get_answers_v1_1</task>
+                </dependents>
+            </task>
+            <task definition_id="routine_kinetic_request_ce_submission_get_answers_v1" id="routine_kinetic_request_ce_submission_get_answers_v1_1" name="Retrieve Work Order Answers" x="198" y="55">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>true</defers>
+                <deferrable>true</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Space Slug" label="Space Slug" menu="" required="false" tooltip="Slug of the space to find the submission in">&lt;%=@inputs['Space Slug']%&gt;</parameter>
+                    <parameter id="Submission Id" label="Submission Id" menu="" required="false" tooltip="Id of the submission to retrieve answers from">&lt;%=@inputs['Task Record Id']%&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">utilities_echo_v1_2</task>
+                </dependents>
+            </task>
+            <task definition_id="utilities_echo_v1" id="utilities_echo_v1_2" name="Build Activity Message Content" x="396" y="66">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="input" label="Input" menu="" required="true" tooltip="">&lt;%=
+{
+  "Assigned Team" =&gt; @results['Retrieve Work Order Answers']['Assigned Team'],
+  "Assigned Individual" =&gt; @results['Retrieve Work Order Answers']['Assigned Individual'],
+  "Status" =&gt; @results['Retrieve Work Order Answers']['Status'],
+  "Comments" =&gt; @results['Retrieve Work Order Answers'].has_key?('Notes for Customer') ? @results['Retrieve Work Order Answers']['Notes for Customer'] : nil,
+  "Decision" =&gt; @results['Retrieve Work Order Answers'].has_key?('Decision') ? @results['Retrieve Work Order Answers']['Decision'] : nil,
+  "Denial Reason" =&gt; @results['Retrieve Work Order Answers'].has_key?('Denial Reason') ? @results['Retrieve Work Order Answers']['Denial Reason'] : nil
+}.to_json %&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">routine_kinetic_request_ce_submission_activity_update_v1_4</task>
+                </dependents>
+            </task>
+            <task definition_id="routine_kinetic_request_ce_submission_activity_update_v1" id="routine_kinetic_request_ce_submission_activity_update_v1_4" name="Update Activity Record" x="616" y="110">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>true</defers>
+                <deferrable>true</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Space Slug" label="Space Slug" menu="" required="false" tooltip="Slug of the space to create the form in">&lt;%=@inputs['Space Slug']%&gt;</parameter>
+                    <parameter id="Submission Id" label="Submission Id" menu="" required="true" tooltip="The Id of the Submission for which an activity record should be created">&lt;%=@results['Retrieve Work Order Answers']['Originating Id']%&gt;</parameter>
+                    <parameter id="Activity Id" label="Activity Id" menu="" required="true" tooltip="The Id of the Activity Record to update">&lt;%=@inputs['Activity Record Id']%&gt;</parameter>
+                    <parameter id="Label" label="Label" menu="" required="false" tooltip="Label for the Submission Activity Record">Approval</parameter>
+                    <parameter id="Description" label="Description" menu="" required="false" tooltip="Description for the Submission Activity Record">An Approval Task Was Needed for Fulfillment</parameter>
+                    <parameter id="Type" label="Type" menu="" required="false" tooltip="Type of Submission Activity Record">Approval</parameter>
+                    <parameter id="Data" label="Data" menu="" required="false" tooltip="Data for the Submission Activity Record (used by the renderer, sometimes complex JSON objects)">&lt;%=@results['Build Activity Message Content']['output']%&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">system_tree_return_v1_5</task>
+                </dependents>
+            </task>
+            <task definition_id="system_tree_return_v1" id="system_tree_return_v1_5" name="Return" x="815" y="121">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters></parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents></dependents>
+            </task>
+        </request>
+    </taskTree>
+</tree>

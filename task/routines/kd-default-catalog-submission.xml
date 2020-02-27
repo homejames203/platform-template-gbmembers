@@ -1,0 +1,501 @@
+<tree schema_version="1.0">
+    <sourceName>-</sourceName>
+    <sourceGroup>-</sourceGroup>
+    <definitionId>routine_kd_default_catalog_submission_v1</definitionId>
+    <type>Global Routine</type>
+    <status>Active</status>
+    <taskTree builder_version="" schema_version="1.0" version="">
+        <name>KD Default Catalog Submission</name>
+        <author></author>
+        <notes></notes>
+        <lastID>49</lastID>
+        <taskDefinition id="routine_kd_default_catalog_submission_v1" name="KD Default Catalog Submission" schema_version="1.0" version="1">
+            <visible>false</visible>
+            <deferrable>true</deferrable>
+            <parameters>
+                <parameter id="Source Data" label="Source Data" required="true" tooltip="Source Data from Parent Submission @source['Data']"></parameter>
+            </parameters>
+            <handler name="system_tree_call" version="1"></handler>
+            <results format="xml">
+                <result name="Approval Decision" tooltip="The approvers decision (typically “Approved” or “Denied”)"></result>
+                <result name="Approval Denial Reason" tooltip="The reason given for why an approval was denied"></result>
+                <result name="Approval Notes for Customer" tooltip="Any additional comments the approver provided"></result>
+                <result name="Approver Id" tooltip="The Id of the approver who completed the approval"></result>
+                <result name="Approval Submission Id" tooltip="The Id of the approval submission"></result>
+                <result name="Approval Fields JSON" tooltip="A JSON map of questions that were answered on the approval record"></result>
+                <result name="Task Submission Id" tooltip="Submission Id of the completed task"></result>
+                <result name="Task Assignee Individual" tooltip="The Id of the user who completed the task"></result>
+                <result name="Task Fields JSON " tooltip="A JSON map of questions that were answered on the task record"></result>
+            </results>
+        </taskDefinition>
+        <request>
+            <task definition_id="system_start_v1" id="start" name="Start" x="50" y="22">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters></parameters>
+                <messages></messages>
+                <dependents>
+                    <task label="" type="Complete" value="">utilities_echo_v1_14</task>
+                </dependents>
+            </task>
+            <task definition_id="system_junction_v1" id="system_junction_v1_9" name="Junction" x="715" y="615">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters></parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">system_tree_return_v1_20</task>
+                </dependents>
+            </task>
+            <task definition_id="utilities_echo_v1" id="utilities_echo_v1_14" name="Submission Id" x="204" y="12">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="input" label="Input" menu="" required="true" tooltip="">&lt;%=JSON.parse(@inputs['Source Data'])['submission']['id']%&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">utilities_echo_v1_41</task>
+                </dependents>
+            </task>
+            <task definition_id="utilities_echo_v1" id="utilities_echo_v1_15" name="Approver" x="484" y="330">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="input" label="Input" menu="" required="true" tooltip="">&lt;%
+            ### CONFIGURE ###
+            attrName = "Approver"
+            backup = "none"
+            ### END CONFIGURE ###
+            
+            data = JSON.parse(@inputs['Source Data'])
+            attributes = [
+              data['values'][attrName],
+              data['form']['attributes'][attrName],
+              data['kapp']['attributes'][attrName],
+              data['space']['attributes'][attrName],
+            ]
+            
+            value = attributes.flatten.find do |attribute|
+              attribute != nil
+            end
+            %&gt;&lt;%= value.nil? ? backup : value %&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="Approval" type="Complete" value="@results['Approver']['output'].downcase != 'none'">routine_kd_update_submission_status_v2_40</task>
+                    <task label="No Approval" type="Complete" value="@results['Approver']['output'].downcase == 'none'">routine_kd_update_submission_status_v2_43</task>
+                </dependents>
+            </task>
+            <task definition_id="utilities_echo_v1" id="utilities_echo_v1_16" name="Summary" x="486" y="161">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="input" label="Input" menu="" required="true" tooltip="">&lt;%= name = "None Provided"
+if @results['Retrieve Submitter']['Display Name'].nil?
+  if !@results['Retrieve Submitter']['Username'].nil?
+    name = @results['Retrieve Submitter']['Username']
+  end
+else
+  name = @results['Retrieve Submitter']['Display Name']
+end
+data = JSON.parse(@inputs['Source Data'])
+"#{data['form']['name']} has been requested by #{name}" %&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">routine_kd_build_details_string_v2_42</task>
+                </dependents>
+            </task>
+            <task definition_id="system_tree_return_v1" id="system_tree_return_v1_20" name="Return" x="718" y="700">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Approval Decision" label="Approval Decision" menu="" required="false" tooltip="The approvers decision (typically “Approved” or “Denied”)">&lt;%=@results.has_key?("Approval Router") ? @results['Approval Router']['Decision'] : nil %&gt;</parameter>
+                    <parameter id="Approval Denial Reason" label="Approval Denial Reason" menu="" required="false" tooltip="The reason given for why an approval was denied">&lt;%=@results.has_key?("Approval Router") ? @results['Approval Router']['Denial Reason'] : nil %&gt;</parameter>
+                    <parameter id="Approval Notes for Customer" label="Approval Notes for Customer" menu="" required="false" tooltip="Any additional comments the approver provided">&lt;%=@results.has_key?("Approval Router") ? @results['Approval Router']['Notes for Customer'] : nil %&gt;</parameter>
+                    <parameter id="Approver Id" label="Approver Id" menu="" required="false" tooltip="The Id of the approver who completed the approval">&lt;%=@results.has_key?("Approval Router") ? @results['Approval Router']['Approver Id'] : nil %&gt;</parameter>
+                    <parameter id="Approval Submission Id" label="Approval Submission Id" menu="" required="false" tooltip="The Id of the approval submission">&lt;%=@results.has_key?("Approval Router") ? @results['Approval Router']['Approval Submission Id'] : nil %&gt;</parameter>
+                    <parameter id="Approval Fields JSON" label="Approval Fields JSON" menu="" required="false" tooltip="A JSON map of questions that were answered on the approval record">&lt;%=@results.has_key?("Approval Router") ? @results['Approval Router']['Fields JSON'] : nil %&gt;</parameter>
+                    <parameter id="Task Submission Id" label="Task Submission Id" menu="" required="false" tooltip="Submission Id of the completed task">&lt;%=@results.has_key?("Create Task") ? @results['Create Task']['Task Submission Id'] : nil%&gt;</parameter>
+                    <parameter id="Task Assignee Individual" label="Task Assignee Individual" menu="" required="false" tooltip="The Id of the user who completed the task">&lt;%=@results.has_key?("Create Task") ? @results['Create Task']['Assignee Id'] : nil%&gt;</parameter>
+                    <parameter id="Task Fields JSON " label="Task Fields JSON " menu="" required="false" tooltip="A JSON map of questions that were answered on the task record">&lt;%=@results.has_key?("Create Task") ? @results['Create Task']['Fields JSON'] : nil%&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents></dependents>
+            </task>
+            <task definition_id="routine_kinetic_request_ce_user_retrieve_v1" id="routine_kinetic_request_ce_user_retrieve_v1_21" name="Retrieve Submitter" x="486" y="73">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>true</defers>
+                <deferrable>true</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Space Slug" label="Space Slug" menu="" required="false" tooltip="Slug of the space in which the user exists">&lt;%=@results['Space Slug']['output']%&gt;</parameter>
+                    <parameter id="Username" label="Username" menu="" required="true" tooltip="Username of the user to retrieve">&lt;%=@results['Submitter']['output']%&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">utilities_echo_v1_16</task>
+                </dependents>
+            </task>
+            <task definition_id="utilities_echo_v1" id="utilities_echo_v1_22" name="Submitter" x="217" y="274">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="input" label="Input" menu="" required="true" tooltip="">&lt;%= sourceSubmission = JSON.parse(@inputs['Source Data'])
+submitter = sourceSubmission['submission']['submittedBy']
+if !sourceSubmission['values']['Requested For'].nil?
+   submitter = sourceSubmission['values']['Requested For']
+else !sourceSubmission['values']['Requested By'].nil?
+   submitter = sourceSubmission['values']['Requested By']
+end
+submitter %&gt;
+
+
+</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">routine_kinetic_request_ce_user_retrieve_v1_21</task>
+                </dependents>
+            </task>
+            <task definition_id="system_join_v1" id="system_join_v1_37" name="Join All" x="1089" y="495">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="type" label="Type:" menu="All,Any,Some" required="true" tooltip="How many dependents must be completed before continuing?">All</parameter>
+                    <parameter dependsOnId="type" dependsOnValue="Some" id="number" label="Number:" menu="" required="false" tooltip="If some, how many?"></parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">routine_kd_task_v2_45</task>
+                </dependents>
+            </task>
+            <task definition_id="system_noop_v1" id="system_noop_v1_38" name="Start Lookups" x="1111" y="125">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters></parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">routine_kinetic_request_ce_cascading_attribute_retrieve_v1_46</task>
+                    <task label="" type="Complete" value="">routine_kinetic_request_ce_cascading_attribute_retrieve_v1_47</task>
+                    <task label="" type="Complete" value="">routine_kinetic_request_ce_cascading_attribute_retrieve_v1_48</task>
+                    <task label="" type="Complete" value="">routine_kinetic_request_ce_cascading_attribute_retrieve_v1_49</task>
+                </dependents>
+            </task>
+            <task definition_id="routine_kinetic_request_ce_submission_activity_create_v1" id="routine_kinetic_request_ce_submission_activity_create_v1_39" name="Create Activity Record" x="208" y="168">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>true</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Space Slug" label="Space Slug" menu="" required="false" tooltip="Slug of the space to create the form in">&lt;%=@results['Space Slug']['output']%&gt;</parameter>
+                    <parameter id="Submission Id" label="Submission Id" menu="" required="true" tooltip="The Id of the Submission for which an activity record should be created">&lt;%=@results['Submission Id']['output']%&gt;</parameter>
+                    <parameter id="Label" label="Label" menu="" required="false" tooltip="Label for the Submission Activity Record">Submission Received</parameter>
+                    <parameter id="Description" label="Description" menu="" required="false" tooltip="Description for the Submission Activity Record">Your Request Was Successfully Submitted</parameter>
+                    <parameter id="Type" label="Type" menu="" required="false" tooltip="Type of Submission Activity Record">Submission Submitted</parameter>
+                    <parameter id="Data" label="Data" menu="" required="false" tooltip="Data for the Submission Activity Record (used by the renderer, sometimes complex JSON objects)">&lt;%={"Comments"=&gt;"Your request has been successfully received"}.to_json%&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">utilities_echo_v1_22</task>
+                </dependents>
+            </task>
+            <task definition_id="routine_kd_update_submission_status_v2" id="routine_kd_update_submission_status_v2_40" name="Status - Pending Approval" x="199" y="382">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>true</defers>
+                <deferrable>true</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Space Slug" label="Space Slug" menu="" required="false" tooltip="The Slug of the Space this submission belongs to">&lt;%=@results['Space Slug']['output']%&gt;</parameter>
+                    <parameter id="Submission Id" label="Submission Id" menu="" required="true" tooltip="Id of the Submission that is being updated">&lt;%=@results['Submission Id']['output']%&gt;</parameter>
+                    <parameter id="Status" label="Status" menu="" required="true" tooltip="Status to set the submission to. (e.g. Submitted, In Progress">Pending Approval</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">routine_kd_route_approval_v2_44</task>
+                </dependents>
+            </task>
+            <task definition_id="utilities_echo_v1" id="utilities_echo_v1_41" name="Space Slug" x="208" y="100">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>true</visible>
+                <parameters>
+                    <parameter id="input" label="Input" menu="" required="true" tooltip="">&lt;%=JSON.parse(@inputs['Source Data'])['space']['slug']%&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">routine_kinetic_request_ce_submission_activity_create_v1_39</task>
+                </dependents>
+            </task>
+            <task definition_id="routine_kd_build_details_string_v2" id="routine_kd_build_details_string_v2_42" name="Details" x="484" y="231">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>true</defers>
+                <deferrable>true</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Values JSON" label="Values JSON" menu="" required="false" tooltip="A JSON Formatted String of Q/A Values">&lt;%= JSON.parse(@inputs['Source Data'])['values'].to_json%&gt;</parameter>
+                    <parameter id="Submission Id" label="Submission Id" menu="" required="false" tooltip="If Values were provided the routine will look up the submission"></parameter>
+                    <parameter id="Space Slug" label="Space Slug" menu="" required="false" tooltip="The Slug of the Space this submission belongs to"></parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">utilities_echo_v1_15</task>
+                </dependents>
+            </task>
+            <task definition_id="routine_kd_update_submission_status_v2" id="routine_kd_update_submission_status_v2_43" name="Update Status - In Progress" x="728" y="404">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>true</defers>
+                <deferrable>true</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Space Slug" label="Space Slug" menu="" required="false" tooltip="The Slug of the Space this submission belongs to">&lt;%=@results['Space Slug']['output']%&gt;</parameter>
+                    <parameter id="Submission Id" label="Submission Id" menu="" required="true" tooltip="Id of the Submission that is being updated">&lt;%=@results['Submission Id']['output']%&gt;</parameter>
+                    <parameter id="Status" label="Status" menu="" required="true" tooltip="Status to set the submission to. (e.g. Submitted, In Progress">In Progress</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">system_noop_v1_38</task>
+                </dependents>
+            </task>
+            <task definition_id="routine_kd_route_approval_v2" id="routine_kd_route_approval_v2_44" name="Approval Router" x="199" y="585">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>true</defers>
+                <deferrable>true</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Space Slug" label="Space Slug" menu="" required="false" tooltip="The Slug of the Space this submission belongs to">&lt;%=@results['Space Slug']['output']%&gt;</parameter>
+                    <parameter id="Submission Id" label="Submission Id" menu="" required="true" tooltip="The Id of the originating submission">&lt;%=@results['Submission Id']['output']%&gt;</parameter>
+                    <parameter id="Approver" label="Approver" menu="" required="true" tooltip="Options are &quot;Manager&quot;, a username, or a team name">&lt;%=@results['Approver']['output']%&gt;</parameter>
+                    <parameter id="Summary" label="Summary" menu="" required="true" tooltip="A summary of what is being approved">&lt;%=@results['Summary']['output']%&gt;</parameter>
+                    <parameter id="Details" label="Details" menu="" required="true" tooltip="A description of what is being approved ">&lt;%=@results['Details']['LIST']%&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="Approved" type="Complete" value="@results['Approval Router']['Decision'] == &quot;Approved&quot;">routine_kd_update_submission_status_v2_43</task>
+                    <task label="Denied" type="Complete" value="@results['Approval Router']['Decision'] != &quot;Approved&quot;">system_junction_v1_9</task>
+                </dependents>
+            </task>
+            <task definition_id="routine_kd_task_v2" id="routine_kd_task_v2_45" name="Create Task" x="1100" y="598">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>true</defers>
+                <deferrable>true</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Space Slug" label="Space Slug" menu="" required="false" tooltip="The Slug of the Space this submission belongs to">&lt;%=@results['Space Slug']['output']%&gt;</parameter>
+                    <parameter id="Submission Id" label="Submission Id" menu="" required="true" tooltip="Id of the parent submission">&lt;%=@results['Submission Id']['output']%&gt;</parameter>
+                    <parameter id="Summary" label="Summary" menu="" required="true" tooltip="A summary of what is to be worked on ">&lt;%=@results['Summary']['output']%&gt;</parameter>
+                    <parameter id="Details" label="Details" menu="" required="true" tooltip="A description of what is to be worked on ">&lt;%=@results['Details']['LIST']%&gt;</parameter>
+                    <parameter id="Task Form Slug" label="Task Form Slug" menu="" required="true" tooltip="Slug of the form the task is created for">&lt;%=@results['Task Form Slug']['Value']%&gt;</parameter>
+                    <parameter id="Assignee Team" label="Assignee Team" menu="" required="true" tooltip="Name of the team to assign work to (ex. &quot;Test::Test::Test&quot;)">&lt;%=@results['Task Assignee Team']['Value']%&gt;</parameter>
+                    <parameter id="Assignee Id" label="Assignee Id" menu="" required="false" tooltip="Id of the person the task will be assigned to">&lt;%=@results['Task Assignee Individual']['Value']%&gt;</parameter>
+                    <parameter id="Days Due" label="Days Due" menu="" required="true" tooltip="Number of days from now the task is to be completed by">&lt;%=@results['Days Due']['Value'].to_f%&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">system_junction_v1_9</task>
+                </dependents>
+            </task>
+            <task definition_id="routine_kinetic_request_ce_cascading_attribute_retrieve_v1" id="routine_kinetic_request_ce_cascading_attribute_retrieve_v1_46" name="Task Assignee Individual" x="1348.99" y="311.997">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>true</defers>
+                <deferrable>true</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Space Slug" label="Space Slug" menu="" required="true" tooltip="Slug of the space to create the submission in">&lt;%=@results['Space Slug']['output']%&gt;</parameter>
+                    <parameter id="Kapp Slug" label="Kapp Slug" menu="" required="true" tooltip="Slug of the kapp to create the submission in"></parameter>
+                    <parameter id="Form Slug" label="Form Slug" menu="" required="false" tooltip="Slug of the form to create the submission in"></parameter>
+                    <parameter id="Start Context" label="Start Context" menu="" required="true" tooltip="Lowest level to search for attribute">Submission</parameter>
+                    <parameter id="End Context" label="End Context" menu="" required="true" tooltip="Highest Level to search for attribute">Space</parameter>
+                    <parameter id="Property to Find" label="Property to Find" menu="" required="true" tooltip="Name of the attribute to retrieve">Task Assignee Individual</parameter>
+                    <parameter id="Backup Value" label="Backup Value" menu="" required="false" tooltip="If no value is found, what to use"></parameter>
+                    <parameter id="Submission Id" label="Submission Id" menu="" required="false" tooltip="Submission Id, only needed if searching for submission level">&lt;%=@results['Submission Id']['output']%&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">system_join_v1_37</task>
+                </dependents>
+            </task>
+            <task definition_id="routine_kinetic_request_ce_cascading_attribute_retrieve_v1" id="routine_kinetic_request_ce_cascading_attribute_retrieve_v1_47" name="Task Assignee Team" x="1185" y="295.99">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>true</defers>
+                <deferrable>true</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Space Slug" label="Space Slug" menu="" required="true" tooltip="Slug of the space to create the submission in">&lt;%=@results['Space Slug']['output']%&gt;</parameter>
+                    <parameter id="Kapp Slug" label="Kapp Slug" menu="" required="true" tooltip="Slug of the kapp to create the submission in"></parameter>
+                    <parameter id="Form Slug" label="Form Slug" menu="" required="false" tooltip="Slug of the form to create the submission in"></parameter>
+                    <parameter id="Start Context" label="Start Context" menu="" required="true" tooltip="Lowest level to search for attribute">Submission</parameter>
+                    <parameter id="End Context" label="End Context" menu="" required="true" tooltip="Highest Level to search for attribute">Space</parameter>
+                    <parameter id="Property to Find" label="Property to Find" menu="" required="true" tooltip="Name of the attribute to retrieve">Task Assignee Team</parameter>
+                    <parameter id="Backup Value" label="Backup Value" menu="" required="false" tooltip="If no value is found, what to use">Default</parameter>
+                    <parameter id="Submission Id" label="Submission Id" menu="" required="false" tooltip="Submission Id, only needed if searching for submission level">&lt;%=@results['Submission Id']['output']%&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">system_join_v1_37</task>
+                </dependents>
+            </task>
+            <task definition_id="routine_kinetic_request_ce_cascading_attribute_retrieve_v1" id="routine_kinetic_request_ce_cascading_attribute_retrieve_v1_48" name="Task Form Slug" x="1070" y="312.986">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>true</defers>
+                <deferrable>true</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Space Slug" label="Space Slug" menu="" required="true" tooltip="Slug of the space to create the submission in">&lt;%=@results['Space Slug']['output']%&gt;</parameter>
+                    <parameter id="Kapp Slug" label="Kapp Slug" menu="" required="false" tooltip="Slug of the kapp to create the submission in"></parameter>
+                    <parameter id="Form Slug" label="Form Slug" menu="" required="false" tooltip="Slug of the form to create the submission in"></parameter>
+                    <parameter id="Start Context" label="Start Context" menu="" required="true" tooltip="Lowest level to search for attribute">Submission</parameter>
+                    <parameter id="End Context" label="End Context" menu="" required="true" tooltip="Highest Level to search for attribute">Space</parameter>
+                    <parameter id="Property to Find" label="Property to Find" menu="" required="true" tooltip="Name of the attribute to retrieve">Task Form Slug</parameter>
+                    <parameter id="Backup Value" label="Backup Value" menu="" required="false" tooltip="If no value is found, what to use">basic-queue-item-template</parameter>
+                    <parameter id="Submission Id" label="Submission Id" menu="" required="false" tooltip="Submission Id, only needed if searching for submission level">&lt;%=@results['Submission Id']['output']%&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">system_join_v1_37</task>
+                </dependents>
+            </task>
+            <task definition_id="routine_kinetic_request_ce_cascading_attribute_retrieve_v1" id="routine_kinetic_request_ce_cascading_attribute_retrieve_v1_49" name="Days Due" x="928.993" y="310">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>true</defers>
+                <deferrable>true</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Space Slug" label="Space Slug" menu="" required="true" tooltip="Slug of the space to create the submission in">&lt;%=@results['Space Slug']['output']%&gt;</parameter>
+                    <parameter id="Kapp Slug" label="Kapp Slug" menu="" required="false" tooltip="Slug of the kapp to create the submission in"></parameter>
+                    <parameter id="Form Slug" label="Form Slug" menu="" required="false" tooltip="Slug of the form to create the submission in"></parameter>
+                    <parameter id="Start Context" label="Start Context" menu="" required="true" tooltip="Lowest level to search for attribute">Submission</parameter>
+                    <parameter id="End Context" label="End Context" menu="" required="true" tooltip="Highest Level to search for attribute">Space</parameter>
+                    <parameter id="Property to Find" label="Property to Find" menu="" required="true" tooltip="Name of the attribute to retrieve">Service Days Due</parameter>
+                    <parameter id="Backup Value" label="Backup Value" menu="" required="false" tooltip="If no value is found, what to use">7</parameter>
+                    <parameter id="Submission Id" label="Submission Id" menu="" required="false" tooltip="Submission Id, only needed if searching for submission level">&lt;%=@results['Submission Id']['output']%&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">system_join_v1_37</task>
+                </dependents>
+            </task>
+        </request>
+    </taskTree>
+</tree>

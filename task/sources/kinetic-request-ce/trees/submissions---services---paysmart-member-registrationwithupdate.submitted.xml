@@ -1,0 +1,413 @@
+<tree schema_version="1.0">
+    <sourceName>Kinetic Request CE</sourceName>
+    <sourceGroup>Submissions > services > paysmart-member-registrationWithUpdate</sourceGroup>
+    <type>Tree</type>
+    <status>Active</status>
+    <taskTree builder_version="" schema_version="1.0" version="">
+        <name>Submitted</name>
+        <author></author>
+        <notes></notes>
+        <lastID>20</lastID>
+        <request>
+            <task definition_id="system_start_v1" id="start" name="Start" x="11" y="11">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters></parameters>
+                <messages></messages>
+                <dependents>
+                    <task label="New Biller" type="Complete" value="!@values.has_key?('Billing Customer Id')">gbmembers_billing_service_v1_2</task>
+                    <task label="Update Biller" type="Complete" value="@values.has_key?('Billing Customer Id')">gbmembers_billing_service_v1_17</task>
+                </dependents>
+            </task>
+            <task definition_id="gbmembers_billing_service_v1" id="gbmembers_billing_service_v1_2" name="Register New Billing User" x="211" y="122">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>true</visible>
+                <parameters>
+                    <parameter dependsOnId="" dependsOnValue="" id="service_value" label="Billing Service Value" menu="" required="true" tooltip="GBMembers Billing Service call value (registerUser,billingInfo,)">registerUser</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="space" label="Space slug" menu="" required="true" tooltip="Space slug for School">&lt;%= @space['Slug']%&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="billing_company" label="Billing Company" menu="" required="true" tooltip="Billing Company that the service will operate against.(eg, PaySmart)">PaySmart</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="json_args" label="JSON arguments" menu="" required="true" tooltip="A JSON structure containing all argument passed to the Billing Service">{
+  "customerId": "&lt;%= @values['Member ID']%&gt;",
+  "firstName": "&lt;%= @values['First Name']%&gt;",
+  "lastName": "&lt;%= @values['Last Name']%&gt;",
+  "dob": "&lt;%= @values['DOB']%&gt;",
+  "address": "&lt;%= @values['Address']%&gt;",
+  "suburb": "&lt;%= @values['Suburb']%&gt;",
+  "state": "&lt;%= @values['State']%&gt;",
+  "postCode": "&lt;%= @values['Postcode']%&gt;",
+  "email": "&lt;%= @values['Email']%&gt;",
+  "driversLicence": "&lt;%= @values['Drivers Licence']%&gt;",
+  "phoneHome": "&lt;%= @values['Phone Home']%&gt;",
+  "phoneWork": "&lt;%= @values['Phone Work']%&gt;",
+  "mobile": "&lt;%= @values['Mobile']%&gt;",
+  "payment": "&lt;%= @values['Payment']%&gt;",
+  "firstPayment": "&lt;%= @values['First Payment']%&gt;",
+  "billingPeriod": "&lt;%= @values['Billing Period']%&gt;",
+  "contractStartDate": "&lt;%= @values['Billing Start Date']%&gt;",
+  "paymentMethod": "&lt;%= @values['Payment Method']%&gt;",
+  "creditCardName": "&lt;%= @values['Name On Card']%&gt;",
+  "creditCardNumber": "&lt;%= @values['Credit Card Number']%&gt;",
+  "creditCardExpiryMonth": "&lt;%= @values['Credit Card Expiry Month']%&gt;",
+  "creditCardExpiryYear": "&lt;%= @values['Credit Card Expiry Year']%&gt;",
+  "creditCardType": "&lt;%= @values['Credit Card Type']%&gt;",
+  "bankAccountName": "&lt;%= @values['Account Name']%&gt;",
+  "bankAccountNumber": "&lt;%= @values['Account Number']%&gt;",
+  "bankAccountBsb": "&lt;%= @values['BSB']%&gt;",
+  "contractByValue": false,
+  "fta": false,
+  "space": "&lt;%= @space['Slug']%&gt;",
+  "billingService": "PaySmart",
+  "gbmemberId": "&lt;%= @submission['Id']%&gt;"
+}</parameter>
+                </parameters>
+                <messages>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="Success" type="Complete" value="JSON.parse(@results['Register New Billing User']['Result JSON'])['error']==0">gbmembers_billing_service_v1_3</task>
+                    <task label="Error" type="Complete" value="JSON.parse(@results['Register New Billing User']['Result JSON'])['error']==100">kinetic_request_ce_submission_activity_create_v1_8</task>
+                </dependents>
+            </task>
+            <task definition_id="gbmembers_billing_service_v1" id="gbmembers_billing_service_v1_3" name="Get Billing User" x="291" y="280">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>true</visible>
+                <parameters>
+                    <parameter dependsOnId="" dependsOnValue="" id="service_value" label="Billing Service Value" menu="" required="true" tooltip="GBMembers Billing Service call value (registerUser,billingInfo,)">billingInfo</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="space" label="Space slug" menu="" required="true" tooltip="Space slug for School">&lt;%= @space['Slug']%&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="billing_company" label="Billing Company" menu="" required="true" tooltip="Billing Company that the service will operate against.(eg, PaySmart)">PaySmart</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="json_args" label="JSON arguments" menu="" required="true" tooltip="A JSON structure containing all argument passed to the Billing Service">{
+  "customerId": "&lt;%= (!@values.has_key?('Billing Customer Id') ? @values['Member ID'] : @values['Billing Customer Id'])%&gt;",
+  "billingService": "PaySmart",
+  "space": "&lt;%= @space['Slug']%&gt;"
+}</parameter>
+                </parameters>
+                <messages></messages>
+                <dependents>
+                    <task label="" type="Complete" value="">kinetic_request_ce_submission_update_v1_5</task>
+                </dependents>
+            </task>
+            <task definition_id="kinetic_request_ce_submission_update_v1" id="kinetic_request_ce_submission_update_v1_5" name="Update Billing Member" x="506" y="709">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>true</visible>
+                <parameters>
+                    <parameter dependsOnId="" dependsOnValue="" id="error_handling" label="Error Handling" menu="Error Message,Raise Error" required="true" tooltip="Determine what to return if an error is encountered.">Error Message</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="space_slug" label="Space Slug" menu="" required="false" tooltip="The Space the submission is being retrieved from (defaults to info value if not provided)."></parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="submission_id" label="Submission Id" menu="" required="true" tooltip="The id of the submission being updated.">&lt;%= @values['Members']%&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="state" label="State" menu="" required="false" tooltip="The value used to set the submission state."></parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="values" label="Values" menu="" required="false" tooltip="A JSON map of field names to values that should be set.">{
+  "Billing Parent Member":"&lt;%= @values['Members']%&gt;",
+  "Billing Customer Id":"&lt;%=JSON.parse(@results['Get Billing User']['Result JSON'])['data']['customerBillingId']%&gt;",
+  "Billing Customer Reference":"&lt;%=JSON.parse(@results['Get Billing User']['Result JSON'])['data']['customerReference']%&gt;",
+  "Billing Payment Type":"&lt;%=JSON.parse(@results['Get Billing User']['Result JSON'])['data']['paymentMethod']%&gt;",
+  "Billing Payment Period":"&lt;%=JSON.parse(@results['Get Billing User']['Result JSON'])['data']['paymentPeriod']%&gt;",
+  "Payment Schedule": "{period: '&lt;%= @values['Payment Frequency']%&gt;', amount: &lt;%=JSON.parse(@results['Get Billing User']['Result JSON'])['data']['paymentAmountInCents']%&gt;}",
+  "Billing Family Members": "&lt;%= @values['membersJSON'].gsub('"','\"')%&gt;",
+  "Family Fee Details": "&lt;%= @values['feesJSON'].gsub('"','\"')%&gt;",
+  "Membership Cost": "&lt;%= @values['Payment']%&gt;"
+}
+</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="current_page_name" label="Current Page Name" menu="" required="false" tooltip="Set the current page name."></parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="current_page_navigation" label="Current Page Navigation" menu="" required="false" tooltip="Set the current page navigation."></parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="origin_id" label="Origin ID" menu="" required="false" tooltip="Set the origin ID."></parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="parent_id" label="Parent ID" menu="" required="false" tooltip="Set the parent ID."></parameter>
+                </parameters>
+                <messages></messages>
+                <dependents>
+                    <task label="" type="Complete" value="">kinetic_request_ce_submission_activity_create_v1_7</task>
+                    <task label="" type="Complete" value="">utility_json_to_xml_v1_9</task>
+                    <task label="" type="Complete" value="">kinetic_request_ce_submission_update_v1_16</task>
+                </dependents>
+            </task>
+            <task definition_id="kinetic_request_ce_submission_activity_create_v1" id="kinetic_request_ce_submission_activity_create_v1_7" name="Display Billing Registration" x="659" y="914">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter dependsOnId="" dependsOnValue="" id="error_handling" label="Error Handling" menu="Error Message,Raise Error" required="true" tooltip="Determine what to return if an error is encountered.">Error Message</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="space_slug" label="Space Slug" menu="" required="false" tooltip="The Space the submission exists in (defaults to info value if not provided)."></parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="submission_id" label="Submission Id" menu="" required="true" tooltip="The id of the submission for which the activity is being created for.">&lt;%= @submission['Id']%&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="label" label="Label" menu="" required="false" tooltip="The label for the submission activity.">Member Billing Registered</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="description" label="Description" menu="" required="false" tooltip="The description of the submission activity."></parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="type" label="Type" menu="" required="false" tooltip="Specifies the a submission activity 'Type', which should indicate what type of data is included.">Success</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="data" label="Data" menu="" required="false" tooltip="Additional data that can be used by resources consuming the submission activity record (for example a Request bundle may render submission details based upon JSON content in the activity data).">{"Message":"Registration for &lt;%= @values['First Name']%&gt; &lt;%= @values['Last Name']%&gt; has been registered with Billing Reference: &lt;%=JSON.parse(@results['Get Billing User']['Result JSON'])['customerBillingId']%&gt;"}</parameter>
+                </parameters>
+                <messages></messages>
+                <dependents></dependents>
+            </task>
+            <task definition_id="kinetic_request_ce_submission_activity_create_v1" id="kinetic_request_ce_submission_activity_create_v1_8" name="Billing Registration Error" x="558" y="77">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter dependsOnId="" dependsOnValue="" id="error_handling" label="Error Handling" menu="Error Message,Raise Error" required="true" tooltip="Determine what to return if an error is encountered.">Error Message</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="space_slug" label="Space Slug" menu="" required="false" tooltip="The Space the submission exists in (defaults to info value if not provided)."></parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="submission_id" label="Submission Id" menu="" required="true" tooltip="The id of the submission for which the activity is being created for.">&lt;%= @submission['Id']%&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="label" label="Label" menu="" required="false" tooltip="The label for the submission activity.">Billing Registration Error</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="description" label="Description" menu="" required="false" tooltip="The description of the submission activity.">Attempt to register &lt;%= @values['First Name']%&gt; &lt;%= @values['Last Name']%&gt; has failed.&lt;br&gt;
+Error Message: &lt;%=JSON.parse(@results['Register New Billing User']['Result JSON'])['errorMessage']%&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="type" label="Type" menu="" required="false" tooltip="Specifies the a submission activity 'Type', which should indicate what type of data is included.">Error</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="data" label="Data" menu="" required="false" tooltip="Additional data that can be used by resources consuming the submission activity record (for example a Request bundle may render submission details based upon JSON content in the activity data).">&lt;%=@results['Register New Billing User']['Result JSON']%&gt;</parameter>
+                </parameters>
+                <messages></messages>
+                <dependents>
+                    <task label="" type="Complete" value="">kinetic_request_ce_submission_update_v1_16</task>
+                </dependents>
+            </task>
+            <task definition_id="utility_json_to_xml_v1" id="utility_json_to_xml_v1_9" name="Json to xml" x="577" y="474">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>true</visible>
+                <parameters>
+                    <parameter dependsOnId="" dependsOnValue="" id="json" label="JSON" menu="" required="true" tooltip="The JSON String to be converted to XML">&lt;%= @values['membersJSON']%&gt;</parameter>
+                </parameters>
+                <messages></messages>
+                <dependents>
+                    <task label="" type="Complete" value="">system_loop_head_v1_10</task>
+                </dependents>
+            </task>
+            <task definition_id="system_loop_head_v1" id="system_loop_head_v1_10" name="Loop over ids" x="715" y="287">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter dependsOnId="" dependsOnValue="" id="data_source" label="Data Source:" menu="" required="true" tooltip="The source that contains the data to use to create each task in the loop.">&lt;%=@results['Json to xml']['XML']%&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="loop_path" label="Loop Path:" menu="" required="true" tooltip="The XPath statement to indicate what data records to process.">//node/node</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="var_name" label="Variable Name:" menu="" required="false" tooltip="The local variable name used to represent the data used in loop tasks.">member_id</parameter>
+                </parameters>
+                <messages></messages>
+                <dependents>
+                    <task label="" type="Complete" value="">system_loop_tail_v1_11</task>
+                    <task label="" type="Complete" value="">utilities_echo_v1_12</task>
+                </dependents>
+            </task>
+            <task definition_id="system_loop_tail_v1" id="system_loop_tail_v1_11" name="Loop tail" x="775" y="574">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter dependsOnId="" dependsOnValue="" id="type" label="Type:" menu="All,Some,Any" required="true" tooltip="How many loop processes must be completed before continuing?">All</parameter>
+                    <parameter dependsOnId="type" dependsOnValue="Some" id="number" label="Number:" menu="" required="false" tooltip="If some, how many?"></parameter>
+                </parameters>
+                <messages></messages>
+                <dependents></dependents>
+            </task>
+            <task definition_id="utilities_echo_v1" id="utilities_echo_v1_12" name="Member ID" x="902" y="198">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>true</visible>
+                <parameters>
+                    <parameter dependsOnId="" dependsOnValue="" id="input" label="Input" menu="" required="true" tooltip="">&lt;%=@results['Loop over ids']['Value']%&gt;</parameter>
+                </parameters>
+                <messages></messages>
+                <dependents>
+                    <task label="Billing Member" type="Complete" value="@results['Member ID']['output']==@values['Members']">utilities_echo_v1_13</task>
+                    <task label="Non Billing Member" type="Complete" value="@results['Member ID']['output']!=@values['Members']">kinetic_request_ce_submission_update_v1_14</task>
+                </dependents>
+            </task>
+            <task definition_id="utilities_echo_v1" id="utilities_echo_v1_13" name="Ignore Billing Member" x="1033" y="351">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>true</visible>
+                <parameters>
+                    <parameter dependsOnId="" dependsOnValue="" id="input" label="Input" menu="" required="true" tooltip="">Ignore Billing Member</parameter>
+                </parameters>
+                <messages></messages>
+                <dependents>
+                    <task label="" type="Complete" value="">system_noop_v1_15</task>
+                </dependents>
+            </task>
+            <task definition_id="kinetic_request_ce_submission_update_v1" id="kinetic_request_ce_submission_update_v1_14" name="Set Billing Parent Membber" x="869" y="316">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>true</visible>
+                <parameters>
+                    <parameter dependsOnId="" dependsOnValue="" id="error_handling" label="Error Handling" menu="Error Message,Raise Error" required="true" tooltip="Determine what to return if an error is encountered.">Error Message</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="space_slug" label="Space Slug" menu="" required="false" tooltip="The Space the submission is being retrieved from (defaults to info value if not provided)."></parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="submission_id" label="Submission Id" menu="" required="true" tooltip="The id of the submission being updated.">&lt;%=@results['Member ID']['output']%&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="state" label="State" menu="" required="false" tooltip="The value used to set the submission state."></parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="values" label="Values" menu="" required="false" tooltip="A JSON map of field names to values that should be set.">{
+  "Billing Parent Member":"&lt;%= @values['Members']%&gt;"
+}</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="current_page_name" label="Current Page Name" menu="" required="false" tooltip="Set the current page name."></parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="current_page_navigation" label="Current Page Navigation" menu="" required="false" tooltip="Set the current page navigation."></parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="origin_id" label="Origin ID" menu="" required="false" tooltip="Set the origin ID."></parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="parent_id" label="Parent ID" menu="" required="false" tooltip="Set the parent ID."></parameter>
+                </parameters>
+                <messages></messages>
+                <dependents>
+                    <task label="" type="Complete" value="">system_noop_v1_15</task>
+                </dependents>
+            </task>
+            <task definition_id="system_noop_v1" id="system_noop_v1_15" name="done iteration" x="847" y="470">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters></parameters>
+                <messages></messages>
+                <dependents>
+                    <task label="" type="Complete" value="">system_loop_tail_v1_11</task>
+                </dependents>
+            </task>
+            <task definition_id="kinetic_request_ce_submission_update_v1" id="kinetic_request_ce_submission_update_v1_16" name="Clear Payment Details" x="206" y="610">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>true</visible>
+                <parameters>
+                    <parameter dependsOnId="" dependsOnValue="" id="error_handling" label="Error Handling" menu="Error Message,Raise Error" required="true" tooltip="Determine what to return if an error is encountered.">Error Message</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="space_slug" label="Space Slug" menu="" required="false" tooltip="The Space the submission is being retrieved from (defaults to info value if not provided)."></parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="submission_id" label="Submission Id" menu="" required="true" tooltip="The id of the submission being updated.">&lt;%=  @submission['Id'] %&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="state" label="State" menu="" required="false" tooltip="The value used to set the submission state."></parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="values" label="Values" menu="" required="false" tooltip="A JSON map of field names to values that should be set.">{
+  "Credit Card Number":"&lt;%= (@values['Credit Card Number'].nil? ? '' : '...'+@values['Credit Card Number'][(@values['Credit Card Number'].length-4)..@values['Credit Card Number'].length])%&gt;", 
+  "Account Number":"&lt;%= (@values['Account Number'].nil? ? '' : '...'+@values['Account Number'][(@values['Account Number'].length-4)..@values['Account Number'].length])%&gt;" 
+}
+</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="current_page_name" label="Current Page Name" menu="" required="false" tooltip="Set the current page name."></parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="current_page_navigation" label="Current Page Navigation" menu="" required="false" tooltip="Set the current page navigation."></parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="origin_id" label="Origin ID" menu="" required="false" tooltip="Set the origin ID."></parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="parent_id" label="Parent ID" menu="" required="false" tooltip="Set the parent ID."></parameter>
+                </parameters>
+                <messages></messages>
+                <dependents></dependents>
+            </task>
+            <task definition_id="gbmembers_billing_service_v1" id="gbmembers_billing_service_v1_17" name="Update Billing Payment Details" x="11" y="205">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>true</visible>
+                <parameters>
+                    <parameter dependsOnId="" dependsOnValue="" id="service_value" label="Billing Service Value" menu="" required="true" tooltip="GBMembers Billing Service call value (registerUser,billingInfo,)">scheduledAmountChange</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="space" label="Space slug" menu="" required="true" tooltip="Space slug for School">&lt;%= @space['Slug']%&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="billing_company" label="Billing Company" menu="" required="true" tooltip="Billing Company that the service will operate against.(eg, PaySmart)">PaySmart</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="json_args" label="JSON arguments" menu="" required="true" tooltip="A JSON structure containing all argument passed to the Billing Service">{
+  "customerId": "&lt;%= @values['Billing Customer Id']%&gt;",
+  "newPaymentAmountInCents": "&lt;%= @values['Payment']%&gt;",
+  "scheduleStartDate": "&lt;%= @values['Billing Start Date']%&gt;",
+  "space": "&lt;%= @space['Slug']%&gt;",
+  "billingService": "PaySmart",
+  "gbmemberId": "&lt;%= @submission['Id']%&gt;"
+}</parameter>
+                </parameters>
+                <messages>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="Success" type="Complete" value="JSON.parse(@results['Update Billing Payment Details']['Result JSON'])['error']==0">gbmembers_billing_service_v1_18</task>
+                    <task label="Error" type="Complete" value="JSON.parse(@results['Update Billing Payment Details']['Result JSON'])['error']==100">kinetic_request_ce_submission_activity_create_v1_19</task>
+                </dependents>
+            </task>
+            <task definition_id="gbmembers_billing_service_v1" id="gbmembers_billing_service_v1_18" name="Update Payment Type" x="57" y="386">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>true</visible>
+                <parameters>
+                    <parameter dependsOnId="" dependsOnValue="" id="service_value" label="Billing Service Value" menu="" required="true" tooltip="GBMembers Billing Service call value (registerUser,billingInfo,)">savePaymentMethod</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="space" label="Space slug" menu="" required="true" tooltip="Space slug for School">&lt;%= @space['Slug']%&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="billing_company" label="Billing Company" menu="" required="true" tooltip="Billing Company that the service will operate against.(eg, PaySmart)">PaySmart</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="json_args" label="JSON arguments" menu="" required="true" tooltip="A JSON structure containing all argument passed to the Billing Service">{
+  "customerId": "&lt;%= @values['Billing Customer Id']%&gt;",
+  "billingService": "PaySmart",
+  "space": "&lt;%= @space['Slug']%&gt;",
+  "dob": "&lt;%= @values['DOB']%&gt;",
+  "paymentMethod": "&lt;%= @values['Payment Method']%&gt;",
+  "creditCardName": "&lt;%= @values['Name On Card']%&gt;",
+  "creditCardNumber": "&lt;%= @values['Credit Card Number']%&gt;",
+  "creditCardExpiryDate": "&lt;%= @values['Credit Card Expiry Month']%&gt;/&lt;%= @values['Credit Card Expiry Year']%&gt;",
+  "creditCardType": "&lt;%= @values['Credit Card Type']%&gt;",
+  "bankAccountName": "&lt;%= @values['Account Name']%&gt;",
+  "bankAccountNumber": "&lt;%= @values['Account Number']%&gt;",
+  "bankAccountBsb": "&lt;%= @values['BSB']%&gt;"
+}</parameter>
+                </parameters>
+                <messages>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="Success" type="Complete" value="JSON.parse(@results['Update Payment Type']['Result JSON'])['error']==0">gbmembers_billing_service_v1_3</task>
+                    <task label="Error" type="Complete" value="JSON.parse(@results['Update Payment Type']['Result JSON'])['error']==100">kinetic_request_ce_submission_activity_create_v1_20</task>
+                </dependents>
+            </task>
+            <task definition_id="kinetic_request_ce_submission_activity_create_v1" id="kinetic_request_ce_submission_activity_create_v1_19" name="Update Billing Payment Details Error" x="-237" y="309">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter dependsOnId="" dependsOnValue="" id="error_handling" label="Error Handling" menu="Error Message,Raise Error" required="true" tooltip="Determine what to return if an error is encountered.">Error Message</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="space_slug" label="Space Slug" menu="" required="false" tooltip="The Space the submission exists in (defaults to info value if not provided)."></parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="submission_id" label="Submission Id" menu="" required="true" tooltip="The id of the submission for which the activity is being created for.">&lt;%= @submission['Id']%&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="label" label="Label" menu="" required="false" tooltip="The label for the submission activity.">Update Billing Payment Details Error</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="description" label="Description" menu="" required="false" tooltip="The description of the submission activity.">Attempt to update Billing Payment details &lt;%= @values['First Name']%&gt; &lt;%= @values['Last Name']%&gt; has failed.&lt;br&gt;
+Error Message: &lt;%=JSON.parse(@results['Update Billing Payment Details']['Result JSON'])['errorMessage']%&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="type" label="Type" menu="" required="false" tooltip="Specifies the a submission activity 'Type', which should indicate what type of data is included.">Error</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="data" label="Data" menu="" required="false" tooltip="Additional data that can be used by resources consuming the submission activity record (for example a Request bundle may render submission details based upon JSON content in the activity data).">&lt;%= @results['Update Billing Payment Details']['Result JSON'] %&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">kinetic_request_ce_submission_update_v1_16</task>
+                </dependents>
+            </task>
+            <task definition_id="kinetic_request_ce_submission_activity_create_v1" id="kinetic_request_ce_submission_activity_create_v1_20" name="Update Payment Type Error" x="-172" y="578">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter dependsOnId="" dependsOnValue="" id="error_handling" label="Error Handling" menu="Error Message,Raise Error" required="true" tooltip="Determine what to return if an error is encountered.">Error Message</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="space_slug" label="Space Slug" menu="" required="false" tooltip="The Space the submission exists in (defaults to info value if not provided)."></parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="submission_id" label="Submission Id" menu="" required="true" tooltip="The id of the submission for which the activity is being created for.">&lt;%= @submission['Id']%&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="label" label="Label" menu="" required="false" tooltip="The label for the submission activity.">Update Payment Type Error</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="description" label="Description" menu="" required="false" tooltip="The description of the submission activity.">Attempt to update Payment Type for &lt;%= @values['First Name']%&gt; &lt;%= @values['Last Name']%&gt; has failed.&lt;br&gt;
+Error Message: &lt;%=JSON.parse(@results['Update Payment Type']['Result JSON'])['errorMessage']%&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="type" label="Type" menu="" required="false" tooltip="Specifies the a submission activity 'Type', which should indicate what type of data is included.">Error</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="data" label="Data" menu="" required="false" tooltip="Additional data that can be used by resources consuming the submission activity record (for example a Request bundle may render submission details based upon JSON content in the activity data).">&lt;%= @results['Update Payment Type']['Result JSON'] %&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">kinetic_request_ce_submission_update_v1_16</task>
+                </dependents>
+            </task>
+        </request>
+    </taskTree>
+</tree>

@@ -1,0 +1,153 @@
+<tree schema_version="1.0">
+    <sourceName>-</sourceName>
+    <sourceGroup>-</sourceGroup>
+    <definitionId>routine_kinetic_request_ce_cascading_attribute_retrieve_v1</definitionId>
+    <type>Global Routine</type>
+    <status>Active</status>
+    <taskTree builder_version="" schema_version="1.0" version="">
+        <name>CE Cascading Attribute Retrieve</name>
+        <author></author>
+        <notes></notes>
+        <lastID>30</lastID>
+        <taskDefinition id="routine_kinetic_request_ce_cascading_attribute_retrieve_v1" name="CE Cascading Attribute Retrieve" schema_version="1.0" version="1">
+            <visible>false</visible>
+            <deferrable>true</deferrable>
+            <parameters>
+                <parameter id="Space Slug" label="Space Slug" required="true" tooltip="Slug of the space to create the submission in"></parameter>
+                <parameter id="Kapp Slug" label="Kapp Slug" required="false" tooltip="Slug of the kapp to create the submission in"></parameter>
+                <parameter id="Form Slug" label="Form Slug" required="false" tooltip="Slug of the form to create the submission in"></parameter>
+                <parameter id="Start Context" label="Start Context" required="true" tooltip="Lowest level to search for attribute"></parameter>
+                <parameter id="End Context" label="End Context" required="true" tooltip="Highest Level to search for attribute"></parameter>
+                <parameter id="Property to Find" label="Property to Find" required="true" tooltip="Name of the attribute to retrieve"></parameter>
+                <parameter id="Backup Value" label="Backup Value" required="false" tooltip="If no value is found, what to use"></parameter>
+                <parameter id="Submission Id" label="Submission Id" required="false" tooltip="Submission Id, only needed if searching for submission level"></parameter>
+            </parameters>
+            <handler name="system_tree_call" version="1"></handler>
+            <results format="xml">
+                <result name="Value" tooltip="Value retrieved"></result>
+                <result name="Matched Context" tooltip="Context at which the value was retrieved"></result>
+            </results>
+        </taskDefinition>
+        <request>
+            <task definition_id="system_start_v1" id="start" name="Start" x="99" y="66">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters></parameters>
+                <messages></messages>
+                <dependents>
+                    <task label="" type="Complete" value="">kinetic_request_ce_cascading_attribute_value_retrieve_v2_27</task>
+                </dependents>
+            </task>
+            <task definition_id="routine_handler_failure_error_process_v1" id="routine_handler_failure_error_process_v1_10" name="Error Process" x="518" y="65">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>true</defers>
+                <deferrable>true</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Error Message" label="Error Message" menu="" required="false" tooltip="Error Message ">&lt;%=@results['Cascading Attribute Value Retrieve']['Handler Error Message']%&gt;</parameter>
+                    <parameter id="Handler Name" label="Handler Name" menu="" required="false" tooltip="">kinetic_request_ce_cascading_attribute_retrieve_v2</parameter>
+                    <parameter id="Run Id" label="Run Id" menu="" required="false" tooltip="">&lt;%=@run['Id']%&gt;</parameter>
+                    <parameter id="Inputs JSON" label="Inputs JSON" menu="" required="false" tooltip="">&lt;%=@inputs.to_json%&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">routine_kinetic_request_ce_cascading_attribute_retrieve_v1_28</task>
+                </dependents>
+            </task>
+            <task definition_id="kinetic_request_ce_cascading_attribute_value_retrieve_v2" id="kinetic_request_ce_cascading_attribute_value_retrieve_v2_27" name="Cascading Attribute Value Retrieve" x="297.986" y="55">
+                <version>2</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="error_handling" label="Error Handling" menu="Error Message,Raise Error" required="true" tooltip="Determine what to return if an error is encountered.">Error Message</parameter>
+                    <parameter id="start_context" label="Start Context" menu="" required="true" tooltip="The lowest level to search. If Submission, only a Submission Id is needed. Should be one of Submission,Form,Kapp,Space">&lt;%=@inputs['Start Context']%&gt;</parameter>
+                    <parameter id="end_context" label="End Context" menu="" required="true" tooltip="The highest level to search. If Submission, only a Submission Id is needed. Should be one of Space,Kapp,Form,Submission">&lt;%=@inputs['End Context']%&gt;</parameter>
+                    <parameter id="prop_to_find" label="Property To Find" menu="" required="true" tooltip="The Name of the Field/Attribute to search for a match.">&lt;%=@inputs['Property to Find']%&gt;</parameter>
+                    <parameter id="backup_if_none" label="Backup Value" menu="" required="false" tooltip="If no Field/Attribute value is returned, use this value">&lt;%=@inputs['Backup Value']%&gt;</parameter>
+                    <parameter id="space_slug" label="Space Slug" menu="" required="false" tooltip="The Slug of the space to find attribute values in.">&lt;%=@inputs['Space Slug']%&gt;</parameter>
+                    <parameter id="kapp_slug" label="Kapp Slug" menu="" required="false" tooltip="The Slug of the kapp to find attribute values in.">&lt;%=@inputs['Kapp Slug']%&gt;</parameter>
+                    <parameter id="form_slug" label="Form Slug" menu="" required="false" tooltip="The Slug of the form to find attribute values in.">&lt;%=@inputs['Form Slug']%&gt;</parameter>
+                    <parameter id="submission_id" label="Submission Id" menu="" required="false" tooltip="The id of the submission to find values in">&lt;%=@inputs['Submission Id']%&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="Error" type="Complete" value="!@results['Cascading Attribute Value Retrieve']['Handler Error Message'].nil?">routine_handler_failure_error_process_v1_10</task>
+                    <task label="No Error" type="Complete" value="@results['Cascading Attribute Value Retrieve']['Handler Error Message'].nil?">system_tree_return_v1_29</task>
+                </dependents>
+            </task>
+            <task definition_id="routine_kinetic_request_ce_cascading_attribute_retrieve_v1" id="routine_kinetic_request_ce_cascading_attribute_retrieve_v1_28" name="Retry" x="685.99" y="75">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>true</defers>
+                <deferrable>true</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Space Slug" label="Space Slug" menu="" required="false" tooltip="Slug of the space to create the submission in">&lt;%=@results['Error Process']['Start Context']%&gt;</parameter>
+                    <parameter id="Kapp Slug" label="Kapp Slug" menu="" required="true" tooltip="Slug of the kapp to create the submission in">&lt;%=@results['Error Process']['End Context']%&gt;</parameter>
+                    <parameter id="Form Slug" label="Form Slug" menu="" required="false" tooltip="Slug of the form to create the submission in">&lt;%=@results['Error Process']['Property to Find']%&gt;</parameter>
+                    <parameter id="Start Context" label="Start Context" menu="" required="true" tooltip="Lowest level to search for attribute">&lt;%=@results['Error Process']['Backup Value']%&gt;</parameter>
+                    <parameter id="End Context" label="End Context" menu="" required="true" tooltip="Highest Level to search for attribute">&lt;%=@results['Error Process']['Space Slug']%&gt;</parameter>
+                    <parameter id="Property to Find" label="Property to Find" menu="" required="true" tooltip="Name of the attribute to retrieve">&lt;%=@results['Error Process']['Kapp Slug']%&gt;</parameter>
+                    <parameter id="Backup Value" label="Backup Value" menu="" required="true" tooltip="If no value is found, what to use">&lt;%=@results['Error Process']['Form Slug']%&gt;</parameter>
+                    <parameter id="Submission Id" label="Submission Id" menu="" required="false" tooltip="Submission Id, only needed if searching for submission level">&lt;%=@results['Error Process']['Submission Id']%&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">system_tree_return_v1_30</task>
+                </dependents>
+            </task>
+            <task definition_id="system_tree_return_v1" id="system_tree_return_v1_29" name="Return - No Error" x="225" y="250">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Value" label="Value" menu="" required="false" tooltip="Value retrieved">&lt;%=@results['Cascading Attribute Value Retrieve']['Value']%&gt;</parameter>
+                    <parameter id="Matched Context" label="Matched Context" menu="" required="false" tooltip="Context at which the value was retrieved">&lt;%=@results['Cascading Attribute Value Retrieve']['Matched Context']%&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents></dependents>
+            </task>
+            <task definition_id="system_tree_return_v1" id="system_tree_return_v1_30" name="Return From Error" x="842.986" y="66.9965">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Value" label="Value" menu="" required="false" tooltip="Value retrieved">&lt;%=@results['Retry']['Value']%&gt;</parameter>
+                    <parameter id="Matched Context" label="Matched Context" menu="" required="false" tooltip="Context at which the value was retrieved">&lt;%=@results['Retry']['Matched Context']%&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents></dependents>
+            </task>
+        </request>
+    </taskTree>
+</tree>

@@ -1,0 +1,159 @@
+<tree schema_version="1.0">
+    <sourceName>-</sourceName>
+    <sourceGroup>-</sourceGroup>
+    <definitionId>routine_kinetic_request_ce_form_retrieve_v1</definitionId>
+    <type>Global Routine</type>
+    <status>Active</status>
+    <taskTree builder_version="" schema_version="1.0" version="">
+        <name>Retrieve a Form</name>
+        <author></author>
+        <notes></notes>
+        <lastID>14</lastID>
+        <taskDefinition id="routine_kinetic_request_ce_form_retrieve_v1" name="Retrieve a Form" schema_version="1.0" version="1">
+            <visible>false</visible>
+            <deferrable>true</deferrable>
+            <parameters>
+                <parameter id="Space Slug" label="Space Slug" required="false" tooltip="Slug of the space in which the form exists"></parameter>
+                <parameter id="Kapp Slug" label="Kapp Slug" required="true" tooltip="Slug of the kapp in which the form exists"></parameter>
+                <parameter id="Form Slug" label="Form Slug" required="true" tooltip="Slug of the form to retrieve"></parameter>
+            </parameters>
+            <handler name="system_tree_call" version="1"></handler>
+            <results format="xml">
+                <result name="Name" tooltip="Name of the form"></result>
+                <result name="Slug" tooltip="Slug of the form"></result>
+                <result name="Description" tooltip="Description of the form"></result>
+                <result name="CreatedAt" tooltip="When the form was created"></result>
+                <result name="CreatedBy" tooltip="Who created the form"></result>
+                <result name="Notes" tooltip="Notes recorded about the form"></result>
+                <result name="Secure" tooltip="If the form requires authentication"></result>
+                <result name="Attributes" tooltip="Attributes associated with the form"></result>
+                <result name="Fields" tooltip="Fields that exist on the form"></result>
+            </results>
+        </taskDefinition>
+        <request>
+            <task definition_id="system_start_v1" id="start" name="Start" x="99" y="66">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters></parameters>
+                <messages></messages>
+                <dependents>
+                    <task label="" type="Complete" value="">kinetic_request_ce_form_retrieve_v1_11</task>
+                </dependents>
+            </task>
+            <task definition_id="system_tree_return_v1" id="system_tree_return_v1_4" name="Return" x="276" y="244">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Name" label="Name" menu="" required="false" tooltip="">&lt;%=@results['Retrieve Form']['Name']%&gt;</parameter>
+                    <parameter id="Slug" label="Slug" menu="" required="false" tooltip="">&lt;%=@results['Retrieve Form']['Slug']%&gt;</parameter>
+                    <parameter id="Description" label="Description" menu="" required="false" tooltip="">&lt;%=@results['Retrieve Form']['Description']%&gt;</parameter>
+                    <parameter id="CreatedAt" label="CreatedAt" menu="" required="false" tooltip="">&lt;%=@results['Retrieve Form']['CreatedAt']%&gt;</parameter>
+                    <parameter id="CreatedBy" label="CreatedBy" menu="" required="false" tooltip="">&lt;%=@results['Retrieve Form']['CreatedBy']%&gt;</parameter>
+                    <parameter id="Notes" label="Notes" menu="" required="false" tooltip="">&lt;%=@results['Retrieve Form']['Notes']%&gt;</parameter>
+                    <parameter id="Secure" label="Secure" menu="" required="false" tooltip="">&lt;%=@results['Retrieve Form']['Secure']%&gt;</parameter>
+                    <parameter id="Attributes" label="Attributes" menu="" required="false" tooltip="">&lt;%=@results['Retrieve Form']['Attributes']%&gt;</parameter>
+                    <parameter id="Fields" label="Fields" menu="" required="false" tooltip="">&lt;%=@results['Retrieve Form']['Fields']%&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents></dependents>
+            </task>
+            <task definition_id="routine_handler_failure_error_process_v1" id="routine_handler_failure_error_process_v1_10" name="Error Process" x="528" y="55">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>true</defers>
+                <deferrable>true</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Error Message" label="Error Message" menu="" required="false" tooltip="Error Message ">&lt;%=@results['Retrieve Form']['Handler Error Message']%&gt;</parameter>
+                    <parameter id="Handler Name" label="Handler Name" menu="" required="false" tooltip="">kinetic_request_ce_form_retrieve_v1</parameter>
+                    <parameter id="Run Id" label="Run Id" menu="" required="false" tooltip="">&lt;%=@run['Id']%&gt;</parameter>
+                    <parameter id="Inputs JSON" label="Inputs JSON" menu="" required="false" tooltip="">&lt;%=@inputs.to_json%&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">routine_kinetic_request_ce_form_retrieve_v1_14</task>
+                </dependents>
+            </task>
+            <task definition_id="kinetic_request_ce_form_retrieve_v1" id="kinetic_request_ce_form_retrieve_v1_11" name="Retrieve Form" x="277" y="59">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="error_handling" label="Error Handling" menu="Error Message,Raise Error" required="true" tooltip="Determine what to return if an error is encountered.">Error Message</parameter>
+                    <parameter id="space_slug" label="Space Slug" menu="" required="false" tooltip="The Space the submission is being retrieved from.">&lt;%=@inputs['Space Slug']%&gt;</parameter>
+                    <parameter id="kapp_slug" label="Kapp Slug:" menu="" required="true" tooltip="The slug of the Kapp the form is for.">&lt;%=@inputs['Kapp Slug']%&gt;</parameter>
+                    <parameter id="form_slug" label="Form Slug:" menu="" required="true" tooltip="The id of the form being retrieved.">&lt;%=@inputs['Form Slug']%&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="No Error" type="Complete" value="@results['Retrieve Form']['Handler Error Message'].nil?">system_tree_return_v1_4</task>
+                    <task label="Error" type="Complete" value="!@results['Retrieve Form']['Handler Error Message'].nil?">routine_handler_failure_error_process_v1_10</task>
+                </dependents>
+            </task>
+            <task definition_id="system_tree_return_v1" id="system_tree_return_v1_13" name="Return From Error" x="880" y="54">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Name" label="Name" menu="" required="false" tooltip="Name of the form">&lt;%=@results['Retry']['Name']%&gt;</parameter>
+                    <parameter id="Slug" label="Slug" menu="" required="false" tooltip="Slug of the form">&lt;%=@results['Retry']['Slug']%&gt;</parameter>
+                    <parameter id="Description" label="Description" menu="" required="false" tooltip="Description of the form">&lt;%=@results['Retry']['Description']%&gt;</parameter>
+                    <parameter id="CreatedAt" label="CreatedAt" menu="" required="false" tooltip="When the form was created">&lt;%=@results['Retry']['CreatedAt']%&gt;</parameter>
+                    <parameter id="CreatedBy" label="CreatedBy" menu="" required="false" tooltip="Who created the form">&lt;%=@results['Retry']['CreatedBy']%&gt;</parameter>
+                    <parameter id="Notes" label="Notes" menu="" required="false" tooltip="Notes recorded about the form">&lt;%=@results['Retry']['Notes']%&gt;</parameter>
+                    <parameter id="Secure" label="Secure" menu="" required="false" tooltip="If the form requires authentication">&lt;%=@results['Retry']['Secure']%&gt;</parameter>
+                    <parameter id="Attributes" label="Attributes" menu="" required="false" tooltip="Attributes associated with the form">&lt;%=@results['Retry']['Attributes']%&gt;</parameter>
+                    <parameter id="Fields" label="Fields" menu="" required="false" tooltip="Fields that exist on the form">&lt;%=@results['Retry']['Fields']%&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents></dependents>
+            </task>
+            <task definition_id="routine_kinetic_request_ce_form_retrieve_v1" id="routine_kinetic_request_ce_form_retrieve_v1_14" name="Retry" x="704" y="64">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>true</defers>
+                <deferrable>true</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Space Slug" label="Space Slug" menu="" required="false" tooltip="Slug of the space in which the form exists">&lt;%=@results['Error Process']['Space Slug']%&gt;</parameter>
+                    <parameter id="Kapp Slug" label="Kapp Slug" menu="" required="true" tooltip="Slug of the kapp in which the form exists">&lt;%=@results['Error Process']['Kapp Slug']%&gt;</parameter>
+                    <parameter id="Form Slug" label="Form Slug" menu="" required="true" tooltip="Slug of the form to retrieve">&lt;%=@results['Error Process']['Form Slug']%&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">system_tree_return_v1_13</task>
+                </dependents>
+            </task>
+        </request>
+    </taskTree>
+</tree>

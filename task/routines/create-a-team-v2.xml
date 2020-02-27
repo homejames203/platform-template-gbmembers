@@ -1,0 +1,129 @@
+<tree schema_version="1.0">
+    <sourceName>-</sourceName>
+    <sourceGroup>-</sourceGroup>
+    <definitionId>routine_kinetic_request_ce_team_create_v2</definitionId>
+    <type>Global Routine</type>
+    <status>Active</status>
+    <taskTree builder_version="" schema_version="1.0" version="">
+        <name>Create a Team v2</name>
+        <author></author>
+        <notes></notes>
+        <lastID>36</lastID>
+        <taskDefinition id="routine_kinetic_request_ce_team_create_v2" name="Create a Team v2" schema_version="1.0" version="1">
+            <visible>false</visible>
+            <deferrable>true</deferrable>
+            <parameters>
+                <parameter id="Space Slug" label="Space Slug" required="false" tooltip="Slug of the space to create team in"></parameter>
+                <parameter id="Team Name" label="Team Name" required="true" tooltip="Name of the Team to Retrieve"></parameter>
+                <parameter id="Members JSON" label="Members JSON" required="false" tooltip="A JSON array of members to add to the team">false</parameter>
+            </parameters>
+            <handler name="system_tree_call" version="1"></handler>
+            <results format="xml"></results>
+        </taskDefinition>
+        <request>
+            <task definition_id="system_start_v1" id="start" name="Start" x="99" y="66">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters></parameters>
+                <messages></messages>
+                <dependents>
+                    <task label="" type="Complete" value="">kinetic_request_ce_team_create_v1_32</task>
+                </dependents>
+            </task>
+            <task definition_id="routine_handler_failure_error_process_v1" id="routine_handler_failure_error_process_v1_10" name="Error Process" x="496" y="44">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>true</defers>
+                <deferrable>true</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Error Message" label="Error Message" menu="" required="false" tooltip="Error Message ">&lt;%=@results['Create Team']['Handler Error Message']%&gt;</parameter>
+                    <parameter id="Handler Name" label="Handler Name" menu="" required="false" tooltip="">kinetic_request_ce_team_create_v1</parameter>
+                    <parameter id="Run Id" label="Run Id" menu="" required="false" tooltip="">&lt;%=@run['Id']%&gt;</parameter>
+                    <parameter id="Inputs JSON" label="Inputs JSON" menu="" required="false" tooltip="">&lt;%=@inputs.to_json%&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">routine_kinetic_request_ce_team_create_v2_36</task>
+                </dependents>
+            </task>
+            <task definition_id="kinetic_request_ce_team_create_v1" id="kinetic_request_ce_team_create_v1_32" name="Create Team" x="280" y="41">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="error_handling" label="Error Handling" menu="Error Message,Raise Error" required="true" tooltip="Determine what to return if an error is encountered.">Error Message</parameter>
+                    <parameter id="space_slug" label="Space Slug" menu="" required="false" tooltip="The Space the team is being created in.">&lt;%=@inputs['Space Slug']%&gt;</parameter>
+                    <parameter id="team_name" label="Team Name" menu="" required="true" tooltip="The team name to be created.">&lt;%=@inputs['Team Name']%&gt;</parameter>
+                    <parameter id="members" label="Members" menu="" required="false" tooltip="JSON array of usernames to be added to the team">&lt;%=@inputs['Members JSON']%&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="Error" type="Complete" value="!@results['Create Team']['Handler Error Message'].nil?">routine_handler_failure_error_process_v1_10</task>
+                    <task label="No Error" type="Complete" value="@results['Create Team']['Handler Error Message'].nil? ">system_tree_return_v1_35</task>
+                </dependents>
+            </task>
+            <task definition_id="system_tree_return_v1" id="system_tree_return_v1_34" name="Return From Error" x="846" y="55">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters></parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents></dependents>
+            </task>
+            <task definition_id="system_tree_return_v1" id="system_tree_return_v1_35" name="Return" x="278" y="233">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters></parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents></dependents>
+            </task>
+            <task definition_id="routine_kinetic_request_ce_team_create_v2" id="routine_kinetic_request_ce_team_create_v2_36" name="Retry" x="670" y="53">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>true</defers>
+                <deferrable>true</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Space Slug" label="Space Slug" menu="" required="false" tooltip="Slug of the space to create team in">&lt;%=@results['Error Process']['Space Slug']%&gt;</parameter>
+                    <parameter id="Team Name" label="Team Name" menu="" required="true" tooltip="Name of the Team to Retrieve">&lt;%=@results['Error Process']['Team Name']%&gt;</parameter>
+                    <parameter id="Members JSON" label="Members JSON" menu="" required="false" tooltip="A JSON array of members to add to the team">&lt;%=@results['Error Process']['Members JSON']%&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">system_tree_return_v1_34</task>
+                </dependents>
+            </task>
+        </request>
+    </taskTree>
+</tree>

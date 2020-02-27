@@ -1,0 +1,136 @@
+<tree schema_version="1.0">
+    <sourceName>-</sourceName>
+    <sourceGroup>-</sourceGroup>
+    <definitionId>routine_kinetic_request_ce_submission_retrieve_children_returns_ids_v1</definitionId>
+    <type>Global Routine</type>
+    <status>Active</status>
+    <taskTree builder_version="" schema_version="1.0" version="">
+        <name>Retrieve a Submissions Children - Returns Id List</name>
+        <author></author>
+        <notes></notes>
+        <lastID>28</lastID>
+        <taskDefinition id="routine_kinetic_request_ce_submission_retrieve_children_returns_ids_v1" name="Retrieve a Submissions Children - Returns Id List" schema_version="1.0" version="1">
+            <visible>false</visible>
+            <deferrable>true</deferrable>
+            <parameters>
+                <parameter id="Space Slug" label="Space Slug" required="false" tooltip="Slug of the space to search for the submission in"></parameter>
+                <parameter id="Submission Id" label="Submission Id" required="true" tooltip="Id of the submission whose children are to be returned"></parameter>
+            </parameters>
+            <handler name="system_tree_call" version="1"></handler>
+            <results format="xml">
+                <result name="Count" tooltip="Number of matching submissions found "></result>
+                <result name="Id List" tooltip="example: &lt;ids&gt;&lt;id&gt;f4cd6acf-e552-11e5-9c32-97bbc6bf7f84&lt;/id&gt;&lt;/ids&gt;"></result>
+            </results>
+        </taskDefinition>
+        <request>
+            <task definition_id="system_start_v1" id="start" name="Start" x="99" y="66">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters></parameters>
+                <messages></messages>
+                <dependents>
+                    <task label="" type="Complete" value="">kinetic_request_ce_submission_retrieve_children_v1_27</task>
+                </dependents>
+            </task>
+            <task definition_id="routine_handler_failure_error_process_v1" id="routine_handler_failure_error_process_v1_10" name="Error Process" x="518" y="55">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>true</defers>
+                <deferrable>true</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Error Message" label="Error Message" menu="" required="false" tooltip="Error Message ">&lt;%=@results['Find Children']['Handler Error Message']%&gt;</parameter>
+                    <parameter id="Handler Name" label="Handler Name" menu="" required="false" tooltip="">kinetic_request_ce_submission_retrieve_children_v1</parameter>
+                    <parameter id="Run Id" label="Run Id" menu="" required="false" tooltip="">&lt;%=@run['Id']%&gt;</parameter>
+                    <parameter id="Inputs JSON" label="Inputs JSON" menu="" required="false" tooltip="">&lt;%=@inputs.to_json%&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">routine_kinetic_request_ce_submission_retrieve_children_returns_ids_v1_28</task>
+                </dependents>
+            </task>
+            <task definition_id="system_tree_return_v1" id="system_tree_return_v1_24" name="Return From Error" x="865" y="57">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Count" label="Count" menu="" required="false" tooltip="Number of matching submissions found ">&lt;%=@results['Retry']['Count']%&gt;</parameter>
+                    <parameter id="Id List" label="Id List" menu="" required="false" tooltip="example: &lt;ids&gt;&lt;id&gt;f4cd6acf-e552-11e5-9c32-97bbc6bf7f84&lt;/id&gt;&lt;/ids&gt;">&lt;%=@results['Retry']['Id List']%&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents></dependents>
+            </task>
+            <task definition_id="system_tree_return_v1" id="system_tree_return_v1_25" name="Return" x="286" y="270">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Count" label="Count" menu="" required="false" tooltip="Number of matching submissions found ">&lt;%=@results['Find Children']['Count']%&gt;</parameter>
+                    <parameter id="Id List" label="Id List" menu="" required="false" tooltip="example: &lt;ids&gt;&lt;id&gt;f4cd6acf-e552-11e5-9c32-97bbc6bf7f84&lt;/id&gt;&lt;/ids&gt;">&lt;%=@results['Find Children']['Result']%&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents></dependents>
+            </task>
+            <task definition_id="kinetic_request_ce_submission_retrieve_children_v1" id="kinetic_request_ce_submission_retrieve_children_v1_27" name="Find Children" x="286" y="42">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="error_handling" label="Error Handling" menu="Error Message,Raise Error" required="true" tooltip="Determine what to return if an error is encountered.">Error Message</parameter>
+                    <parameter id="space_slug" label="Space Slug" menu="" required="false" tooltip="The Space the submission is being retrieved from.">&lt;%=@inputs['Space Slug']%&gt;</parameter>
+                    <parameter id="submission_id" label="Submission Id" menu="" required="true" tooltip="The Id of the submission whose children are to be retrieved.">&lt;%=@inputs['Submission Id']%&gt;</parameter>
+                    <parameter id="return_type" label="Return Type:" menu="JSON,XML,ID List" required="true" tooltip="The return type of the results.">ID List</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="Error" type="Complete" value="!@results['Find Children']['Handler Error Message'].nil?">routine_handler_failure_error_process_v1_10</task>
+                    <task label="No Error" type="Complete" value="@results['Find Children']['Handler Error Message'].nil?">system_tree_return_v1_25</task>
+                </dependents>
+            </task>
+            <task definition_id="routine_kinetic_request_ce_submission_retrieve_children_returns_ids_v1" id="routine_kinetic_request_ce_submission_retrieve_children_returns_ids_v1_28" name="Retry" x="694" y="64">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>true</defers>
+                <deferrable>true</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Space Slug" label="Space Slug" menu="" required="false" tooltip="Slug of the space to search for the submission in">&lt;%=@results['Error Process']['Space Slug']%&gt;</parameter>
+                    <parameter id="Submission Id" label="Submission Id" menu="" required="true" tooltip="Id of the submission whose children are to be returned">&lt;%=@results['Error Process']['Submission Id']%&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">system_tree_return_v1_24</task>
+                </dependents>
+            </task>
+        </request>
+    </taskTree>
+</tree>

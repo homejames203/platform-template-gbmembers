@@ -1,0 +1,240 @@
+<tree schema_version="1.0">
+    <sourceName>-</sourceName>
+    <sourceGroup>-</sourceGroup>
+    <definitionId>routine_kd_verify_individual_assignment_v2</definitionId>
+    <type>Global Routine</type>
+    <status>Active</status>
+    <taskTree builder_version="" schema_version="1.0" version="">
+        <name>KD Verify Individual Assignment v2</name>
+        <author></author>
+        <notes></notes>
+        <lastID>16</lastID>
+        <taskDefinition id="routine_kd_verify_individual_assignment_v2" name="KD Verify Individual Assignment v2" schema_version="1.0" version="1">
+            <visible>false</visible>
+            <deferrable>true</deferrable>
+            <parameters>
+                <parameter id="Space Slug" label="Space Slug" required="false" tooltip="The Slug of the Space this submission belongs to"></parameter>
+                <parameter id="Originating System" label="Originating System" required="true" tooltip="Source of the parent record (Kinetic Core, Salesforce...etc)"></parameter>
+                <parameter id="Originating Id" label="Originating Id" required="true" tooltip="Id of the originating systems record"></parameter>
+                <parameter id="Assignee Id" label="Assignee Id" required="true" tooltip=""></parameter>
+            </parameters>
+            <handler name="system_tree_call" version="1"></handler>
+            <results format="xml">
+                <result name="Assigned Team" tooltip=""></result>
+                <result name="Assigned Team Display Name" tooltip=""></result>
+                <result name="Assigned Individual" tooltip=""></result>
+                <result name="Assigned Individual Display Name" tooltip=""></result>
+            </results>
+        </taskDefinition>
+        <request>
+            <task definition_id="system_start_v1" id="start" name="Start" x="584" y="45">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters></parameters>
+                <messages></messages>
+                <dependents>
+                    <task label="" type="Complete" value="">routine_kinetic_request_ce_user_retrieve_v1_16</task>
+                </dependents>
+            </task>
+            <task definition_id="system_tree_return_v1" id="system_tree_return_v1_6" name="Return" x="974" y="477">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Assigned Team" label="Assigned Team" menu="" required="false" tooltip="">&lt;%=@results['Assigned Team']['output']%&gt;</parameter>
+                    <parameter id="Assigned Team Display Name" label="Assigned Team Display Name" menu="" required="false" tooltip="">&lt;%=@results['Assigned Team Displayed Name']['output']%&gt;</parameter>
+                    <parameter id="Assigned Individual" label="Assigned Individual" menu="" required="false" tooltip="">&lt;%=@results['Assigned Individual']['output']%&gt;</parameter>
+                    <parameter id="Assigned Individual Display Name" label="Assigned Individual Display Name" menu="" required="false" tooltip="">&lt;%=@results['Assigned Individual Display Name']['output']%&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents></dependents>
+            </task>
+            <task definition_id="system_junction_v1" id="system_junction_v1_7" name="Junction" x="463" y="329">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters></parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">utilities_echo_v1_9</task>
+                </dependents>
+            </task>
+            <task definition_id="utilities_echo_v1" id="utilities_echo_v1_9" name="Assigned Team" x="341" y="451">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="input" label="Input" menu="" required="true" tooltip="">&lt;%
+            ### CONFIGURE ###
+            attrName = "Task Assignee Team"
+            backup = "Administrators"
+            ### END CONFIGURE ###
+        
+            exists = @results['Verify User Exists']['Exists']
+            if exists == "true"
+              backup = ""
+            else
+              attributes = [
+                JSON.parse(@results['Retrieve Attributes']['Kapp Attributes']),
+                JSON.parse(@results['Retrieve Attributes']['Space Attributes']),
+              ]
+              value = attributes.flatten.find do |attribute|
+                attribute['name'] == attrName
+              end
+              backup = value.nil? ? backup : value['values'][0]
+            end
+        %&gt;&lt;%= backup %&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">utilities_echo_v1_11</task>
+                </dependents>
+            </task>
+            <task definition_id="utilities_echo_v1" id="utilities_echo_v1_11" name="Assigned Team Displayed Name" x="505" y="433">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="input" label="Input" menu="" required="true" tooltip="">&lt;%
+            ### CONFIGURE ###
+            attrName = "Task Assignee Team"
+            backup = "Administrators"
+            ### END CONFIGURE ###
+        
+            exists = @results['Verify User Exists']['Exists']
+            if exists == "true"
+              backup = ""
+            else
+              attributes = [
+                JSON.parse(@results['Retrieve Attributes']['Kapp Attributes']),
+                JSON.parse(@results['Retrieve Attributes']['Space Attributes']),
+              ]
+              value = attributes.flatten.find do |attribute|
+                attribute['name'] == attrName
+              end
+              backup = value.nil? ? backup : value['values'][0]
+            end
+        %&gt;&lt;%= backup %&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">utilities_echo_v1_12</task>
+                </dependents>
+            </task>
+            <task definition_id="utilities_echo_v1" id="utilities_echo_v1_12" name="Assigned Individual" x="660" y="449">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="input" label="Input" menu="" required="true" tooltip="">&lt;%=
+        assignedIndividual = ""
+        exists = @results['Verify User Exists']['Exists']
+        if exists == "true"
+          assignedIndividual = @results['Verify User Exists']['Username']
+        end
+        assignedIndividual %&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">utilities_echo_v1_13</task>
+                </dependents>
+            </task>
+            <task definition_id="utilities_echo_v1" id="utilities_echo_v1_13" name="Assigned Individual Display Name" x="823" y="430">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="input" label="Input" menu="" required="true" tooltip="">&lt;%=
+        assignedIndividualDisplayedName = ""
+        exists = @results['Verify User Exists']['Exists']
+        if exists == "true"
+          assignedIndividualDisplayedName = @results['Verify User Exists']['Display Name']
+        end
+        assignedIndividualDisplayedName %&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">system_tree_return_v1_6</task>
+                </dependents>
+            </task>
+            <task definition_id="routine_kinetic_request_ce_submission_retrieve_associated_attributes_v1" id="routine_kinetic_request_ce_submission_retrieve_associated_attributes_v1_14" name="Retrieve Attributes" x="797" y="319">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>true</defers>
+                <deferrable>true</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Space Slug" label="Space Slug" menu="" required="false" tooltip="Slug of the space to find the submission in">&lt;%=@inputs['Space Slug']%&gt;</parameter>
+                    <parameter id="Submission Id" label="Submission Id" menu="" required="true" tooltip="Id of the submission to retrieve">&lt;%=@inputs['Originating Id']%&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">system_junction_v1_7</task>
+                </dependents>
+            </task>
+            <task definition_id="routine_kinetic_request_ce_user_retrieve_v1" id="routine_kinetic_request_ce_user_retrieve_v1_16" name="Verify User Exists" x="583" y="143">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>true</defers>
+                <deferrable>true</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Space Slug" label="Space Slug" menu="" required="false" tooltip="Slug of the space in which the user exists">&lt;%=@inputs['Space Slug']%&gt;</parameter>
+                    <parameter id="Username" label="Username" menu="" required="true" tooltip="Username of the user to retrieve">&lt;%=@inputs['Assignee Id']%&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="User Doesn't Exist" type="Complete" value="@results['Verify User Exists']['Exists'] == &quot;false&quot;">routine_kinetic_request_ce_submission_retrieve_associated_attributes_v1_14</task>
+                    <task label="Exists" type="Complete" value="@results['Verify User Exists']['Exists'] == &quot;true&quot;">system_junction_v1_7</task>
+                </dependents>
+            </task>
+        </request>
+    </taskTree>
+</tree>

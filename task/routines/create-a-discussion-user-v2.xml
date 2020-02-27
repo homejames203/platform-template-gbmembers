@@ -1,0 +1,183 @@
+<tree schema_version="1.0">
+    <sourceName>-</sourceName>
+    <sourceGroup>-</sourceGroup>
+    <definitionId>routine_kinetic_discussion_user_create_v2</definitionId>
+    <type>Global Routine</type>
+    <status>Active</status>
+    <taskTree builder_version="" schema_version="1.0" version="">
+        <name>Create a Discussion User v2</name>
+        <author></author>
+        <notes></notes>
+        <lastID>28</lastID>
+        <taskDefinition id="routine_kinetic_discussion_user_create_v2" name="Create a Discussion User v2" schema_version="1.0" version="1">
+            <visible>false</visible>
+            <deferrable>true</deferrable>
+            <parameters>
+                <parameter id="Displayed Name" label="Displayed Name" required="false" tooltip="Displayed Name of the User"></parameter>
+                <parameter id="Email" label="Email" required="true" tooltip="Email address for the user"></parameter>
+                <parameter id="Password" label="Password" required="true" tooltip="Password for the user"></parameter>
+                <parameter id="Space Admin" label="Space Admin" required="true" tooltip="Make user a Discussion Admin">No</parameter>
+                <parameter id="Space Slug" label="Space Slug" required="true" tooltip="The Slug of the Space this response belongs to"></parameter>
+            </parameters>
+            <handler name="system_tree_call" version="1"></handler>
+            <results format="xml"></results>
+        </taskDefinition>
+        <request>
+            <task definition_id="system_start_v1" id="start" name="Start" x="109" y="76">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters></parameters>
+                <messages></messages>
+                <dependents>
+                    <task label="" type="Complete" value="">routine_kinetic_request_ce_space_retrieve_v1_26</task>
+                </dependents>
+            </task>
+            <task definition_id="routine_handler_failure_error_process_v1" id="routine_handler_failure_error_process_v1_10" name="Error Process" x="726" y="67">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>true</defers>
+                <deferrable>true</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Error Message" label="Error Message" menu="" required="false" tooltip="Error Message ">&lt;%=@results['Create Discussion User']['Handler Error Message']%&gt;</parameter>
+                    <parameter id="Handler Name" label="Handler Name" menu="" required="false" tooltip="">kinetic_response_user_create_v1</parameter>
+                    <parameter id="Run Id" label="Run Id" menu="" required="false" tooltip="">&lt;%=@run['Id']%&gt;</parameter>
+                    <parameter id="Inputs JSON" label="Inputs JSON" menu="" required="false" tooltip="">&lt;%=@inputs.to_json%&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">routine_kinetic_discussion_user_create_v2_25</task>
+                </dependents>
+            </task>
+            <task definition_id="system_tree_return_v1" id="system_tree_return_v1_16" name="Return From Error" x="1028" y="76">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters></parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents></dependents>
+            </task>
+            <task definition_id="system_tree_return_v1" id="system_tree_return_v1_18" name="Return" x="561" y="242">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters></parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents></dependents>
+            </task>
+            <task definition_id="routine_kinetic_discussion_user_create_v2" id="routine_kinetic_discussion_user_create_v2_25" name="Retry" x="870" y="88">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>true</defers>
+                <deferrable>true</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Displayed Name" label="Displayed Name" menu="" required="false" tooltip="Displayed Name of the User">&lt;%=@results['Error Process']['Displayed Name']%&gt;</parameter>
+                    <parameter id="Email" label="Email" menu="" required="true" tooltip="Email address for the user">&lt;%=@results['Error Process']['Email']%&gt;</parameter>
+                    <parameter id="Password" label="Password" menu="" required="true" tooltip="Password for the user">&lt;%=@results['Error Process']['Password']%&gt;</parameter>
+                    <parameter id="Space Admin" label="Space Admin" menu="" required="true" tooltip="Make user a Discussion Admin">&lt;%=@results['Error Process']['Space Admin']%&gt;</parameter>
+                    <parameter id="Space Slug" label="Space Slug" menu="" required="true" tooltip="The Slug of the Space this response belongs to">&lt;%=@results['Error Process']['Space Slug']%&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">system_tree_return_v1_16</task>
+                </dependents>
+            </task>
+            <task definition_id="routine_kinetic_request_ce_space_retrieve_v1" id="routine_kinetic_request_ce_space_retrieve_v1_26" name="Retrieve Space" x="253" y="67">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>true</defers>
+                <deferrable>true</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Space Slug" label="Space Slug" menu="" required="false" tooltip="Slug of the space to retrieve">&lt;%=@inputs['Space Slug']%&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">utilities_echo_v1_27</task>
+                </dependents>
+            </task>
+            <task definition_id="utilities_echo_v1" id="utilities_echo_v1_27" name="Discussion Server Url" x="415" y="64">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>true</visible>
+                <parameters>
+                    <parameter id="input" label="Input" menu="" required="true" tooltip="">&lt;%
+url = nil
+JSON.parse(@results['Retrieve Space']['Attributes']).each do |attribute|
+  url = attribute["values"][0] if attribute["name"] == 'Discussion Server Url'
+end
+%&gt;&lt;%= url.to_s.strip %&gt;
+</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">kinetic_response_user_create_v1_28</task>
+                </dependents>
+            </task>
+            <task definition_id="kinetic_response_user_create_v1" id="kinetic_response_user_create_v1_28" name="Create Discussion User" x="559" y="53">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>true</visible>
+                <parameters>
+                    <parameter id="error_handling" label="Error Handling" menu="Error Message,Raise Error" required="true" tooltip="Determine what to return if an error is encountered.">Error Message</parameter>
+                    <parameter id="api_server" label="API Server" menu="" required="true" tooltip="URL of the Kinetic Response server (https://server/space-slug/kinetic-response).">&lt;%=@results['Discussion Server Url']['output'].to_s.strip%&gt;</parameter>
+                    <parameter id="name" label="Display Name" menu="" required="false" tooltip="The name of the user that is being created.">&lt;%=@inputs['Displayed Name']%&gt;</parameter>
+                    <parameter id="email" label="Email" menu="" required="true" tooltip="The email of the user being created.">&lt;%=@inputs['Email']%&gt;</parameter>
+                    <parameter id="password" label="Password" menu="" required="false" tooltip="Optionally set a password for this user">&lt;%= rand(2**256).to_s(36).ljust(8,'a')[0..22] %&gt;</parameter>
+                    <parameter id="type" label="Type" menu="" required="false" tooltip="Valid types are User / Host / Admin. Defaulting to User.">&lt;%=
+type = "Host"
+if @inputs['Space Admin'].downcase == "yes" || @inputs['Space Admin'].downcase == "true"
+  type = "Admin"
+end
+type
+%&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="No Error" type="Complete" value="@results['Create Discussion User']['Handler Error Message'].nil?">system_tree_return_v1_18</task>
+                    <task label="Error" type="Complete" value="!@results['Create Discussion User']['Handler Error Message'].nil?">routine_handler_failure_error_process_v1_10</task>
+                </dependents>
+            </task>
+        </request>
+    </taskTree>
+</tree>

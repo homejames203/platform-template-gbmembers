@@ -1,0 +1,65 @@
+<tree schema_version="1.0">
+    <sourceName>Kinetic Request CE</sourceName>
+    <sourceGroup>Submissions > queue</sourceGroup>
+    <type>Tree</type>
+    <status>Active</status>
+    <taskTree builder_version="" schema_version="1.0" version="">
+        <name>Created - Set Observers</name>
+        <author></author>
+        <notes></notes>
+        <lastID>11</lastID>
+        <request>
+            <task definition_id="system_start_v1" id="start" name="Start" x="511" y="41">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters></parameters>
+                <messages></messages>
+                <dependents>
+                    <task label="Parent != Origin" type="Complete" value="!@submission['Parent Id'].to_s.empty? &amp;&amp; !@submission['Origin Id'].to_s.empty? &amp;&amp; @submission['Parent Id'] != @submission['Origin Id']">routine_kinetic_request_ce_submission_get_answers_v1_8</task>
+                </dependents>
+            </task>
+            <task definition_id="routine_kinetic_request_ce_submission_get_answers_v1" id="routine_kinetic_request_ce_submission_get_answers_v1_8" name="Get Parent Values" x="505" y="164">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>true</defers>
+                <deferrable>true</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Space Slug" label="Space Slug" menu="" required="false" tooltip="Slug of the space to find the submission in">&lt;%= @space['Slug']%&gt;</parameter>
+                    <parameter id="Submission Id" label="Submission Id" menu="" required="false" tooltip="Id of the submission to retrieve answers from">&lt;%= @submission['Parent Id']%&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">routine_kinetic_request_ce_submission_update_observers_v1_11</task>
+                </dependents>
+            </task>
+            <task definition_id="routine_kinetic_request_ce_submission_update_observers_v1" id="routine_kinetic_request_ce_submission_update_observers_v1_11" name="Update Observers" x="506" y="275">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>true</defers>
+                <deferrable>true</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Space Slug" label="Space Slug" menu="" required="false" tooltip="Slug of the space where the submission exists">&lt;%= @space['Slug']%&gt;</parameter>
+                    <parameter id="Submission Id" label="Submission Id" menu="" required="true" tooltip="Id of the submission to update">&lt;%= @submission['Id']%&gt;</parameter>
+                    <parameter id="Observing Teams" label="Observing Teams" menu="" required="false" tooltip="JSON array of team names to add to Observing Teams field on Submission">&lt;%=@results['Get Parent Values']['Assigned Team']%&gt;</parameter>
+                    <parameter id="Observing Individuals" label="Observing Individuals" menu="" required="false" tooltip="JSON array of usernames to add to Observing Individuals field on Submission">&lt;%=@results['Get Parent Values']['Assigned Individual']%&gt;</parameter>
+                    <parameter id="Replace Existing" label="Replace Existing" menu="" required="false" tooltip="true or false if existing observers should be replaced">false</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents></dependents>
+            </task>
+        </request>
+    </taskTree>
+</tree>

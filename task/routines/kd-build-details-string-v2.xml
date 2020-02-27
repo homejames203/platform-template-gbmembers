@@ -1,0 +1,219 @@
+<tree schema_version="1.0">
+    <sourceName>-</sourceName>
+    <sourceGroup>-</sourceGroup>
+    <definitionId>routine_kd_build_details_string_v2</definitionId>
+    <type>Global Routine</type>
+    <status>Active</status>
+    <taskTree builder_version="" schema_version="1.0" version="">
+        <name>KD Build Details String v2</name>
+        <author></author>
+        <notes></notes>
+        <lastID>9</lastID>
+        <taskDefinition id="routine_kd_build_details_string_v2" name="KD Build Details String v2" schema_version="1.0" version="1">
+            <visible>false</visible>
+            <deferrable>true</deferrable>
+            <parameters>
+                <parameter id="Values JSON" label="Values JSON" required="false" tooltip="A JSON Formatted String of Q/A Values"></parameter>
+                <parameter id="Submission Id" label="Submission Id" required="false" tooltip="If Values were provided the routine will look up the submission"></parameter>
+                <parameter id="Space Slug" label="Space Slug" required="false" tooltip="The Slug of the Space this submission belongs to"></parameter>
+            </parameters>
+            <handler name="system_tree_call" version="1"></handler>
+            <results format="xml">
+                <result name="LIST" tooltip="List Formatted Answer Values"></result>
+            </results>
+        </taskDefinition>
+        <request>
+            <task definition_id="system_start_v1" id="start" name="Start" x="373" y="89">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters></parameters>
+                <messages></messages>
+                <dependents>
+                    <task label="No Values Provided" type="Complete" value="@inputs['Values JSON'].nil? || @inputs['Values JSON']==&quot;&quot;">kinetic_request_ce_submission_get_answers_v1_2</task>
+                    <task label="Values Provided" type="Complete" value="!@inputs['Values JSON'].nil? &amp;&amp; @inputs['Values JSON'] !=&quot;&quot;">system_junction_v1_5</task>
+                </dependents>
+            </task>
+            <task definition_id="kinetic_request_ce_submission_get_answers_v1" id="kinetic_request_ce_submission_get_answers_v1_2" name="Retrieve Submission Answers" x="168" y="253">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="error_handling" label="Error Handling" menu="Error Message,Raise Error" required="true" tooltip="Determine what to return if an error is encountered.">Error Message</parameter>
+                    <parameter id="space_slug" label="Space Slug" menu="" required="false" tooltip="The Space the submission is being retrieved from."></parameter>
+                    <parameter id="submission_id" label="Submission ID" menu="" required="true" tooltip="The id of the submission to retrieve answers for.">&lt;%=@inputs['Submission Id']%&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">system_junction_v1_5</task>
+                </dependents>
+            </task>
+            <task definition_id="utilities_echo_v1" id="utilities_echo_v1_3" name="JSON" x="792" y="264">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="input" label="Input" menu="" required="true" tooltip="">&lt;%
+    # Default to using Input Values
+    data = @inputs['Values JSON']
+    # If a submission was retrieved use the submission results
+    if @results.has_key? 'Retrieve Submission Answers'
+      data = @results['Retrieve Submission Answers']
+      # Ignore the Handler Error Message
+      if data.has_key? 'Handler Error Message'
+        data.delete 'Handler Error Message'
+      end
+      data = data.to_json
+    end
+    # Parse final JSON output so we can format answers
+    data = JSON.parse(data)
+    # Loop over each value and remove nil's and join arrays
+    result = {}
+
+    # Requested For
+    if data['Requested For Display Name'].nil?
+      result['Requested For'] = data['Requested For']
+    else 
+      result['Requested For'] = "#{data['Requested For']} (#{data['Requested For Display Name']})"
+    end
+
+    # Requested By
+    if data['Requested By'] != data['Requested For']
+      if data['Requested By Display Name'].nil?
+        result['Requested By'] = data['Requested By']
+      else 
+        result['Requested By'] = "#{data['Requested By']} (#{data['Requested By Display Name']})"
+      end
+    end
+
+    # Define omitted fields
+    ommitted_fields = [
+      'Requested By', 
+      'Requested By Display Name', 
+      'Requested For',
+      'Requested For Display Name',
+      'Status',
+      'Discussion Id',
+      'Observing Teams',
+      'Observing Individuals'
+    ]
+
+    # Add each of the remaining fields
+    data.each do |k,v|
+      # If the key is for an omitted field or the value is blank
+      if ommitted_fields.include?(k) || v.nil? || v == ''
+        next
+      # If the field is for a complex type (IE list)
+      elsif v.kind_of?(Array)
+		if v.size &gt; 0
+		  # Check to see if it's a Hash (Attachments)
+		  if v[0].kind_of?(Hash)
+			output = ""
+			v.each_with_index do |val, index|
+		      if val.has_key?('contentType')
+		      	if index == v.size - 1
+		          output &lt;&lt; "Attachment Name: #{val['name']} (#{val['contentType']})"
+		    	else
+		    	  output &lt;&lt; "Attachment Name: #{val['name']} (#{val['contentType']})\n"
+		    	end
+		      end
+		    end
+		    result[k] = output
+			else
+			  result[k] = v.join(", ")
+			end
+		end
+      # If the field is for a date/time
+      elsif v =~ /^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\+00:00$/
+        result[k] = DateTime.parse(v).strftime('%c')
+      # If the field is for a date
+      elsif v =~ /^\d\d\d\d-\d\d-\d\d$/
+        result[k] = DateTime.parse(v).strftime('%D')
+      # If the field is for a time
+      elsif v =~ /^\d\d:\d\d$/
+        result[k] = DateTime.parse(v).strftime('%r')
+      # If the field is a normal field
+      else
+        result[k] = v
+      end
+    end
+    %&gt;&lt;%=result.to_json%&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">utilities_echo_v1_7</task>
+                </dependents>
+            </task>
+            <task definition_id="system_junction_v1" id="system_junction_v1_5" name="Junction" x="583" y="265">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters></parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">utilities_echo_v1_3</task>
+                </dependents>
+            </task>
+            <task definition_id="utilities_echo_v1" id="utilities_echo_v1_7" name="LIST" x="792" y="367">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="input" label="Input" menu="" required="true" tooltip="">&lt;% 
+            data = JSON.parse(@results['JSON']['output'])
+            table = ""
+            data.keys.each do |key|
+              table &lt;&lt; "#{key}: #{data[key]}\n"
+            end
+            %&gt;&lt;%= table %&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">system_tree_return_v1_9</task>
+                </dependents>
+            </task>
+            <task definition_id="system_tree_return_v1" id="system_tree_return_v1_9" name="return" x="797" y="495">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="LIST" label="LIST" menu="" required="false" tooltip="List Formatted Answer Values">&lt;%=@results['LIST']['output']%&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents></dependents>
+            </task>
+        </request>
+    </taskTree>
+</tree>

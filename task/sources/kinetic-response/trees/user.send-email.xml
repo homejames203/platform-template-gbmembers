@@ -1,0 +1,444 @@
+<tree schema_version="1.0">
+    <sourceName>Kinetic Response</sourceName>
+    <sourceGroup>User</sourceGroup>
+    <type>Tree</type>
+    <status>Active</status>
+    <taskTree builder_version="" schema_version="1.0" version="">
+        <name>Send Email</name>
+        <author></author>
+        <notes></notes>
+        <lastID>42</lastID>
+        <request>
+            <task definition_id="system_start_v1" id="start" name="Start" x="32" y="24">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters></parameters>
+                <messages></messages>
+                <dependents>
+                    <task label="" type="Complete" value="">utilities_echo_v1_35</task>
+                </dependents>
+            </task>
+            <task definition_id="routine_kd_notification_send_using_template_v1" id="routine_kd_notification_send_using_template_v1_8" name="Send Email" x="729" y="225">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>true</defers>
+                <deferrable>true</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Recipient List" label="Recipient List" menu="" required="true" tooltip="Comma separated list of recipients (Usernames, SMTP Addresses, and/or Team Names)">&lt;%= @send_to %&gt;</parameter>
+                    <parameter id="Notification Template Name" label="Notification Template Name" menu="" required="true" tooltip="Name of the notification template to use when sending this email">Discussion Email Template</parameter>
+                    <parameter id="JSON Vars" label="JSON Vars" menu="" required="false" tooltip="JSON input of miscellaneous values.  These values are used to replace placeholder content in notification messages.">&lt;%={
+  "Subject" =&gt; @results['Build Vars']['Subject'],
+  "Summary" =&gt; @results['Build Vars']['Summary'],
+  "Body" =&gt; @results['Build Vars']['Body'],
+  "Button Label" =&gt; @results['Build Vars']['Button Label'],
+  "Button Url" =&gt; @results['Build Vars']['Button Url']
+}.to_json%&gt;
+</parameter>
+                    <parameter id="System" label="System" menu="" required="false" tooltip="System to search for ID. Defaults to Request">Kinetic Request</parameter>
+                    <parameter id="Space Slug" label="Space Slug" menu="" required="true" tooltip="Space Slug of the submission to get values for. Used to retrieve Request submissions, notification templates, users.">&lt;%=@results['Space']['Slug']%&gt;</parameter>
+                    <parameter id="ID" label="ID" menu="" required="false" tooltip="Id of the submission to get values for, required if using those or attachments in the message"></parameter>
+                    <parameter id="Admin Kapp Slug" label="Admin Kapp Slug" menu="" required="true" tooltip="Slug of this spaces admin kapp (typically admin)">&lt;%=@results['Admin Kapp Slug']['Value']%&gt;</parameter>
+                    <parameter id="Kapp Slug Initiating Notification" label="Kapp Slug Initiating Notification" menu="" required="true" tooltip="The slug of the Kapp sending the notification (ex: catalog, queue, etc.)">&lt;%=@results['Admin Kapp Slug']['Value']%&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">system_junction_v1_36</task>
+                </dependents>
+            </task>
+            <task definition_id="kinetic_request_ce_cascading_attribute_value_retrieve_v1" id="kinetic_request_ce_cascading_attribute_value_retrieve_v1_9" name="Admin Kapp Slug" x="396" y="22">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="error_handling" label="Error Handling" menu="Error Message,Raise Error" required="true" tooltip="Determine what to return if an error is encountered.">Error Message</parameter>
+                    <parameter id="start_context" label="Start Context" menu="Submission,Form,Kapp,Space" required="true" tooltip="The lowest level to search. If Submission, only a Submission Id is needed">Space</parameter>
+                    <parameter id="end_context" label="End Context" menu="Space,Kapp,Form,Submission" required="true" tooltip="The highest level to search. If Submission, only a Submission Id is needed">Space</parameter>
+                    <parameter id="prop_to_find" label="Property To Find" menu="" required="true" tooltip="The Name of the Field/Attribute to search for a match.">Admin Kapp Slug</parameter>
+                    <parameter id="backup_if_none" label="Backup Value" menu="" required="false" tooltip="If no Field/Attribute value is returned, use this value">admin</parameter>
+                    <parameter id="space_slug" label="Space Slug" menu="" required="false" tooltip="The Slug of the space to find attribute values in.">&lt;%=@results['Space']['Slug']%&gt;</parameter>
+                    <parameter id="kapp_slug" label="Kapp Slug" menu="" required="false" tooltip="The Slug of the kapp to find attribute values in."></parameter>
+                    <parameter id="form_slug" label="Form Slug" menu="" required="false" tooltip="The Slug of the form to find attribute values in."></parameter>
+                    <parameter id="submission_id" label="Submission Id" menu="" required="false" tooltip="The id of the submission to find values in"></parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">kinetic_request_ce_cascading_attribute_value_retrieve_v1_11</task>
+                </dependents>
+            </task>
+            <task definition_id="routine_kinetic_request_ce_space_retrieve_v1" id="routine_kinetic_request_ce_space_retrieve_v1_10" name="Space" x="251" y="22">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>true</defers>
+                <deferrable>true</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Space Slug" label="Space Slug" menu="" required="false" tooltip="Slug of the space to retrieve">&lt;%= @space_slug %&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">kinetic_request_ce_cascading_attribute_value_retrieve_v1_9</task>
+                </dependents>
+            </task>
+            <task definition_id="kinetic_request_ce_cascading_attribute_value_retrieve_v1" id="kinetic_request_ce_cascading_attribute_value_retrieve_v1_11" name="Web Server Url" x="526" y="23">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="error_handling" label="Error Handling" menu="Error Message,Raise Error" required="true" tooltip="Determine what to return if an error is encountered.">Error Message</parameter>
+                    <parameter id="start_context" label="Start Context" menu="Submission,Form,Kapp,Space" required="true" tooltip="The lowest level to search. If Submission, only a Submission Id is needed">Space</parameter>
+                    <parameter id="end_context" label="End Context" menu="Space,Kapp,Form,Submission" required="true" tooltip="The highest level to search. If Submission, only a Submission Id is needed">Space</parameter>
+                    <parameter id="prop_to_find" label="Property To Find" menu="" required="true" tooltip="The Name of the Field/Attribute to search for a match.">Web Server Url</parameter>
+                    <parameter id="backup_if_none" label="Backup Value" menu="" required="false" tooltip="If no Field/Attribute value is returned, use this value">https://kinops.io</parameter>
+                    <parameter id="space_slug" label="Space Slug" menu="" required="false" tooltip="The Slug of the space to find attribute values in.">&lt;%=@results['Space']['Slug']%&gt;</parameter>
+                    <parameter id="kapp_slug" label="Kapp Slug" menu="" required="false" tooltip="The Slug of the kapp to find attribute values in."></parameter>
+                    <parameter id="form_slug" label="Form Slug" menu="" required="false" tooltip="The Slug of the form to find attribute values in."></parameter>
+                    <parameter id="submission_id" label="Submission Id" menu="" required="false" tooltip="The id of the submission to find values in"></parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">routine_kinetic_response_user_notification_vars_40</task>
+                </dependents>
+            </task>
+            <task definition_id="routine_kinetic_request_ce_submission_create_v1" id="routine_kinetic_request_ce_submission_create_v1_21" name="Create Invite Submission" x="1024" y="195">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>true</defers>
+                <deferrable>true</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Space Slug" label="Space Slug" menu="" required="false" tooltip="Slug of the space to create the submission in">&lt;%=@results['Space']['Slug']%&gt;</parameter>
+                    <parameter id="Kapp Slug" label="Kapp Slug" menu="" required="true" tooltip="Slug of the kapp to create the submission in">&lt;%=@results['Admin Kapp Slug']['Value']%&gt;</parameter>
+                    <parameter id="Form Slug" label="Form Slug" menu="" required="true" tooltip="Slug of the form to create the submission in">kinops-discussion-registration</parameter>
+                    <parameter id="Values" label="Values" menu="" required="false" tooltip="JSON object of the form values to be pre-populated">&lt;%={
+  "Email"=&gt;@send_to,
+  "Deferral Token" =&gt; @results['Defer']['deferral_token']
+}.to_json%&gt;</parameter>
+                    <parameter id="Current Page Name" label="Current Page Name" menu="" required="false" tooltip="Name of the Page the Submission to Open to"></parameter>
+                    <parameter id="Current Page Navigation" label="Current Page Navigation" menu="" required="false" tooltip="Sets the current page navigation"></parameter>
+                    <parameter id="Origin Id" label="Origin Id" menu="" required="false" tooltip="Sets the Origin Id"></parameter>
+                    <parameter id="Parent Id" label="Parent Id" menu="" required="false" tooltip="Sets the Parent Id"></parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">routine_kd_notification_send_using_template_v1_23</task>
+                </dependents>
+            </task>
+            <task definition_id="kinetic_request_ce_cascading_attribute_value_retrieve_v1" id="kinetic_request_ce_cascading_attribute_value_retrieve_v1_22" name="Catalog Kapp Slug" x="1021" y="22">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="error_handling" label="Error Handling" menu="Error Message,Raise Error" required="true" tooltip="Determine what to return if an error is encountered.">Error Message</parameter>
+                    <parameter id="start_context" label="Start Context" menu="Submission,Form,Kapp,Space" required="true" tooltip="The lowest level to search. If Submission, only a Submission Id is needed">Space</parameter>
+                    <parameter id="end_context" label="End Context" menu="Space,Kapp,Form,Submission" required="true" tooltip="The highest level to search. If Submission, only a Submission Id is needed">Space</parameter>
+                    <parameter id="prop_to_find" label="Property To Find" menu="" required="true" tooltip="The Name of the Field/Attribute to search for a match.">Catalog Kapp Slug</parameter>
+                    <parameter id="backup_if_none" label="Backup Value" menu="" required="false" tooltip="If no Field/Attribute value is returned, use this value">services</parameter>
+                    <parameter id="space_slug" label="Space Slug" menu="" required="false" tooltip="The Slug of the space to find attribute values in.">&lt;%=@results['Space']['Slug']%&gt;</parameter>
+                    <parameter id="kapp_slug" label="Kapp Slug" menu="" required="false" tooltip="The Slug of the kapp to find attribute values in."></parameter>
+                    <parameter id="form_slug" label="Form Slug" menu="" required="false" tooltip="The Slug of the form to find attribute values in."></parameter>
+                    <parameter id="submission_id" label="Submission Id" menu="" required="false" tooltip="The id of the submission to find values in"></parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">utilities_defer_v1_30</task>
+                </dependents>
+            </task>
+            <task definition_id="routine_kd_notification_send_using_template_v1" id="routine_kd_notification_send_using_template_v1_23" name="Send Invite Email" x="1026" y="314">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>true</defers>
+                <deferrable>true</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Recipient List" label="Recipient List" menu="" required="true" tooltip="Comma separated list of recipients (Usernames, SMTP Addresses, and/or Team Names)">&lt;%=@send_to%&gt;</parameter>
+                    <parameter id="Notification Template Name" label="Notification Template Name" menu="" required="true" tooltip="Name of the notification template to use when sending this email">Discussion Email Template</parameter>
+                    <parameter id="JSON Vars" label="JSON Vars" menu="" required="false" tooltip="JSON input of miscellaneous values.  These values are used to replace placeholder content in notification messages.">&lt;%={
+  "Subject" =&gt; @results['Build Vars']['Subject'],
+  "Summary" =&gt; @results['Build Vars']['Summary'],
+  "Body" =&gt; @results['Build Vars']['Body'],
+  "Button Label" =&gt; @results['Build Vars']['Button Label'],
+  "Button Url" =&gt; "#{@results['Web Server Url']['Value']}/submissions/#{@results['Create Invite Submission']['Submission Id']}"
+}.to_json%&gt;
+
+
+
+</parameter>
+                    <parameter id="System" label="System" menu="" required="false" tooltip="System to search for ID. Defaults to Request">Kinetic Request</parameter>
+                    <parameter id="Space Slug" label="Space Slug" menu="" required="true" tooltip="Space Slug of the submission to get values for. Used to retrieve Request submissions, notification templates, users.">&lt;%=@results['Space']['Slug']%&gt;</parameter>
+                    <parameter id="ID" label="ID" menu="" required="false" tooltip="Id of the submission to get values for, required if using those or attachments in the message">&lt;%=@results['Create Invite Submission']['Submission Id']%&gt;</parameter>
+                    <parameter id="Admin Kapp Slug" label="Admin Kapp Slug" menu="" required="true" tooltip="Slug of this spaces admin kapp (typically admin)">&lt;%=@results['Admin Kapp Slug']['Value']%&gt;</parameter>
+                    <parameter id="Kapp Slug Initiating Notification" label="Kapp Slug Initiating Notification" menu="" required="true" tooltip="The slug of the Kapp sending the notification (ex: catalog, queue, etc.)">&lt;%=@results['Catalog Kapp Slug']['Value']%&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents></dependents>
+            </task>
+            <task definition_id="routine_kinetic_request_ce_user_create_v1" id="routine_kinetic_request_ce_user_create_v1_24" name="Create user" x="875" y="248">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>true</defers>
+                <deferrable>true</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Space Slug" label="Space Slug" menu="" required="false" tooltip="Slug of the space to create the form in">&lt;%=@results['Space']['Slug']%&gt;</parameter>
+                    <parameter id="Username" label="Username" menu="" required="true" tooltip="Username for the user">&lt;%=@results['Retrieve Invite Values']['Email'].downcase%&gt;</parameter>
+                    <parameter id="Password" label="Password" menu="" required="false" tooltip="Password for the user"></parameter>
+                    <parameter id="Space Admin" label="Space Admin" menu="" required="true" tooltip="Make user a space admin">No</parameter>
+                    <parameter id="Email" label="Email" menu="" required="false" tooltip="Email address for the user">&lt;%=@results['Retrieve Invite Values']['Email'].downcase%&gt;</parameter>
+                    <parameter id="Displayed Name" label="Displayed Name" menu="" required="false" tooltip="Displayed Name of the User">&lt;%=@results['Retrieve Invite Values']['First Name'] + " " + @results['Retrieve Invite Values']['Last Name']%&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">routine_kinetic_request_ce_user_update_v1_27</task>
+                </dependents>
+            </task>
+            <task definition_id="routine_kinetic_request_ce_submission_get_answers_v1" id="routine_kinetic_request_ce_submission_get_answers_v1_26" name="Retrieve Invite Values" x="875" y="108">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>true</defers>
+                <deferrable>true</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Space Slug" label="Space Slug" menu="" required="false" tooltip="Slug of the space to find the submission in">&lt;%=@results['Space']['Slug']%&gt;</parameter>
+                    <parameter id="Submission Id" label="Submission Id" menu="" required="false" tooltip="Id of the submission to retrieve answers from">&lt;%=@results['Create Invite Submission']['Submission Id']%&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">routine_kinetic_request_ce_user_create_v1_24</task>
+                </dependents>
+            </task>
+            <task definition_id="routine_kinetic_request_ce_user_update_v1" id="routine_kinetic_request_ce_user_update_v1_27" name="Update Profile Attributes" x="885" y="345">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>true</defers>
+                <deferrable>true</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Space Slug" label="Space Slug" menu="" required="false" tooltip="Slug of the space where the submission exists">&lt;%=@results['Space']['Slug']%&gt;</parameter>
+                    <parameter id="Username" label="Username" menu="" required="true" tooltip="Username of the user to update">&lt;%=@results['Retrieve Invite Values']['Email'].downcase%&gt;</parameter>
+                    <parameter id="Display Name" label="Display Name" menu="" required="false" tooltip="Updated Display Name"></parameter>
+                    <parameter id="Email" label="Email" menu="" required="false" tooltip="Updated Email"></parameter>
+                    <parameter id="Locale" label="Locale" menu="" required="false" tooltip="Updated Locale"></parameter>
+                    <parameter id="Enabled" label="Enabled" menu="" required="false" tooltip="True or False -- if the user should be enabled or not"></parameter>
+                    <parameter id="Space Admin" label="Space Admin" menu="" required="false" tooltip="True or False -- if the user should be a space admin or not"></parameter>
+                    <parameter id="Attributes" label="Attributes" menu="" required="false" tooltip="JSON object of the attributes to update"></parameter>
+                    <parameter id="Profile Attributes" label="Profile Attributes" menu="" required="false" tooltip="JSON object of the profile attributes to update">&lt;%=[
+  {
+   "name" =&gt; "First Name",
+   "values" =&gt; [@results['Retrieve Invite Values']['First Name']]
+  },
+  {
+   "name" =&gt; "Last Name",
+   "values" =&gt; [@results['Retrieve Invite Values']['Last Name']]
+  },
+  {
+   "name" =&gt; "Phone Number",
+   "values" =&gt; [@results['Retrieve Invite Values']['Phone Number']]
+  }
+].to_json%&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">system_junction_v1_36</task>
+                </dependents>
+            </task>
+            <task definition_id="utilities_defer_v1" id="utilities_defer_v1_30" name="Defer" x="1024" y="121">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>true</defers>
+                <deferrable>true</deferrable>
+                <visible>true</visible>
+                <parameters>
+                    <parameter id="deferral_value" label="Initial Deferral Value" menu="" required="false" tooltip=""></parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Create" value="">routine_kinetic_request_ce_submission_create_v1_21</task>
+                    <task label="" type="Complete" value="">routine_kinetic_request_ce_submission_get_answers_v1_26</task>
+                </dependents>
+            </task>
+            <task definition_id="utilities_echo_v1" id="utilities_echo_v1_33" name="Not Supported Discussion Email" x="122" y="208">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>true</visible>
+                <parameters>
+                    <parameter id="input" label="Input" menu="" required="true" tooltip="">&lt;%= {"event" =&gt; @event, "send_to" =&gt; @send_to}.to_json %&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">system_junction_v1_36</task>
+                </dependents>
+            </task>
+            <task definition_id="utilities_echo_v1" id="utilities_echo_v1_35" name="Whitelist Criteria" x="126" y="92">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>true</visible>
+                <parameters>
+                    <parameter id="input" label="Input" menu="" required="true" tooltip="">&lt;%= !['wally@kinops.io','kdadmin@kinops.io'].include?(@send_to) %&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="Blacklisted" type="Complete" value="@results['Whitelist Criteria']['output'] != 'true'">utilities_echo_v1_33</task>
+                    <task label="Whitelisted" type="Complete" value="@results['Whitelist Criteria']['output'] == 'true'">routine_kinetic_request_ce_space_retrieve_v1_10</task>
+                </dependents>
+            </task>
+            <task definition_id="system_junction_v1" id="system_junction_v1_36" name="Completion Junction" x="359" y="352">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters></parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">utilities_echo_v1_38</task>
+                </dependents>
+            </task>
+            <task definition_id="utilities_echo_v1" id="utilities_echo_v1_38" name="Completed Status" x="362" y="451">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>true</visible>
+                <parameters>
+                    <parameter id="input" label="Input" menu="" required="true" tooltip="">&lt;%=@results.has_key?('Build Vars') ? (@results['Build Vars']['Status'] == "Send" ?
+ "Sent Email" : "Did Not Send Email") : "Did Not Send Email"%&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents></dependents>
+            </task>
+            <task definition_id="routine_kinetic_response_user_notification_vars" id="routine_kinetic_response_user_notification_vars_40" name="Build Vars" x="672" y="33">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>true</defers>
+                <deferrable>true</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Web Server Url" label="Web Server Url" menu="" required="true" tooltip="">&lt;%=@results['Web Server Url']['Value']%&gt;</parameter>
+                    <parameter id="Space Slug" label="Space Slug" menu="" required="true" tooltip="">&lt;%=@results['Space']['Slug']%&gt;</parameter>
+                    <parameter id="Send To" label="Send To" menu="" required="true" tooltip="">&lt;%= @send_to %&gt;</parameter>
+                    <parameter id="Event" label="Event" menu="" required="true" tooltip="">&lt;%= @event %&gt;</parameter>
+                    <parameter id="Invited By" label="Invited By" menu="" required="false" tooltip="">&lt;%= @invited_by %&gt;</parameter>
+                    <parameter id="Issue" label="Issue" menu="" required="false" tooltip="">&lt;%= @issue %&gt;</parameter>
+                    <parameter id="Issues" label="Issues" menu="" required="false" tooltip="">&lt;%= @issues %&gt;</parameter>
+                    <parameter id="Messages" label="Messages" menu="" required="false" tooltip="">&lt;%= @messages %&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="Send" type="Complete" value="@results['Build Vars']['Status'] == &quot;Send&quot;">system_noop_v1_41</task>
+                    <task label="Do Not Send" type="Complete" value="@results['Build Vars']['Status'] == &quot;Do Not Send&quot;">system_noop_v1_42</task>
+                </dependents>
+            </task>
+            <task definition_id="system_noop_v1" id="system_noop_v1_41" name="Send" x="816" y="34">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters></parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="Not New User Invite" type="Complete" value="@event != 'new user invitation'">routine_kd_notification_send_using_template_v1_8</task>
+                    <task label="New User Invite" type="Complete" value="@event == 'new user invitation'">kinetic_request_ce_cascading_attribute_value_retrieve_v1_22</task>
+                </dependents>
+            </task>
+            <task definition_id="system_noop_v1" id="system_noop_v1_42" name="Do Not Send Email" x="535" y="183">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters></parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">system_junction_v1_36</task>
+                </dependents>
+            </task>
+        </request>
+    </taskTree>
+</tree>

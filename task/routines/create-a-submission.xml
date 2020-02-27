@@ -1,0 +1,150 @@
+<tree schema_version="1.0">
+    <sourceName>-</sourceName>
+    <sourceGroup>-</sourceGroup>
+    <definitionId>routine_kinetic_request_ce_submission_create_v1</definitionId>
+    <type>Global Routine</type>
+    <status>Active</status>
+    <taskTree builder_version="" schema_version="1.0" version="">
+        <name>Create a Submission</name>
+        <author></author>
+        <notes></notes>
+        <lastID>25</lastID>
+        <taskDefinition id="routine_kinetic_request_ce_submission_create_v1" name="Create a Submission" schema_version="1.0" version="1">
+            <visible>false</visible>
+            <deferrable>true</deferrable>
+            <parameters>
+                <parameter id="Space Slug" label="Space Slug" required="false" tooltip="Slug of the space to create the submission in"></parameter>
+                <parameter id="Kapp Slug" label="Kapp Slug" required="true" tooltip="Slug of the kapp to create the submission in"></parameter>
+                <parameter id="Form Slug" label="Form Slug" required="true" tooltip="Slug of the form to create the submission in"></parameter>
+                <parameter id="Values" label="Values" required="false" tooltip="JSON object of the form values to be pre-populated"></parameter>
+                <parameter id="Current Page Name" label="Current Page Name" required="false" tooltip="Name of the Page the Submission to Open to"></parameter>
+                <parameter id="Current Page Navigation" label="Current Page Navigation" required="false" tooltip="Sets the current page navigation"></parameter>
+                <parameter id="Origin Id" label="Origin Id" required="false" tooltip="Sets the Origin Id"></parameter>
+                <parameter id="Parent Id" label="Parent Id" required="false" tooltip="Sets the Parent Id"></parameter>
+            </parameters>
+            <handler name="system_tree_call" version="1"></handler>
+            <results format="xml">
+                <result name="Submission Id" tooltip="Id of the submission that was created"></result>
+            </results>
+        </taskDefinition>
+        <request>
+            <task definition_id="system_start_v1" id="start" name="Start" x="99" y="66">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters></parameters>
+                <messages></messages>
+                <dependents>
+                    <task label="" type="Complete" value="">kinetic_request_ce_submission_create_v1_21</task>
+                </dependents>
+            </task>
+            <task definition_id="routine_handler_failure_error_process_v1" id="routine_handler_failure_error_process_v1_10" name="Error Process" x="518" y="65">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>true</defers>
+                <deferrable>true</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Error Message" label="Error Message" menu="" required="false" tooltip="Error Message ">&lt;%=@results['Create Submission']['Handler Error Message']%&gt;</parameter>
+                    <parameter id="Handler Name" label="Handler Name" menu="" required="false" tooltip="">kinetic_request_ce_submission_create_v1</parameter>
+                    <parameter id="Run Id" label="Run Id" menu="" required="false" tooltip="">&lt;%=@run['Id']%&gt;</parameter>
+                    <parameter id="Inputs JSON" label="Inputs JSON" menu="" required="false" tooltip="">&lt;%=@inputs.to_json%&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">routine_kinetic_request_ce_submission_create_v1_19</task>
+                </dependents>
+            </task>
+            <task definition_id="routine_kinetic_request_ce_submission_create_v1" id="routine_kinetic_request_ce_submission_create_v1_19" name="Retry" x="703" y="65">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>true</defers>
+                <deferrable>true</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Space Slug" label="Space Slug" menu="" required="false" tooltip="Slug of the space to create the submission in">&lt;%=@results['Error Process']['Space Slug']%&gt;</parameter>
+                    <parameter id="Kapp Slug" label="Kapp Slug" menu="" required="true" tooltip="Slug of the kapp to create the submission in">&lt;%=@results['Error Process']['Kapp Slug']%&gt;</parameter>
+                    <parameter id="Form Slug" label="Form Slug" menu="" required="true" tooltip="Slug of the form to create the submission in">&lt;%=@results['Error Process']['Form Slug']%&gt;</parameter>
+                    <parameter id="Values" label="Values" menu="" required="false" tooltip="JSON object of the form values to be pre-populated">&lt;%=@results['Error Process']['Values']%&gt;</parameter>
+                    <parameter id="Current Page Name" label="Current Page Name" menu="" required="false" tooltip="Name of the Page the Submission to Open to">&lt;%=@results['Error Process']['Current Page Name']%&gt;</parameter>
+                    <parameter id="Current Page Navigation" label="Current Page Navigation" menu="" required="false" tooltip="Sets the current page navigation">&lt;%=@results['Error Process']['Current Page Navigation']%&gt;</parameter>
+                    <parameter id="Origin Id" label="Origin Id" menu="" required="false" tooltip="Sets the Origin Id">&lt;%=@results['Error Process']['Origin Id']%&gt;</parameter>
+                    <parameter id="Parent Id" label="Parent Id" menu="" required="false" tooltip="Sets the Parent Id">&lt;%=@results['Error Process']['Parent Id']%&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">system_tree_return_v1_25</task>
+                </dependents>
+            </task>
+            <task definition_id="kinetic_request_ce_submission_create_v1" id="kinetic_request_ce_submission_create_v1_21" name="Create Submission" x="276" y="62">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="error_handling" label="Error Handling" menu="Error Message,Raise Error" required="true" tooltip="Determine what to return if an error is encountered.">Error Message</parameter>
+                    <parameter id="space_slug" label="Space Slug" menu="" required="false" tooltip="The Space the submission is being retrieved from.">&lt;%=@inputs['Space Slug']%&gt;</parameter>
+                    <parameter id="kapp_slug" label="Kapp Slug:" menu="" required="true" tooltip="The slug of the Kapp the submission is for.">&lt;%=@inputs['Kapp Slug']%&gt;</parameter>
+                    <parameter id="form_slug" label="Form Slug:" menu="" required="true" tooltip="The slug of the form the submission is for.">&lt;%=@inputs['Form Slug']%&gt;</parameter>
+                    <parameter id="values" label="Values:" menu="" required="false" tooltip="JSON map of submission field values.">&lt;%=@inputs['Values']%&gt;</parameter>
+                    <parameter id="current_page_name" label="Current Page Name:" menu="" required="false" tooltip="Set the current page name.">&lt;%=@inputs['Current Page Name']%&gt;</parameter>
+                    <parameter id="current_page_navigation" label="Current Page Navigation:" menu="" required="false" tooltip="Set the current page navigation.">&lt;%=@inputs['Current Page Navigation']%&gt;</parameter>
+                    <parameter id="origin_id" label="Origin ID:" menu="" required="false" tooltip="Set the origin ID.">&lt;%=@inputs['Origin Id']%&gt;</parameter>
+                    <parameter id="parent_id" label="Parent ID:" menu="" required="false" tooltip="Set the parent ID.">&lt;%=@inputs['Parent Id']%&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="Error" type="Complete" value="!@results['Create Submission']['Handler Error Message'].nil?">routine_handler_failure_error_process_v1_10</task>
+                    <task label="No Error" type="Complete" value="@results['Create Submission']['Handler Error Message'].nil?">system_tree_return_v1_24</task>
+                </dependents>
+            </task>
+            <task definition_id="system_tree_return_v1" id="system_tree_return_v1_24" name="Return" x="264" y="215">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Submission Id" label="Submission Id" menu="" required="false" tooltip="Id of the submission that was created">&lt;%=@results['Create Submission']['Submission ID']%&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents></dependents>
+            </task>
+            <task definition_id="system_tree_return_v1" id="system_tree_return_v1_25" name="Return From Error" x="858" y="55">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Submission Id" label="Submission Id" menu="" required="false" tooltip="Id of the submission that was created">&lt;%=@results['Retry']['Submission Id']%&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents></dependents>
+            </task>
+        </request>
+    </taskTree>
+</tree>

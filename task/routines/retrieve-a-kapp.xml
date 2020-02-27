@@ -1,0 +1,150 @@
+<tree schema_version="1.0">
+    <sourceName>-</sourceName>
+    <sourceGroup>-</sourceGroup>
+    <definitionId>routine_kinetic_request_ce_kapp_retrieve_v1</definitionId>
+    <type>Global Routine</type>
+    <status>Active</status>
+    <taskTree builder_version="" schema_version="1.0" version="">
+        <name>Retrieve a Kapp</name>
+        <author></author>
+        <notes></notes>
+        <lastID>18</lastID>
+        <taskDefinition id="routine_kinetic_request_ce_kapp_retrieve_v1" name="Retrieve a Kapp" schema_version="1.0" version="1">
+            <visible>false</visible>
+            <deferrable>true</deferrable>
+            <parameters>
+                <parameter id="Space Slug" label="Space Slug" required="false" tooltip="Slug of the space in which the kapp exists"></parameter>
+                <parameter id="Kapp Slug" label="Kapp Slug" required="true" tooltip="Slug of the kapp to retrieve"></parameter>
+            </parameters>
+            <handler name="system_tree_call" version="1"></handler>
+            <results format="xml">
+                <result name="Name" tooltip="Name of the kapp"></result>
+                <result name="Slug" tooltip="Slug of the kapp"></result>
+                <result name="CreatedAt" tooltip="When the kapp was created"></result>
+                <result name="CreatedBy" tooltip="Who created the kapp"></result>
+                <result name="UpdatedAt" tooltip="When the kapp was updated"></result>
+                <result name="UpdatedBy" tooltip="Who updated the kapp"></result>
+                <result name="Attributes" tooltip="Attributes associated with the kapp"></result>
+            </results>
+        </taskDefinition>
+        <request>
+            <task definition_id="system_start_v1" id="start" name="Start" x="99" y="66">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters></parameters>
+                <messages></messages>
+                <dependents>
+                    <task label="" type="Complete" value="">kinetic_request_ce_kapp_retrieve_v1_18</task>
+                </dependents>
+            </task>
+            <task definition_id="routine_handler_failure_error_process_v1" id="routine_handler_failure_error_process_v1_10" name="Error Process" x="498" y="55">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>true</defers>
+                <deferrable>true</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Error Message" label="Error Message" menu="" required="false" tooltip="Error Message ">&lt;%=@results['Retrieve Kapp']['Handler Error Message']%&gt;</parameter>
+                    <parameter id="Handler Name" label="Handler Name" menu="" required="false" tooltip="">kinetic_request_ce_kapp_retrieve_v1</parameter>
+                    <parameter id="Run Id" label="Run Id" menu="" required="false" tooltip="">&lt;%=@run['Id']%&gt;</parameter>
+                    <parameter id="Inputs JSON" label="Inputs JSON" menu="" required="false" tooltip="">&lt;%=@inputs.to_json%&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">routine_kinetic_request_ce_kapp_retrieve_v1_15</task>
+                </dependents>
+            </task>
+            <task definition_id="routine_kinetic_request_ce_kapp_retrieve_v1" id="routine_kinetic_request_ce_kapp_retrieve_v1_15" name="Retry" x="704" y="66">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>true</defers>
+                <deferrable>true</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Space Slug" label="Space Slug" menu="" required="false" tooltip="Slug of the space in which the kapp exists">&lt;%=@results['Error Process']['Space Slug']%&gt;</parameter>
+                    <parameter id="Kapp Slug" label="Kapp Slug" menu="" required="true" tooltip="Slug of the kapp to retrieve">&lt;%=@results['Error Process']['Kapp Slug']%&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">system_tree_return_v1_16</task>
+                </dependents>
+            </task>
+            <task definition_id="system_tree_return_v1" id="system_tree_return_v1_16" name="Return From Error" x="871" y="54">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Name" label="Name" menu="" required="false" tooltip="Name of the kapp">&lt;%=@results['Retry']['Name']%&gt;</parameter>
+                    <parameter id="Slug" label="Slug" menu="" required="false" tooltip="Slug of the kapp">&lt;%=@results['Retry']['Slug']%&gt;</parameter>
+                    <parameter id="CreatedAt" label="CreatedAt" menu="" required="false" tooltip="When the kapp was created">&lt;%=@results['Retry']['CreatedAt']%&gt;</parameter>
+                    <parameter id="CreatedBy" label="CreatedBy" menu="" required="false" tooltip="Who created the kapp">&lt;%=@results['Retry']['CreatedBy']%&gt;</parameter>
+                    <parameter id="UpdatedAt" label="UpdatedAt" menu="" required="false" tooltip="When the kapp was updated">&lt;%=@results['Retry']['UpdatedAt']%&gt;</parameter>
+                    <parameter id="UpdatedBy" label="UpdatedBy" menu="" required="false" tooltip="Who updated the kapp">&lt;%=@results['Retry']['UpdatedBy']%&gt;</parameter>
+                    <parameter id="Attributes" label="Attributes" menu="" required="false" tooltip="Attributes associated with the kapp">&lt;%=@results['Retry']['Attributes']%&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents></dependents>
+            </task>
+            <task definition_id="system_tree_return_v1" id="system_tree_return_v1_17" name="Return" x="275" y="198">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Name" label="Name" menu="" required="false" tooltip="Name of the kapp">&lt;%=@results['Retrieve Kapp']['Name']%&gt;</parameter>
+                    <parameter id="Slug" label="Slug" menu="" required="false" tooltip="Slug of the kapp">&lt;%=@results['Retrieve Kapp']['Slug']%&gt;</parameter>
+                    <parameter id="CreatedAt" label="CreatedAt" menu="" required="false" tooltip="When the kapp was created">&lt;%=@results['Retrieve Kapp']['CreatedAt']%&gt;</parameter>
+                    <parameter id="CreatedBy" label="CreatedBy" menu="" required="false" tooltip="Who created the kapp">&lt;%=@results['Retrieve Kapp']['CreatedBy']%&gt;</parameter>
+                    <parameter id="UpdatedAt" label="UpdatedAt" menu="" required="false" tooltip="When the kapp was updated">&lt;%=@results['Retrieve Kapp']['UpdatedAt']%&gt;</parameter>
+                    <parameter id="UpdatedBy" label="UpdatedBy" menu="" required="false" tooltip="Who updated the kapp">&lt;%=@results['Retrieve Kapp']['UpdatedBy']%&gt;</parameter>
+                    <parameter id="Attributes" label="Attributes" menu="" required="false" tooltip="Attributes associated with the kapp">&lt;%=@results['Retrieve Kapp']['Attributes']%&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents></dependents>
+            </task>
+            <task definition_id="kinetic_request_ce_kapp_retrieve_v1" id="kinetic_request_ce_kapp_retrieve_v1_18" name="Retrieve Kapp" x="276" y="53">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="error_handling" label="Error Handling" menu="Error Message,Raise Error" required="true" tooltip="Determine what to return if an error is encountered.">Error Message</parameter>
+                    <parameter id="space_slug" label="Space Slug" menu="" required="false" tooltip="The Space the submission is being retrieved from.">&lt;%=@inputs['Space Slug']%&gt;</parameter>
+                    <parameter id="kapp_slug" label="Kapp Slug" menu="" required="true" tooltip="The Kapp being retrieved from.">&lt;%=@inputs['Kapp Slug']%&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="Error" type="Complete" value="!@results['Retrieve Kapp']['Handler Error Message'].nil?">routine_handler_failure_error_process_v1_10</task>
+                    <task label="No Error" type="Complete" value="@results['Retrieve Kapp']['Handler Error Message'].nil?">system_tree_return_v1_17</task>
+                </dependents>
+            </task>
+        </request>
+    </taskTree>
+</tree>

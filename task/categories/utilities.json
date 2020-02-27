@@ -1,0 +1,25 @@
+{
+  "name": "Utilities",
+  "description": "Holds misc helpful utilities",
+  "type": "Stored",
+  "handlers": [
+    "amazon_s3_file_upload_from_datastore_submission_v1",
+    "amazon_s3_file_upload_from_submission_v1",
+    "kinetic_commons_module_v1",
+    "utility_csv_to_xml_v1",
+    "utility_json_to_xml_v1"
+  ],
+  "policyRules": [
+    "Task Developers"
+  ],
+  "trees": [
+    "routine_attach_service_level_management_v2",
+    "routine_handler_failure_error_process_v1",
+    "routine_kd_build_details_string_v2",
+    "routine_kd_form_workflow_routing_error_process",
+    "routine_kd_route_approval_v2",
+    "routine_kd_submission_workflow_routing_error_process",
+    "routine_kd_update_submission_status_v2",
+    "routine_kinetic_request_ce_cascading_attribute_retrieve_v1"
+  ]
+}

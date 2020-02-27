@@ -1,0 +1,147 @@
+<tree schema_version="1.0">
+    <sourceName>-</sourceName>
+    <sourceGroup>-</sourceGroup>
+    <definitionId>routine_kinetic_request_ce_space_retrieve_v1</definitionId>
+    <type>Global Routine</type>
+    <status>Active</status>
+    <taskTree builder_version="" schema_version="1.0" version="">
+        <name>Retrieve a Space</name>
+        <author></author>
+        <notes></notes>
+        <lastID>21</lastID>
+        <taskDefinition id="routine_kinetic_request_ce_space_retrieve_v1" name="Retrieve a Space" schema_version="1.0" version="1">
+            <visible>false</visible>
+            <deferrable>true</deferrable>
+            <parameters>
+                <parameter id="Space Slug" label="Space Slug" required="false" tooltip="Slug of the space to retrieve"></parameter>
+            </parameters>
+            <handler name="system_tree_call" version="1"></handler>
+            <results format="xml">
+                <result name="Name" tooltip="Name of the space"></result>
+                <result name="Slug" tooltip="Slug of the space"></result>
+                <result name="CreatedAt" tooltip="When the space was created"></result>
+                <result name="CreatedBy" tooltip="Who created the space"></result>
+                <result name="UpdatedAt" tooltip="When the space was updated"></result>
+                <result name="UpdatedBy" tooltip="Who updated the space"></result>
+                <result name="Attributes" tooltip="Attributes associated with the space"></result>
+            </results>
+        </taskDefinition>
+        <request>
+            <task definition_id="system_start_v1" id="start" name="Start" x="99" y="66">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters></parameters>
+                <messages></messages>
+                <dependents>
+                    <task label="" type="Complete" value="">kinetic_request_ce_space_retrieve_v1_19</task>
+                </dependents>
+            </task>
+            <task definition_id="routine_handler_failure_error_process_v1" id="routine_handler_failure_error_process_v1_10" name="Error Process" x="498" y="55">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>true</defers>
+                <deferrable>true</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Error Message" label="Error Message" menu="" required="false" tooltip="Error Message ">&lt;%=@results['Retrieve Space']['Handler Error Message']%&gt;</parameter>
+                    <parameter id="Handler Name" label="Handler Name" menu="" required="false" tooltip="">kinetic_request_ce_space_retrieve_v1</parameter>
+                    <parameter id="Run Id" label="Run Id" menu="" required="false" tooltip="">&lt;%=@run['Id']%&gt;</parameter>
+                    <parameter id="Inputs JSON" label="Inputs JSON" menu="" required="false" tooltip="">&lt;%=@inputs.to_json%&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">routine_kinetic_request_ce_space_retrieve_v1_21</task>
+                </dependents>
+            </task>
+            <task definition_id="system_tree_return_v1" id="system_tree_return_v1_16" name="Return From Error" x="869" y="54">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Name" label="Name" menu="" required="false" tooltip="Name of the kapp">&lt;%=@results['Retry']['Name']%&gt;</parameter>
+                    <parameter id="Slug" label="Slug" menu="" required="false" tooltip="Slug of the kapp">&lt;%=@results['Retry']['Slug']%&gt;</parameter>
+                    <parameter id="CreatedAt" label="CreatedAt" menu="" required="false" tooltip="When the kapp was created">&lt;%=@results['Retry']['CreatedAt']%&gt;</parameter>
+                    <parameter id="CreatedBy" label="CreatedBy" menu="" required="false" tooltip="Who created the kapp">&lt;%=@results['Retry']['CreatedBy']%&gt;</parameter>
+                    <parameter id="UpdatedAt" label="UpdatedAt" menu="" required="false" tooltip="When the kapp was updated">&lt;%=@results['Retry']['UpdatedAt']%&gt;</parameter>
+                    <parameter id="UpdatedBy" label="UpdatedBy" menu="" required="false" tooltip="Who updated the kapp">&lt;%=@results['Retry']['UpdatedBy']%&gt;</parameter>
+                    <parameter id="Attributes" label="Attributes" menu="" required="false" tooltip="Attributes associated with the kapp">&lt;%=@results['Retry']['Attributes']%&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents></dependents>
+            </task>
+            <task definition_id="system_tree_return_v1" id="system_tree_return_v1_17" name="Return" x="275" y="208">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Name" label="Name" menu="" required="false" tooltip="Name of the kapp">&lt;%=@results['Retrieve Space']['Name']%&gt;</parameter>
+                    <parameter id="Slug" label="Slug" menu="" required="false" tooltip="Slug of the kapp">&lt;%=@results['Retrieve Space']['Slug']%&gt;</parameter>
+                    <parameter id="CreatedAt" label="CreatedAt" menu="" required="false" tooltip="When the kapp was created">&lt;%=@results['Retrieve Space']['CreatedAt']%&gt;</parameter>
+                    <parameter id="CreatedBy" label="CreatedBy" menu="" required="false" tooltip="Who created the kapp">&lt;%=@results['Retrieve Space']['CreatedBy']%&gt;</parameter>
+                    <parameter id="UpdatedAt" label="UpdatedAt" menu="" required="false" tooltip="When the kapp was updated">&lt;%=@results['Retrieve Space']['UpdatedAt']%&gt;</parameter>
+                    <parameter id="UpdatedBy" label="UpdatedBy" menu="" required="false" tooltip="Who updated the kapp">&lt;%=@results['Retrieve Space']['UpdatedBy']%&gt;</parameter>
+                    <parameter id="Attributes" label="Attributes" menu="" required="false" tooltip="Attributes associated with the kapp">&lt;%=@results['Retrieve Space']['Attributes']%&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents></dependents>
+            </task>
+            <task definition_id="kinetic_request_ce_space_retrieve_v1" id="kinetic_request_ce_space_retrieve_v1_19" name="Retrieve Space" x="276" y="42">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="error_handling" label="Error Handling" menu="Error Message,Raise Error" required="true" tooltip="Determine what to return if an error is encountered.">Error Message</parameter>
+                    <parameter id="space_slug" label="Space Slug" menu="" required="false" tooltip="The Space the submission is being retrieved from.">&lt;%=@inputs['Space Slug']%&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="Error" type="Complete" value="!@results['Retrieve Space']['Handler Error Message'].nil?">routine_handler_failure_error_process_v1_10</task>
+                    <task label="No Error" type="Complete" value="@results['Retrieve Space']['Handler Error Message'].nil?">system_tree_return_v1_17</task>
+                </dependents>
+            </task>
+            <task definition_id="routine_kinetic_request_ce_space_retrieve_v1" id="routine_kinetic_request_ce_space_retrieve_v1_21" name="Retry" x="682" y="64">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>true</defers>
+                <deferrable>true</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Space Slug" label="Space Slug" menu="" required="false" tooltip="Slug of the space to retrieve">&lt;%=@results['Error Process']['Space Slug']%&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">system_tree_return_v1_16</task>
+                </dependents>
+            </task>
+        </request>
+    </taskTree>
+</tree>

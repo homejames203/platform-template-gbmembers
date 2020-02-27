@@ -1,0 +1,15 @@
+{
+  "name": "Messaging - Advanced",
+  "description": "Messaging helpers",
+  "type": "Stored",
+  "handlers": [
+    "kinetic_request_ce_notification_variables_build_v1",
+    "smtp_email_send_v1"
+  ],
+  "policyRules": [
+    "Task Developers"
+  ],
+  "trees": [
+    "routine_kd_notifications_standardize_recipients_v1"
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "name": "Kinetic Task",
+  "description": null,
+  "type": "Stored",
+  "handlers": [
+    "kinetic_task_tree_create_v1",
+    "kinetic_task_tree_delete_v1",
+    "kinetic_task_tree_find_by_name_v1"
+  ],
+  "policyRules": [
+    "Admins"
+  ],
+  "trees": [
+
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "name": "Approvals - Advanced",
+  "description": null,
+  "type": "Stored",
+  "handlers": [
+
+  ],
+  "policyRules": [
+    "Admins"
+  ],
+  "trees": [
+    "routine_kd_individual_approval_create_v1",
+    "routine_kd_team_approval_create_v1"
+  ]
+}

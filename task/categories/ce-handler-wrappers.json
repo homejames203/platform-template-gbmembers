@@ -1,0 +1,48 @@
+{
+  "name": "CE Handler Wrappers",
+  "description": null,
+  "type": "Stored",
+  "handlers": [
+
+  ],
+  "policyRules": [
+    "Form Developers",
+    "Task Developers"
+  ],
+  "trees": [
+    "routine_kinetic_request_ce_cascading_attribute_retrieve_v1",
+    "routine_kinetic_request_ce_datastore_submission_create_v1",
+    "routine_kinetic_request_ce_datastore_submission_retrieve_v1",
+    "routine_kinetic_request_ce_datastore_submission_search_returns_id_list_v1",
+    "routine_kinetic_request_ce_datastore_submission_search_returns_json_v1",
+    "routine_kinetic_request_ce_datastore_submission_search_returns_xml_v1",
+    "routine_kinetic_request_ce_datastore_submission_update_v1",
+    "routine_kinetic_request_ce_form_create_v1",
+    "routine_kinetic_request_ce_form_retrieve_v1",
+    "routine_kinetic_request_ce_kapp_retrieve_v1",
+    "routine_kinetic_request_ce_space_admin_retrieve_v1",
+    "routine_kinetic_request_ce_space_retrieve_v1",
+    "routine_kinetic_request_ce_submission_activity_create_v1",
+    "routine_kinetic_request_ce_submission_activity_update_v1",
+    "routine_kinetic_request_ce_submission_close_v1",
+    "routine_kinetic_request_ce_submission_create_v1",
+    "routine_kinetic_request_ce_submission_get_answers_v1",
+    "routine_kinetic_request_ce_submission_retrieve_associated_attributes_v1",
+    "routine_kinetic_request_ce_submission_retrieve_by_query_v1",
+    "routine_kinetic_request_ce_submission_retrieve_children_returns_ids_v1",
+    "routine_kinetic_request_ce_submission_retrieve_v1",
+    "routine_kinetic_request_ce_submission_search_returns_id_list_v1",
+    "routine_kinetic_request_ce_submission_search_returns_json_v1",
+    "routine_kinetic_request_ce_submission_search_returns_xml_v1",
+    "routine_kinetic_request_ce_submission_update_observers_v1",
+    "routine_kinetic_request_ce_submission_update_v1",
+    "routine_kinetic_request_ce_team_create_v2",
+    "routine_kinetic_request_ce_team_membership_create_v2",
+    "routine_kinetic_request_ce_team_membership_delete_v2",
+    "routine_kinetic_request_ce_team_retrieve_v2",
+    "routine_kinetic_request_ce_team_update_v1",
+    "routine_kinetic_request_ce_user_create_v1",
+    "routine_kinetic_request_ce_user_retrieve_v1",
+    "routine_kinetic_request_ce_user_update_v1"
+  ]
+}

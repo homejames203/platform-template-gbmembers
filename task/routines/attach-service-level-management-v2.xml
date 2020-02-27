@@ -1,0 +1,980 @@
+<tree schema_version="1.0">
+    <sourceName>-</sourceName>
+    <sourceGroup>-</sourceGroup>
+    <definitionId>routine_attach_service_level_management_v2</definitionId>
+    <type>Global Routine</type>
+    <status>Active</status>
+    <taskTree builder_version="" schema_version="1.0" version="">
+        <name>Attach Service Level Management v2</name>
+        <author></author>
+        <notes></notes>
+        <lastID>57</lastID>
+        <taskDefinition id="routine_attach_service_level_management_v2" name="Attach Service Level Management v2" schema_version="1.0" version="1">
+            <visible>false</visible>
+            <deferrable>true</deferrable>
+            <parameters>
+                <parameter id="Space Slug" label="Space Slug" required="false" tooltip="The Slug of the Space this submission belongs to">&lt;%= @space['Slug']%&gt;</parameter>
+                <parameter id="Submission Id" label="Submission Id" required="true" tooltip="Id of the Submission to monitor Service Levels on">&lt;%= @submission['Id']%&gt;</parameter>
+            </parameters>
+            <handler name="system_tree_call" version="1"></handler>
+            <results format="xml"></results>
+        </taskDefinition>
+        <request>
+            <task definition_id="system_start_v1" id="start" name="Start" x="1" y="-22">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters></parameters>
+                <messages></messages>
+                <dependents>
+                    <task label="" type="Complete" value="">routine_kinetic_request_ce_submission_retrieve_v1_32</task>
+                </dependents>
+            </task>
+            <task definition_id="kinetic_request_ce_cascading_attribute_value_retrieve_v1" id="kinetic_request_ce_cascading_attribute_value_retrieve_v1_1" name="Days Due" x="0" y="229">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="error_handling" label="Error Handling" menu="Error Message,Raise Error" required="true" tooltip="Determine what to return if an error is encountered.">Error Message</parameter>
+                    <parameter id="start_context" label="Start Context" menu="Submission,Form,Kapp,Space" required="true" tooltip="The lowest level to search. If Submission, only a Submission Id is needed">Submission</parameter>
+                    <parameter id="end_context" label="End Context" menu="Space,Kapp,Form,Submission" required="true" tooltip="The highest level to search. If Submission, only a Submission Id is needed">Space</parameter>
+                    <parameter id="prop_to_find" label="Property To Find" menu="" required="true" tooltip="The Name of the Field/Attribute to search for a match.">Service Days Due</parameter>
+                    <parameter id="backup_if_none" label="Backup Value" menu="" required="false" tooltip="If no Field/Attribute value is returned, use this value">7</parameter>
+                    <parameter id="space_slug" label="Space Slug" menu="" required="false" tooltip="The Slug of the space to find attribute values in.">&lt;%=@inputs['Space Slug']%&gt;</parameter>
+                    <parameter id="kapp_slug" label="Kapp Slug" menu="" required="false" tooltip="The Slug of the kapp to find attribute values in."></parameter>
+                    <parameter id="form_slug" label="Form Slug" menu="" required="false" tooltip="The Slug of the form to find attribute values in."></parameter>
+                    <parameter id="submission_id" label="Submission Id" menu="" required="false" tooltip="The id of the submission to find values in">&lt;%=@inputs['Submission Id']%&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">kinetic_request_ce_cascading_attribute_value_retrieve_v1_14</task>
+                </dependents>
+            </task>
+            <task definition_id="system_wait_v1" id="system_wait_v1_2" name="Initial Wait" x="0" y="374">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>true</defers>
+                <deferrable>true</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Time to wait" label="Wait time:" menu="" required="true" tooltip="Time you want to wait for deferred task">&lt;%= daysToWait = @results['Days Due']['Value'].to_f / 2
+
+waitTime= (daysToWait*86400 - (DateTime.now.to_time.to_i -  DateTime.parse(@results['Get Submission']['Submitted At']).to_time.to_i)).to_i
+
+waitTime &lt; 0 ? 0 : waitTime%&gt;</parameter>
+                    <parameter id="Time unit" label="Time unit:" menu="Second,Minute,Hour,Day,Week" required="true" tooltip="Unit of measurement for time (Seconds, Minutes, Hours, Days, Weeks)">Second</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">routine_kinetic_request_ce_submission_retrieve_v1_3</task>
+                </dependents>
+            </task>
+            <task definition_id="routine_kinetic_request_ce_submission_retrieve_v1" id="routine_kinetic_request_ce_submission_retrieve_v1_3" name="Get Submission - Status Check 1" x="1" y="439">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>true</defers>
+                <deferrable>true</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Space Slug" label="Space Slug" menu="" required="false" tooltip="Slug of the space to find the submission in">&lt;%=@inputs['Space Slug']%&gt;</parameter>
+                    <parameter id="Submission Id" label="Submission Id" menu="" required="true" tooltip="Id of the submission to retrieve">&lt;%=@inputs['Submission Id']%&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="Closed" type="Complete" value="@results['Get Submission - Status Check 1']['Core State'] == &quot;Closed&quot;">system_tree_return_v1_4</task>
+                    <task label="Open" type="Complete" value="@results['Get Submission - Status Check 1']['Core State'] != &quot;Closed&quot;">routine_kinetic_request_ce_submission_retrieve_children_returns_ids_v1_5</task>
+                </dependents>
+            </task>
+            <task definition_id="system_tree_return_v1" id="system_tree_return_v1_4" name="Return - Met - Initial" x="1" y="584">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters></parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents></dependents>
+            </task>
+            <task definition_id="routine_kinetic_request_ce_submission_retrieve_children_returns_ids_v1" id="routine_kinetic_request_ce_submission_retrieve_children_returns_ids_v1_5" name="1 - Get Children" x="155" y="460">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>true</defers>
+                <deferrable>true</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Space Slug" label="Space Slug" menu="" required="false" tooltip="Slug of the space to search for the submission in">&lt;%=@inputs['Space Slug']%&gt;</parameter>
+                    <parameter id="Submission Id" label="Submission Id" menu="" required="true" tooltip="Id of the submission whose children are to be returned">&lt;%=@inputs['Submission Id']%&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">system_loop_head_v1_6</task>
+                </dependents>
+            </task>
+            <task definition_id="system_loop_head_v1" id="system_loop_head_v1_6" name="1 - Children Head" x="298" y="329">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="data_source" label="Data Source:" menu="" required="true" tooltip="The source that contains the data to use to create each task in the loop.">&lt;%=@results['1 - Get Children']['Id List']%&gt;</parameter>
+                    <parameter id="loop_path" label="Loop Path:" menu="" required="true" tooltip="The XPath statement to indicate what data records to process.">//ids/id</parameter>
+                    <parameter id="var_name" label="Variable Name:" menu="" required="false" tooltip="The local variable name used to represent the data used in loop tasks.">childId</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">system_loop_tail_v1_7</task>
+                    <task label="" type="Complete" value="">routine_kinetic_request_ce_submission_retrieve_v1_8</task>
+                </dependents>
+            </task>
+            <task definition_id="system_loop_tail_v1" id="system_loop_tail_v1_7" name="1 - Children Tail" x="480" y="330">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="type" label="Type:" menu="All,Some,Any" required="true" tooltip="How many loop processes must be completed before continuing?">All</parameter>
+                    <parameter dependsOnId="type" dependsOnValue="Some" id="number" label="Number:" menu="" required="false" tooltip="If some, how many?"></parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">system_wait_v1_20</task>
+                </dependents>
+            </task>
+            <task definition_id="routine_kinetic_request_ce_submission_retrieve_v1" id="routine_kinetic_request_ce_submission_retrieve_v1_8" name="1 - Get Child" x="298" y="434">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>true</defers>
+                <deferrable>true</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Space Slug" label="Space Slug" menu="" required="false" tooltip="Slug of the space to find the submission in">&lt;%=@inputs['Space Slug']%&gt;</parameter>
+                    <parameter id="Submission Id" label="Submission Id" menu="" required="true" tooltip="Id of the submission to retrieve">&lt;%= @childId %&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="Open" type="Complete" value="@results['1 - Get Child']['Core State'] != &quot;Closed&quot;">routine_kinetic_request_ce_submission_get_answers_v1_11</task>
+                    <task label="Closed" type="Complete" value="@results['1 - Get Child']['Core State'] == &quot;Closed&quot;">system_junction_v1_9</task>
+                </dependents>
+            </task>
+            <task definition_id="system_junction_v1" id="system_junction_v1_9" name="1 - Junction - to Tail" x="480" y="429">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters></parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">system_loop_tail_v1_7</task>
+                </dependents>
+            </task>
+            <task definition_id="routine_kinetic_request_ce_submission_get_answers_v1" id="routine_kinetic_request_ce_submission_get_answers_v1_11" name="1 - Get Child Answers" x="297" y="539">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>true</defers>
+                <deferrable>true</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Space Slug" label="Space Slug" menu="" required="false" tooltip="Slug of the space to find the submission in">&lt;%=@inputs['Space Slug']%&gt;</parameter>
+                    <parameter id="Submission Id" label="Submission Id" menu="" required="false" tooltip="Id of the submission to retrieve answers from">&lt;%=@results['1 - Get Child']['Id']%&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">system_junction_v1_19</task>
+                    <task label="Unassigned" type="Complete" value="(&#10;  # Assigned Team Null &amp;&amp; Assigned Individual Don't Exist&#10;  (!@results['1 - Get Child Answers'].has_key?('Assigned Team') &amp;&amp;&#10;  !@results['1 - Get Child Answers'].has_key?('Assigned Individual'))||&#10;  # Assigned Team &amp;&amp; Assigned Individual Null&#10;  (@results['1 - Get Child Answers'].has_key?('Assigned Team') &amp;&amp;&#10;  @results['1 - Get Child Answers']['Assigned Team'].to_s.empty? &amp;&amp;&#10;  @results['1 - Get Child Answers'].has_key?('Assigned Individual') &amp;&amp;&#10;  @results['1 - Get Child Answers']['Assigned Individual'].to_s.empty?)||&#10;  # Assigned Team Doesn't Exist &amp;&amp; Assigned Individaul Null&#10;  (!@results['1 - Get Child Answers'].has_key?('Assigned Team') &amp;&amp;&#10;  (@results['1 - Get Child Answers'].has_key?('Assigned Individual') &amp;&amp; @results['1 - Get Child Answers']['Assigned Individual'].to_s.empty?))||&#10;  # Assigned Individual Doesn't Exist &amp;&amp; Assigned Team Empty&#10;  (!@results['1 - Get Child Answers'].has_key?('Assigned Individual') &amp;&amp;&#10;  (@results['1 - Get Child Answers'].has_key?('Assigned Team') &amp;&amp; @results['1 - Get Child Answers']['Assigned Team'].to_s.empty?))&#10;)">routine_kinetic_request_ce_submission_update_v1_40</task>
+                    <task label="Assigned" type="Complete" value="(@results['1 - Get Child Answers'].has_key?('Assigned Team') &amp;&amp; !@results['1 - Get Child Answers']['Assigned Team'].to_s.empty?) || (@results['1 - Get Child Answers'].has_key?('Assigned Individual') &amp;&amp; !@results['1 - Get Child Answers']['Assigned Individual'].to_s.empty?)">routine_kd_add_submission_discussion_message_v2_55</task>
+                </dependents>
+            </task>
+            <task definition_id="kinetic_request_ce_cascading_attribute_value_retrieve_v1" id="kinetic_request_ce_cascading_attribute_value_retrieve_v1_14" name="Owning Team" x="0" y="296">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="error_handling" label="Error Handling" menu="Error Message,Raise Error" required="true" tooltip="Determine what to return if an error is encountered.">Error Message</parameter>
+                    <parameter id="start_context" label="Start Context" menu="Submission,Form,Kapp,Space" required="true" tooltip="The lowest level to search. If Submission, only a Submission Id is needed">Submission</parameter>
+                    <parameter id="end_context" label="End Context" menu="Space,Kapp,Form,Submission" required="true" tooltip="The highest level to search. If Submission, only a Submission Id is needed">Space</parameter>
+                    <parameter id="prop_to_find" label="Property To Find" menu="" required="true" tooltip="The Name of the Field/Attribute to search for a match.">Owning Team</parameter>
+                    <parameter id="backup_if_none" label="Backup Value" menu="" required="false" tooltip="If no Field/Attribute value is returned, use this value">Default</parameter>
+                    <parameter id="space_slug" label="Space Slug" menu="" required="false" tooltip="The Slug of the space to find attribute values in.">&lt;%=@inputs['Space Slug']%&gt;</parameter>
+                    <parameter id="kapp_slug" label="Kapp Slug" menu="" required="false" tooltip="The Slug of the kapp to find attribute values in."></parameter>
+                    <parameter id="form_slug" label="Form Slug" menu="" required="false" tooltip="The Slug of the form to find attribute values in."></parameter>
+                    <parameter id="submission_id" label="Submission Id" menu="" required="false" tooltip="The id of the submission to find values in">&lt;%=@inputs['Submission Id']%&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">system_wait_v1_2</task>
+                </dependents>
+            </task>
+            <task definition_id="routine_kd_notification_send_using_template_v1" id="routine_kd_notification_send_using_template_v1_17" name="1- Send Reminder - Assigned Team" x="429" y="737">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>true</defers>
+                <deferrable>true</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Recipient List" label="Recipient List" menu="" required="true" tooltip="Comma separated list of recipients (Usernames, SMTP Addresses, and/or Team Names)">&lt;%= @results['1 - Get Child Answers']['Assigned Team'] %&gt;</parameter>
+                    <parameter id="Notification Template Name" label="Notification Template Name" menu="" required="true" tooltip="Name of the notification template to use when sending this email">SLM - Assigned Team</parameter>
+                    <parameter id="JSON Vars" label="JSON Vars" menu="" required="false" tooltip="JSON input of miscellaneous values.  These values are used to replace placeholder content in notification messages.">&lt;%=
+target = ""
+assignedTeam = @results['1 - Get Child Answers'].has_key?('Assigned Team') ? @results['1 - Get Child Answers']['Assigned Team'] : nil
+assignedIndividual = @results['1 - Get Child Answers'].has_key?('Assigned Individual') ? @results['1 - Get Child Answers']['Assigned Individual'] : nil
+
+if assignedTeam.nil? &amp;&amp; !assignedIndividual.nil?
+ target = assignedIndividual
+elsif assignedIndividual.nil?
+ target = assignedTeam
+else
+ target = "#{assignedTeam} &gt; #{assignedIndividual}"
+end
+{
+  "Percent Remaining" =&gt; "50",
+  "Target" =&gt; target
+}.to_json %&gt;</parameter>
+                    <parameter id="System" label="System" menu="" required="false" tooltip="System to search for ID. Defaults to Request">Kinetic Request</parameter>
+                    <parameter id="Space Slug" label="Space Slug" menu="" required="true" tooltip="Space Slug of the submission to get values for. Used to retrieve Request submissions, notification templates, users.">&lt;%=@inputs['Space Slug']%&gt;</parameter>
+                    <parameter id="ID" label="ID" menu="" required="false" tooltip="Id of the submission to get values for, required if using those or attachments in the message">&lt;%=@results['1 - Get Child']['Id']%&gt;</parameter>
+                    <parameter id="Admin Kapp Slug" label="Admin Kapp Slug" menu="" required="true" tooltip="Slug of this spaces admin kapp (typically admin)">&lt;%=@results['Admin Kapp Slug']['Value']%&gt;</parameter>
+                    <parameter id="Kapp Slug Initiating Notification" label="Kapp Slug Initiating Notification" menu="" required="true" tooltip="The slug of the Kapp sending the notification (ex: catalog, queue, etc.)">&lt;%=@results['Queue Kapp Slug']['Value']%&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">system_junction_v1_19</task>
+                </dependents>
+            </task>
+            <task definition_id="system_junction_v1" id="system_junction_v1_19" name="1 - Junction Notify" x="561" y="835">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters></parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">system_junction_v1_9</task>
+                </dependents>
+            </task>
+            <task definition_id="system_wait_v1" id="system_wait_v1_20" name="Secondary Wait" x="484" y="243">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>true</defers>
+                <deferrable>true</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Time to wait" label="Wait time:" menu="" required="true" tooltip="Time you want to wait for deferred task">&lt;%= daysToWait = @results['Days Due']['Value'].to_f * 0.9
+
+waitTime=(daysToWait*86400 - (DateTime.now.to_time.to_i -  DateTime.parse(@results['Get Submission']['Submitted At']).to_time.to_i)).to_i
+
+waitTime &lt; 0 ? 0 : waitTime%&gt;</parameter>
+                    <parameter id="Time unit" label="Time unit:" menu="Second,Minute,Hour,Day,Week" required="true" tooltip="Unit of measurement for time (Seconds, Minutes, Hours, Days, Weeks)">Second</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">routine_kinetic_request_ce_submission_retrieve_v1_27</task>
+                </dependents>
+            </task>
+            <task definition_id="routine_kinetic_request_ce_submission_retrieve_children_returns_ids_v1" id="routine_kinetic_request_ce_submission_retrieve_children_returns_ids_v1_21" name="2 - Get Children" x="484" y="10">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>true</defers>
+                <deferrable>true</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Space Slug" label="Space Slug" menu="" required="false" tooltip="Slug of the space to search for the submission in">&lt;%=@inputs['Space Slug']%&gt;</parameter>
+                    <parameter id="Submission Id" label="Submission Id" menu="" required="true" tooltip="Id of the submission whose children are to be returned">&lt;%=@inputs['Submission Id']%&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">system_loop_head_v1_22</task>
+                </dependents>
+            </task>
+            <task definition_id="system_loop_head_v1" id="system_loop_head_v1_22" name="2 - Children Head" x="738" y="10">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="data_source" label="Data Source:" menu="" required="true" tooltip="The source that contains the data to use to create each task in the loop.">&lt;%=@results['2 - Get Children']['Id List']%&gt;</parameter>
+                    <parameter id="loop_path" label="Loop Path:" menu="" required="true" tooltip="The XPath statement to indicate what data records to process.">//ids/id</parameter>
+                    <parameter id="var_name" label="Variable Name:" menu="" required="false" tooltip="The local variable name used to represent the data used in loop tasks.">childId</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">system_loop_tail_v1_23</task>
+                    <task label="" type="Complete" value="">routine_kinetic_request_ce_submission_retrieve_v1_25</task>
+                </dependents>
+            </task>
+            <task definition_id="system_loop_tail_v1" id="system_loop_tail_v1_23" name="2 - Children Tail" x="902" y="12">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="type" label="Type:" menu="All,Some,Any" required="true" tooltip="How many loop processes must be completed before continuing?">All</parameter>
+                    <parameter dependsOnId="type" dependsOnValue="Some" id="number" label="Number:" menu="" required="false" tooltip="If some, how many?"></parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">system_tree_return_v1_39</task>
+                </dependents>
+            </task>
+            <task definition_id="system_junction_v1" id="system_junction_v1_24" name="2 - Junction - to Tail" x="903" y="132">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters></parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">system_loop_tail_v1_23</task>
+                </dependents>
+            </task>
+            <task definition_id="routine_kinetic_request_ce_submission_retrieve_v1" id="routine_kinetic_request_ce_submission_retrieve_v1_25" name="2 - Get Child" x="738" y="130">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>true</defers>
+                <deferrable>true</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Space Slug" label="Space Slug" menu="" required="false" tooltip="Slug of the space to find the submission in">&lt;%=@inputs['Space Slug']%&gt;</parameter>
+                    <parameter id="Submission Id" label="Submission Id" menu="" required="true" tooltip="Id of the submission to retrieve">&lt;%= @childId %&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="Closed" type="Complete" value="@results['2 - Get Child']['Core State'] == &quot;Closed&quot;">system_junction_v1_24</task>
+                    <task label="Open" type="Complete" value="@results['2 - Get Child']['Core State'] != &quot;Closed&quot;">routine_kinetic_request_ce_submission_get_answers_v1_26</task>
+                </dependents>
+            </task>
+            <task definition_id="routine_kinetic_request_ce_submission_get_answers_v1" id="routine_kinetic_request_ce_submission_get_answers_v1_26" name="2 - Get Child Answers" x="737" y="253">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>true</defers>
+                <deferrable>true</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Space Slug" label="Space Slug" menu="" required="false" tooltip="Slug of the space to find the submission in">&lt;%=@inputs['Space Slug']%&gt;</parameter>
+                    <parameter id="Submission Id" label="Submission Id" menu="" required="false" tooltip="Id of the submission to retrieve answers from">&lt;%=@results['2 - Get Child']['Id']%&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="Assigned" type="Complete" value="(@results['2 - Get Child Answers'].has_key?('Assigned Team') &amp;&amp; !@results['2 - Get Child Answers']['Assigned Team'].to_s.empty?) || (@results['2 - Get Child Answers'].has_key?('Assigned Individual') &amp;&amp; !@results['2 - Get Child Answers']['Assigned Individual'].to_s.empty?)">routine_kd_notification_send_using_template_v1_30</task>
+                    <task label="Unassigned" type="Complete" value="(&#10;  # Assigned Team Null &amp;&amp; Assigned Individual Don't Exist&#10;  (!@results['2 - Get Child Answers'].has_key?('Assigned Team') &amp;&amp;&#10;  !@results['2 - Get Child Answers'].has_key?('Assigned Individual'))||&#10;  # Assigned Team &amp;&amp; Assigned Individual Null&#10;  (@results['2 - Get Child Answers'].has_key?('Assigned Team') &amp;&amp;&#10;  @results['2 - Get Child Answers']['Assigned Team'].to_s.empty? &amp;&amp;&#10;  @results['2 - Get Child Answers'].has_key?('Assigned Individual') &amp;&amp;&#10;  @results['2 - Get Child Answers']['Assigned Individual'].to_s.empty?)||&#10;  # Assigned Team Doesn't Exist &amp;&amp; Assigned Individaul Null&#10;  (!@results['2 - Get Child Answers'].has_key?('Assigned Team') &amp;&amp;&#10;  (@results['2 - Get Child Answers'].has_key?('Assigned Individual') &amp;&amp; @results['2 - Get Child Answers']['Assigned Individual'].to_s.empty?))||&#10;  # Assigned Individual Doesn't Exist &amp;&amp; Assigned Team Empty&#10;  (!@results['2 - Get Child Answers'].has_key?('Assigned Individual') &amp;&amp;&#10;  (@results['2 - Get Child Answers'].has_key?('Assigned Team') &amp;&amp; @results['2 - Get Child Answers']['Assigned Team'].to_s.empty?))&#10;)">routine_kinetic_request_ce_submission_update_v1_46</task>
+                </dependents>
+            </task>
+            <task definition_id="routine_kinetic_request_ce_submission_retrieve_v1" id="routine_kinetic_request_ce_submission_retrieve_v1_27" name="Get Submission - Status Check 2" x="484" y="121">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>true</defers>
+                <deferrable>true</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Space Slug" label="Space Slug" menu="" required="false" tooltip="Slug of the space to find the submission in">&lt;%=@inputs['Space Slug']%&gt;</parameter>
+                    <parameter id="Submission Id" label="Submission Id" menu="" required="true" tooltip="Id of the submission to retrieve">&lt;%=@inputs['Submission Id']%&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="Open" type="Complete" value="@results['Get Submission - Status Check 2']['Core State'] != &quot;Closed&quot;">routine_kinetic_request_ce_submission_retrieve_children_returns_ids_v1_21</task>
+                    <task label="Closed" type="Complete" value="@results['Get Submission - Status Check 2']['Core State'] == &quot;Closed&quot;">system_tree_return_v1_28</task>
+                </dependents>
+            </task>
+            <task definition_id="system_tree_return_v1" id="system_tree_return_v1_28" name="Return - Met - Secondary" x="319" y="130">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters></parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents></dependents>
+            </task>
+            <task definition_id="routine_kd_notification_send_using_template_v1" id="routine_kd_notification_send_using_template_v1_29" name="2- Send Reminder - Service Owner" x="869" y="440">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>true</defers>
+                <deferrable>true</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Recipient List" label="Recipient List" menu="" required="true" tooltip="Comma separated list of recipients (Usernames, SMTP Addresses, and/or Team Names)">&lt;%=@results['Owning Team']['Value']%&gt;</parameter>
+                    <parameter id="Notification Template Name" label="Notification Template Name" menu="" required="true" tooltip="Name of the notification template to use when sending this email">SLM - Service Owner</parameter>
+                    <parameter id="JSON Vars" label="JSON Vars" menu="" required="false" tooltip="JSON input of miscellaneous values.  These values are used to replace placeholder content in notification messages.">&lt;%=
+target = ""
+assignedTeam = @results['2 - Get Child Answers'].has_key?('Assigned Team') ? @results['2 - Get Child Answers']['Assigned Team'] : nil
+assignedIndividual = @results['2 - Get Child Answers'].has_key?('Assigned Individual') ? @results['2 - Get Child Answers']['Assigned Individual'] : nil
+
+if assignedTeam.nil? &amp;&amp; !assignedIndividual.nil?
+ target = assignedIndividual
+elsif assignedIndividual.nil?
+ target = assignedTeam
+else
+ target = "#{assignedTeam} &gt; #{assignedIndividual}"
+end
+
+{
+  "Owning Team" =&gt; @results['Owning Team']['Value'],
+  "Form Name" =&gt; @results['Get Submission']['Form Name'],
+  "Target" =&gt; target,
+  "Percent Remaining" =&gt; "10",
+  "Summary" =&gt; "#{@results['2 - Get Child Answers']['Summary']}",
+  "Details" =&gt; "#{@results['2 - Get Child Answers']['Details']}"
+}.to_json %&gt;</parameter>
+                    <parameter id="System" label="System" menu="" required="false" tooltip="System to search for ID. Defaults to Request">Kinetic Request</parameter>
+                    <parameter id="Space Slug" label="Space Slug" menu="" required="true" tooltip="Space Slug of the submission to get values for. Used to retrieve Request submissions, notification templates, users.">&lt;%=@inputs['Space Slug']%&gt;</parameter>
+                    <parameter id="ID" label="ID" menu="" required="false" tooltip="Id of the submission to get values for, required if using those or attachments in the message">&lt;%=@results['2 - Get Child']['Id']%&gt;</parameter>
+                    <parameter id="Admin Kapp Slug" label="Admin Kapp Slug" menu="" required="true" tooltip="Slug of this spaces admin kapp (typically admin)">&lt;%=@results['Admin Kapp Slug']['Value']%&gt;</parameter>
+                    <parameter id="Kapp Slug Initiating Notification" label="Kapp Slug Initiating Notification" menu="" required="true" tooltip="The slug of the Kapp sending the notification (ex: catalog, queue, etc.)">&lt;%=@results['Queue Kapp Slug']['Value']%&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">routine_kinetic_request_ce_submission_update_observers_v1_52</task>
+                </dependents>
+            </task>
+            <task definition_id="routine_kd_notification_send_using_template_v1" id="routine_kd_notification_send_using_template_v1_30" name="2 - Send Reminder - Assigned Team" x="737" y="374">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>true</defers>
+                <deferrable>true</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Recipient List" label="Recipient List" menu="" required="true" tooltip="Comma separated list of recipients (Usernames, SMTP Addresses, and/or Team Names)">&lt;%= @results['2 - Get Child Answers']['Assigned Team'] %&gt;</parameter>
+                    <parameter id="Notification Template Name" label="Notification Template Name" menu="" required="true" tooltip="Name of the notification template to use when sending this email">SLM - Assigned Team</parameter>
+                    <parameter id="JSON Vars" label="JSON Vars" menu="" required="false" tooltip="JSON input of miscellaneous values.  These values are used to replace placeholder content in notification messages.">&lt;%=
+target = ""
+assignedTeam = @results['2 - Get Child Answers'].has_key?('Assigned Team') ? @results['2 - Get Child Answers']['Assigned Team'] : nil
+assignedIndividual = @results['2 - Get Child Answers'].has_key?('Assigned Individual') ? @results['2 - Get Child Answers']['Assigned Individual'] : nil
+
+if assignedTeam.nil? &amp;&amp; !assignedIndividual.nil?
+ target = assignedIndividual
+elsif assignedIndividual.nil?
+ target = assignedTeam
+else
+ target = "#{assignedTeam} &gt; #{assignedIndividual}"
+end
+{
+  "Percent Remaining" =&gt; "10",
+  "Target" =&gt; target
+}.to_json %&gt;</parameter>
+                    <parameter id="System" label="System" menu="" required="false" tooltip="System to search for ID. Defaults to Request">Kinetic Request</parameter>
+                    <parameter id="Space Slug" label="Space Slug" menu="" required="true" tooltip="Space Slug of the submission to get values for. Used to retrieve Request submissions, notification templates, users.">&lt;%=@inputs['Space Slug']%&gt;</parameter>
+                    <parameter id="ID" label="ID" menu="" required="false" tooltip="Id of the submission to get values for, required if using those or attachments in the message">&lt;%=@results['2 - Get Child']['Id']%&gt;</parameter>
+                    <parameter id="Admin Kapp Slug" label="Admin Kapp Slug" menu="" required="true" tooltip="Slug of this spaces admin kapp (typically admin)">&lt;%=@results['Admin Kapp Slug']['Value']%&gt;</parameter>
+                    <parameter id="Kapp Slug Initiating Notification" label="Kapp Slug Initiating Notification" menu="" required="true" tooltip="The slug of the Kapp sending the notification (ex: catalog, queue, etc.)">&lt;%=@results['Queue Kapp Slug']['Value']%&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">routine_kd_add_submission_discussion_message_v2_57</task>
+                </dependents>
+            </task>
+            <task definition_id="system_junction_v1" id="system_junction_v1_31" name="2 - Junction Notify" x="1208" y="484">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters></parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">system_junction_v1_24</task>
+                </dependents>
+            </task>
+            <task definition_id="routine_kinetic_request_ce_submission_retrieve_v1" id="routine_kinetic_request_ce_submission_retrieve_v1_32" name="Get Submission" x="0" y="33">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>true</defers>
+                <deferrable>true</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Space Slug" label="Space Slug" menu="" required="false" tooltip="Slug of the space to find the submission in">&lt;%=@inputs['Space Slug']%&gt;</parameter>
+                    <parameter id="Submission Id" label="Submission Id" menu="" required="true" tooltip="Id of the submission to retrieve">&lt;%=@inputs['Submission Id']%&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">kinetic_request_ce_cascading_attribute_value_retrieve_v1_42</task>
+                </dependents>
+            </task>
+            <task definition_id="utilities_echo_v1" id="utilities_echo_v1_35" name="COMPLETELY Unassigned" x="4" y="665">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>true</visible>
+                <parameters>
+                    <parameter id="input" label="Input" menu="" required="true" tooltip="">Assign To Default Team / Notify Default team with Warnings</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents></dependents>
+            </task>
+            <task definition_id="utilities_echo_v1" id="utilities_echo_v1_37" name="What about Work Items with/without Due Date" x="97" y="194">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>true</visible>
+                <parameters>
+                    <parameter id="input" label="Input" menu="" required="true" tooltip=""></parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents></dependents>
+            </task>
+            <task definition_id="system_tree_return_v1" id="system_tree_return_v1_39" name="Return" x="1111" y="23">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters></parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents></dependents>
+            </task>
+            <task definition_id="routine_kinetic_request_ce_submission_update_v1" id="routine_kinetic_request_ce_submission_update_v1_40" name="1 - Assign to Default Team" x="143" y="704">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>true</defers>
+                <deferrable>true</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Space Slug" label="Space Slug" menu="" required="false" tooltip="Slug of the space where the submission exists">&lt;%=@inputs['Space Slug']%&gt;</parameter>
+                    <parameter id="Submission Id" label="Submission Id" menu="" required="true" tooltip="Id of the submission to update">&lt;%=@results['1 - Get Child']['Id']%&gt;</parameter>
+                    <parameter id="State" label="State" menu="" required="false" tooltip="Sets the submission state"></parameter>
+                    <parameter id="Values" label="Values" menu="" required="false" tooltip="JSON object of the form values to be pre-populated">&lt;%={
+"Assigned Team" =&gt; "Default"
+}.to_json%&gt;</parameter>
+                    <parameter id="Current Page Name" label="Current Page Name" menu="" required="false" tooltip="Name of the Page the Submission to Open to"></parameter>
+                    <parameter id="Current Page Navigation" label="Current Page Navigation" menu="" required="false" tooltip="Sets the current page navigation"></parameter>
+                    <parameter id="Origin Id" label="Origin Id" menu="" required="false" tooltip="Sets the Origin Id"></parameter>
+                    <parameter id="Parent Id" label="Parent Id" menu="" required="false" tooltip="Sets the Parent Id"></parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">routine_kd_add_submission_discussion_message_v2_54</task>
+                </dependents>
+            </task>
+            <task definition_id="routine_kd_notification_send_using_template_v1" id="routine_kd_notification_send_using_template_v1_41" name="1- Notify Default - No Assigned Team" x="308" y="825">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>true</defers>
+                <deferrable>true</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Recipient List" label="Recipient List" menu="" required="true" tooltip="Comma separated list of recipients (Usernames, SMTP Addresses, and/or Team Names)">Default</parameter>
+                    <parameter id="Notification Template Name" label="Notification Template Name" menu="" required="true" tooltip="Name of the notification template to use when sending this email">SLM - Task Routed To Default Team</parameter>
+                    <parameter id="JSON Vars" label="JSON Vars" menu="" required="false" tooltip="JSON input of miscellaneous values.  These values are used to replace placeholder content in notification messages.">&lt;%={
+ "Percent Remaining" =&gt; "50"
+}.to_json%&gt;</parameter>
+                    <parameter id="System" label="System" menu="" required="false" tooltip="System to search for ID. Defaults to Request">Kinetic Request</parameter>
+                    <parameter id="Space Slug" label="Space Slug" menu="" required="true" tooltip="Space Slug of the submission to get values for. Used to retrieve Request submissions, notification templates, users.">&lt;%=@inputs['Space Slug']%&gt;</parameter>
+                    <parameter id="ID" label="ID" menu="" required="false" tooltip="Id of the submission to get values for, required if using those or attachments in the message">&lt;%=@results['1 - Get Child']['Id']%&gt;</parameter>
+                    <parameter id="Admin Kapp Slug" label="Admin Kapp Slug" menu="" required="true" tooltip="Slug of this spaces admin kapp (typically admin)">&lt;%=@results['Admin Kapp Slug']['Value']%&gt;</parameter>
+                    <parameter id="Kapp Slug Initiating Notification" label="Kapp Slug Initiating Notification" menu="" required="true" tooltip="The slug of the Kapp sending the notification (ex: catalog, queue, etc.)">&lt;%=@results['Queue Kapp Slug']['Value']%&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">system_junction_v1_19</task>
+                </dependents>
+            </task>
+            <task definition_id="kinetic_request_ce_cascading_attribute_value_retrieve_v1" id="kinetic_request_ce_cascading_attribute_value_retrieve_v1_42" name="Admin Kapp Slug" x="1" y="110">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="error_handling" label="Error Handling" menu="Error Message,Raise Error" required="true" tooltip="Determine what to return if an error is encountered.">Error Message</parameter>
+                    <parameter id="start_context" label="Start Context" menu="Submission,Form,Kapp,Space" required="true" tooltip="The lowest level to search. If Submission, only a Submission Id is needed">Submission</parameter>
+                    <parameter id="end_context" label="End Context" menu="Space,Kapp,Form,Submission" required="true" tooltip="The highest level to search. If Submission, only a Submission Id is needed">Space</parameter>
+                    <parameter id="prop_to_find" label="Property To Find" menu="" required="true" tooltip="The Name of the Field/Attribute to search for a match.">Admin Kapp Slug</parameter>
+                    <parameter id="backup_if_none" label="Backup Value" menu="" required="false" tooltip="If no Field/Attribute value is returned, use this value">admin</parameter>
+                    <parameter id="space_slug" label="Space Slug" menu="" required="false" tooltip="The Slug of the space to find attribute values in.">&lt;%=@inputs['Space Slug']%&gt;</parameter>
+                    <parameter id="kapp_slug" label="Kapp Slug" menu="" required="false" tooltip="The Slug of the kapp to find attribute values in."></parameter>
+                    <parameter id="form_slug" label="Form Slug" menu="" required="false" tooltip="The Slug of the form to find attribute values in."></parameter>
+                    <parameter id="submission_id" label="Submission Id" menu="" required="false" tooltip="The id of the submission to find values in">&lt;%=@inputs['Submission Id']%&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">kinetic_request_ce_cascading_attribute_value_retrieve_v1_43</task>
+                </dependents>
+            </task>
+            <task definition_id="kinetic_request_ce_cascading_attribute_value_retrieve_v1" id="kinetic_request_ce_cascading_attribute_value_retrieve_v1_43" name="Queue Kapp Slug" x="4" y="163">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="error_handling" label="Error Handling" menu="Error Message,Raise Error" required="true" tooltip="Determine what to return if an error is encountered.">Error Message</parameter>
+                    <parameter id="start_context" label="Start Context" menu="Submission,Form,Kapp,Space" required="true" tooltip="The lowest level to search. If Submission, only a Submission Id is needed">Submission</parameter>
+                    <parameter id="end_context" label="End Context" menu="Space,Kapp,Form,Submission" required="true" tooltip="The highest level to search. If Submission, only a Submission Id is needed">Space</parameter>
+                    <parameter id="prop_to_find" label="Property To Find" menu="" required="true" tooltip="The Name of the Field/Attribute to search for a match.">Queue Kapp Slug</parameter>
+                    <parameter id="backup_if_none" label="Backup Value" menu="" required="false" tooltip="If no Field/Attribute value is returned, use this value">queue</parameter>
+                    <parameter id="space_slug" label="Space Slug" menu="" required="false" tooltip="The Slug of the space to find attribute values in.">&lt;%=@inputs['Space Slug']%&gt;</parameter>
+                    <parameter id="kapp_slug" label="Kapp Slug" menu="" required="false" tooltip="The Slug of the kapp to find attribute values in."></parameter>
+                    <parameter id="form_slug" label="Form Slug" menu="" required="false" tooltip="The Slug of the form to find attribute values in."></parameter>
+                    <parameter id="submission_id" label="Submission Id" menu="" required="false" tooltip="The id of the submission to find values in">&lt;%=@inputs['Submission Id']%&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">kinetic_request_ce_cascading_attribute_value_retrieve_v1_1</task>
+                </dependents>
+            </task>
+            <task definition_id="routine_kinetic_request_ce_submission_update_v1" id="routine_kinetic_request_ce_submission_update_v1_46" name="2 - Assign to Default Team" x="611" y="399">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>true</defers>
+                <deferrable>true</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Space Slug" label="Space Slug" menu="" required="false" tooltip="Slug of the space where the submission exists">&lt;%=@inputs['Space Slug']%&gt;</parameter>
+                    <parameter id="Submission Id" label="Submission Id" menu="" required="true" tooltip="Id of the submission to update">&lt;%=@results['2 - Get Child']['Id']%&gt;</parameter>
+                    <parameter id="State" label="State" menu="" required="false" tooltip="Sets the submission state"></parameter>
+                    <parameter id="Values" label="Values" menu="" required="false" tooltip="JSON object of the form values to be pre-populated">&lt;%={
+"Assigned Team" =&gt; "Default"
+}.to_json%&gt;</parameter>
+                    <parameter id="Current Page Name" label="Current Page Name" menu="" required="false" tooltip="Name of the Page the Submission to Open to"></parameter>
+                    <parameter id="Current Page Navigation" label="Current Page Navigation" menu="" required="false" tooltip="Sets the current page navigation"></parameter>
+                    <parameter id="Origin Id" label="Origin Id" menu="" required="false" tooltip="Sets the Origin Id"></parameter>
+                    <parameter id="Parent Id" label="Parent Id" menu="" required="false" tooltip="Sets the Parent Id"></parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">routine_kd_add_submission_discussion_message_v2_56</task>
+                </dependents>
+            </task>
+            <task definition_id="routine_kd_notification_send_using_template_v1" id="routine_kd_notification_send_using_template_v1_48" name="2- Notify Default - No Assigned Team" x="748" y="506">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>true</defers>
+                <deferrable>true</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Recipient List" label="Recipient List" menu="" required="true" tooltip="Comma separated list of recipients (Usernames, SMTP Addresses, and/or Team Names)">&lt;%= @results['2 - Get Child Answers']['Assigned Team'] %&gt;</parameter>
+                    <parameter id="Notification Template Name" label="Notification Template Name" menu="" required="true" tooltip="Name of the notification template to use when sending this email">SLM - Task Routed To Default Team</parameter>
+                    <parameter id="JSON Vars" label="JSON Vars" menu="" required="false" tooltip="JSON input of miscellaneous values.  These values are used to replace placeholder content in notification messages.">&lt;%={
+ "Percent Remaining" =&gt; "10"
+}.to_json%&gt;</parameter>
+                    <parameter id="System" label="System" menu="" required="false" tooltip="System to search for ID. Defaults to Request">Kinetic Request</parameter>
+                    <parameter id="Space Slug" label="Space Slug" menu="" required="true" tooltip="Space Slug of the submission to get values for. Used to retrieve Request submissions, notification templates, users.">&lt;%=@inputs['Space Slug']%&gt;</parameter>
+                    <parameter id="ID" label="ID" menu="" required="false" tooltip="Id of the submission to get values for, required if using those or attachments in the message">&lt;%=@results['2 - Get Child']['Id']%&gt;</parameter>
+                    <parameter id="Admin Kapp Slug" label="Admin Kapp Slug" menu="" required="true" tooltip="Slug of this spaces admin kapp (typically admin)">&lt;%=@results['Admin Kapp Slug']['Value']%&gt;</parameter>
+                    <parameter id="Kapp Slug Initiating Notification" label="Kapp Slug Initiating Notification" menu="" required="true" tooltip="The slug of the Kapp sending the notification (ex: catalog, queue, etc.)">&lt;%=@results['Queue Kapp Slug']['Value']%&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">system_junction_v1_31</task>
+                </dependents>
+            </task>
+            <task definition_id="system_wait_v1" id="system_wait_v1_50" name="Testing Wait 1" x="136.6875" y="343.6875">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>true</defers>
+                <deferrable>true</deferrable>
+                <visible>true</visible>
+                <parameters>
+                    <parameter id="Time to wait" label="Wait time:" menu="" required="true" tooltip="Time you want to wait for deferred task">5</parameter>
+                    <parameter id="Time unit" label="Time unit:" menu="Second,Minute,Hour,Day,Week" required="true" tooltip="Unit of measurement for time (Seconds, Minutes, Hours, Days, Weeks)">Second</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">routine_kinetic_request_ce_submission_retrieve_v1_3</task>
+                </dependents>
+            </task>
+            <task definition_id="system_wait_v1" id="system_wait_v1_51" name="Testing Wait 2" x="376" y="241">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>true</defers>
+                <deferrable>true</deferrable>
+                <visible>true</visible>
+                <parameters>
+                    <parameter id="Time to wait" label="Wait time:" menu="" required="true" tooltip="Time you want to wait for deferred task">30</parameter>
+                    <parameter id="Time unit" label="Time unit:" menu="Second,Minute,Hour,Day,Week" required="true" tooltip="Unit of measurement for time (Seconds, Minutes, Hours, Days, Weeks)">Second</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">routine_kinetic_request_ce_submission_retrieve_v1_27</task>
+                </dependents>
+            </task>
+            <task definition_id="routine_kinetic_request_ce_submission_update_observers_v1" id="routine_kinetic_request_ce_submission_update_observers_v1_52" name="Add Service Owner as Observer" x="999" y="409">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>true</defers>
+                <deferrable>true</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Space Slug" label="Space Slug" menu="" required="false" tooltip="Slug of the space where the submission exists">&lt;%=@inputs['Space Slug']%&gt;</parameter>
+                    <parameter id="Submission Id" label="Submission Id" menu="" required="true" tooltip="Id of the submission to update">&lt;%=@results['2 - Get Child']['Id']%&gt;</parameter>
+                    <parameter id="Observing Teams" label="Observing Teams" menu="" required="false" tooltip="JSON array of team names to add to Observing Teams field on Submission">&lt;%=@results['Owning Team']['Value']%&gt;</parameter>
+                    <parameter id="Observing Individuals" label="Observing Individuals" menu="" required="false" tooltip="JSON array of usernames to add to Observing Individuals field on Submission"></parameter>
+                    <parameter id="Replace Existing" label="Replace Existing" menu="" required="false" tooltip="true or false if existing observers should be replaced">false</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">system_junction_v1_31</task>
+                </dependents>
+            </task>
+            <task definition_id="system_join_v1" id="system_join_v1_53" name="Join" x="1041" y="362">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="type" label="Type:" menu="All,Any,Some" required="true" tooltip="How many dependents must be completed before continuing?">Any</parameter>
+                    <parameter dependsOnId="type" dependsOnValue="Some" id="number" label="Number:" menu="" required="false" tooltip="If some, how many?"></parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">system_junction_v1_31</task>
+                </dependents>
+            </task>
+            <task definition_id="routine_kd_add_submission_discussion_message_v2" id="routine_kd_add_submission_discussion_message_v2_54" name="1 - Add Discussion Message Unassigned" x="84" y="827">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>true</defers>
+                <deferrable>true</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Space Slug" label="Space Slug" menu="" required="false" tooltip="The Slug of the Space this submission belongs to">&lt;%=@inputs['Space Slug']%&gt;</parameter>
+                    <parameter id="Submission Id" label="Submission Id" menu="" required="true" tooltip="Id of the Submission to add a message to">&lt;%=@results['1 - Get Child']['Id']%&gt;</parameter>
+                    <parameter id="Message" label="Message" menu="" required="true" tooltip="Discussion Message to create for the given submission">This work order was not assigned to any team or individual, therefore it was re-routed to the "Default" Team for reassignment.</parameter>
+                    <parameter id="Discussion Label" label="Discussion Label" menu="" required="false" tooltip="Label Tag added to discussion if being created via this process">View Task</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">routine_kd_notification_send_using_template_v1_41</task>
+                </dependents>
+            </task>
+            <task definition_id="routine_kd_add_submission_discussion_message_v2" id="routine_kd_add_submission_discussion_message_v2_55" name="1 - Add Discussion Message Assigned Team" x="275" y="693">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>true</defers>
+                <deferrable>true</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Space Slug" label="Space Slug" menu="" required="false" tooltip="The Slug of the Space this submission belongs to">&lt;%=@inputs['Space Slug']%&gt;</parameter>
+                    <parameter id="Submission Id" label="Submission Id" menu="" required="true" tooltip="Id of the Submission to add a message to">&lt;%=@results['1 - Get Child']['Id']%&gt;</parameter>
+                    <parameter id="Message" label="Message" menu="" required="true" tooltip="Discussion Message to create for the given submission">This work order has reached 50% of it's allotted time for completion. Please complete it soon so that the service is delivered on time.</parameter>
+                    <parameter id="Discussion Label" label="Discussion Label" menu="" required="false" tooltip="Label Tag added to discussion if being created via this process">View Task</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">routine_kd_notification_send_using_template_v1_17</task>
+                </dependents>
+            </task>
+            <task definition_id="routine_kd_add_submission_discussion_message_v2" id="routine_kd_add_submission_discussion_message_v2_56" name="2 - Add Discussion Message Unassigned" x="606" y="506">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>true</defers>
+                <deferrable>true</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Space Slug" label="Space Slug" menu="" required="false" tooltip="The Slug of the Space this submission belongs to">&lt;%=@inputs['Space Slug']%&gt;</parameter>
+                    <parameter id="Submission Id" label="Submission Id" menu="" required="true" tooltip="Id of the Submission to add a message to">&lt;%=@results['2 - Get Child']['Id']%&gt;</parameter>
+                    <parameter id="Message" label="Message" menu="" required="true" tooltip="Discussion Message to create for the given submission">This work order was not assigned to any team or individual, therefore it was re-routed to the "Default" Team for reassignment.</parameter>
+                    <parameter id="Discussion Label" label="Discussion Label" menu="" required="false" tooltip="Label Tag added to discussion if being created via this process">View Task</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">routine_kd_notification_send_using_template_v1_48</task>
+                </dependents>
+            </task>
+            <task definition_id="routine_kd_add_submission_discussion_message_v2" id="routine_kd_add_submission_discussion_message_v2_57" name="2 - Add Discussion Message Assigned Team" x="892" y="252">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>true</defers>
+                <deferrable>true</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Space Slug" label="Space Slug" menu="" required="false" tooltip="The Slug of the Space this submission belongs to">&lt;%=@inputs['Space Slug']%&gt;</parameter>
+                    <parameter id="Submission Id" label="Submission Id" menu="" required="true" tooltip="Id of the Submission to add a message to">&lt;%=@results['2 - Get Child']['Id']%&gt;</parameter>
+                    <parameter id="Message" label="Message" menu="" required="true" tooltip="Discussion Message to create for the given submission">This work order has reached 90% of it's allotted time for completion. Please complete it ASAP so that the service is delivered on time.</parameter>
+                    <parameter id="Discussion Label" label="Discussion Label" menu="" required="false" tooltip="Label Tag added to discussion if being created via this process">View Task</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="Assigned == Service Owner" type="Complete" value="@results['2 - Get Child Answers']['Assigned Team'] == @results['Owning Team']['Value']">system_join_v1_53</task>
+                    <task label="Assigned != Service Owner" type="Complete" value="@results['2 - Get Child Answers']['Assigned Team'] != @results['Owning Team']['Value']">routine_kd_notification_send_using_template_v1_29</task>
+                </dependents>
+            </task>
+        </request>
+    </taskTree>
+</tree>

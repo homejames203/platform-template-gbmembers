@@ -1,0 +1,171 @@
+<tree schema_version="1.0">
+    <sourceName>-</sourceName>
+    <sourceGroup>-</sourceGroup>
+    <definitionId>routine_kinetic_discussion_issue_uninvite_v2</definitionId>
+    <type>Global Routine</type>
+    <status>Active</status>
+    <taskTree builder_version="" schema_version="1.0" version="">
+        <name>Remove a Discussion Invite v2</name>
+        <author></author>
+        <notes></notes>
+        <lastID>38</lastID>
+        <taskDefinition id="routine_kinetic_discussion_issue_uninvite_v2" name="Remove a Discussion Invite v2" schema_version="1.0" version="1">
+            <visible>false</visible>
+            <deferrable>true</deferrable>
+            <parameters>
+                <parameter id="Username" label="Username" required="true" tooltip="Username of the User to uninvite"></parameter>
+                <parameter id="Discussion Id" label="Discussion Id" required="true" tooltip="Id of the Discussion to invite the given user to"></parameter>
+                <parameter id="Space Slug" label="Space Slug" required="false" tooltip="Slug of the space the discussion exists in"></parameter>
+            </parameters>
+            <handler name="system_tree_call" version="1"></handler>
+            <results format="xml"></results>
+        </taskDefinition>
+        <request>
+            <task definition_id="system_start_v1" id="start" name="Start" x="109" y="76">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters></parameters>
+                <messages></messages>
+                <dependents>
+                    <task label="" type="Complete" value="">routine_kinetic_request_ce_space_retrieve_v1_34</task>
+                </dependents>
+            </task>
+            <task definition_id="routine_handler_failure_error_process_v1" id="routine_handler_failure_error_process_v1_10" name="Error Process" x="722" y="77">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>true</defers>
+                <deferrable>true</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Error Message" label="Error Message" menu="" required="false" tooltip="Error Message ">&lt;%=@results['Uninvite User']['Handler Error Message']%&gt;</parameter>
+                    <parameter id="Handler Name" label="Handler Name" menu="" required="false" tooltip="">kinetic_response_issue_invite_v1</parameter>
+                    <parameter id="Run Id" label="Run Id" menu="" required="false" tooltip="">&lt;%=@run['Id']%&gt;</parameter>
+                    <parameter id="Inputs JSON" label="Inputs JSON" menu="" required="false" tooltip="">&lt;%=@inputs.to_json%&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">routine_kinetic_discussion_issue_uninvite_v2_33</task>
+                </dependents>
+            </task>
+            <task definition_id="system_tree_return_v1" id="system_tree_return_v1_29" name="Return From Error" x="1024" y="77">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters></parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents></dependents>
+            </task>
+            <task definition_id="system_tree_return_v1" id="system_tree_return_v1_30" name="Return" x="536" y="221">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters></parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents></dependents>
+            </task>
+            <task definition_id="routine_kinetic_discussion_issue_uninvite_v2" id="routine_kinetic_discussion_issue_uninvite_v2_33" name="Retry" x="866" y="88">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>true</defers>
+                <deferrable>true</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Username" label="Username" menu="" required="true" tooltip="Username of the User to uninvite">&lt;%=@results['Error Process']['Username']%&gt;</parameter>
+                    <parameter id="Discussion Id" label="Discussion Id" menu="" required="true" tooltip="Id of the Discussion to invite the given user to">&lt;%=@results['Error Process']['Discussion Id']%&gt;</parameter>
+                    <parameter id="Space Slug" label="Space Slug" menu="" required="false" tooltip="Slug of the space the discussion exists in">&lt;%=@results['Error Process']['Space Slug']%&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">system_tree_return_v1_29</task>
+                </dependents>
+            </task>
+            <task definition_id="routine_kinetic_request_ce_space_retrieve_v1" id="routine_kinetic_request_ce_space_retrieve_v1_34" name="Retrieve Space" x="251" y="77">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>true</defers>
+                <deferrable>true</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Space Slug" label="Space Slug" menu="" required="false" tooltip="Slug of the space to retrieve">&lt;%=@inputs['Space Slug']%&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">utilities_echo_v1_36</task>
+                </dependents>
+            </task>
+            <task definition_id="utilities_echo_v1" id="utilities_echo_v1_36" name="Discussion Server Url" x="405" y="77">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>true</visible>
+                <parameters>
+                    <parameter id="input" label="Input" menu="" required="true" tooltip="">&lt;%
+url = nil
+JSON.parse(@results['Retrieve Space']['Attributes']).each do |attribute|
+  url = attribute["values"][0] if attribute["name"] == 'Discussion Server Url'
+end
+%&gt;&lt;%= url.to_s.strip %&gt;
+</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">kinetic_response_issue_uninvite_v1_38</task>
+                </dependents>
+            </task>
+            <task definition_id="kinetic_response_issue_uninvite_v1" id="kinetic_response_issue_uninvite_v1_38" name="Uninvite User" x="550" y="71">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>true</visible>
+                <parameters>
+                    <parameter id="error_handling" label="Error Handling" menu="Error Message,Raise Error" required="true" tooltip="Determine what to return if an error is encountered.">Error Message</parameter>
+                    <parameter id="api_server" label="API Server" menu="" required="true" tooltip="URL of the Kinetic Response server (https://server/space-slug/kinetic-response).">&lt;%=@results['Discussion Server Url']['output'].to_s.strip%&gt;</parameter>
+                    <parameter id="issue_guid" label="Issue Guid" menu="" required="true" tooltip="The guid of the issue to uninvite from.">&lt;%=@inputs['Discussion Id']%&gt;</parameter>
+                    <parameter id="email" label="Email" menu="" required="true" tooltip="The email of the user to uninvite.">&lt;%=@inputs['Username']%&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="No Error" type="Complete" value="@results['Uninvite User']['Handler Error Message'].nil?">system_tree_return_v1_30</task>
+                    <task label="Error" type="Complete" value="!@results['Uninvite User']['Handler Error Message'].nil?">routine_handler_failure_error_process_v1_10</task>
+                </dependents>
+            </task>
+        </request>
+    </taskTree>
+</tree>

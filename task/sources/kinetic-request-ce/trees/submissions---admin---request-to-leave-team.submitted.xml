@@ -1,0 +1,230 @@
+<tree schema_version="1.0">
+    <sourceName>Kinetic Request CE</sourceName>
+    <sourceGroup>Submissions > admin > request-to-leave-team</sourceGroup>
+    <type>Tree</type>
+    <status>Active</status>
+    <taskTree builder_version="" schema_version="1.0" version="">
+        <name>Submitted</name>
+        <author></author>
+        <notes></notes>
+        <lastID>31</lastID>
+        <request>
+            <task definition_id="system_start_v1" id="start" name="Start" x="198" y="21">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters></parameters>
+                <messages></messages>
+                <dependents>
+                    <task label="" type="Complete" value="">routine_kd_update_submission_status_v2_25</task>
+                </dependents>
+            </task>
+            <task definition_id="routine_kinetic_request_ce_submission_close_v1" id="routine_kinetic_request_ce_submission_close_v1_8" name="Close Submission" x="562" y="551">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>true</defers>
+                <deferrable>true</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Space Slug" label="Space Slug" menu="" required="false" tooltip="Slug of the space the submission exists in">&lt;%= @space['Slug']%&gt;</parameter>
+                    <parameter id="Submission Id" label="Submission Id" menu="" required="true" tooltip="Id of the submission to close">&lt;%= @submission['Id']%&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">utilities_echo_v1_13</task>
+                </dependents>
+            </task>
+            <task definition_id="utilities_echo_v1" id="utilities_echo_v1_13" name="END" x="562" y="661">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="input" label="Input" menu="" required="true" tooltip="">Completed</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents></dependents>
+            </task>
+            <task definition_id="kinetic_request_ce_cascading_attribute_value_retrieve_v1" id="kinetic_request_ce_cascading_attribute_value_retrieve_v1_16" name="Days Due" x="814" y="166">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="error_handling" label="Error Handling" menu="Error Message,Raise Error" required="true" tooltip="Determine what to return if an error is encountered.">Error Message</parameter>
+                    <parameter id="start_context" label="Start Context" menu="Submission,Form,Kapp,Space" required="true" tooltip="The lowest level to search. If Submission, only a Submission Id is needed">Submission</parameter>
+                    <parameter id="end_context" label="End Context" menu="Space,Kapp,Form,Submission" required="true" tooltip="The highest level to search. If Submission, only a Submission Id is needed">Space</parameter>
+                    <parameter id="prop_to_find" label="Property To Find" menu="" required="true" tooltip="The Name of the Field/Attribute to search for a match.">Days Due</parameter>
+                    <parameter id="backup_if_none" label="Backup Value" menu="" required="false" tooltip="If no Field/Attribute value is returned, use this value">3</parameter>
+                    <parameter id="space_slug" label="Space Slug" menu="" required="false" tooltip="The Slug of the space to find attribute values in.">&lt;%= @space['Slug']%&gt;</parameter>
+                    <parameter id="kapp_slug" label="Kapp Slug" menu="" required="false" tooltip="The Slug of the kapp to find attribute values in."></parameter>
+                    <parameter id="form_slug" label="Form Slug" menu="" required="false" tooltip="The Slug of the form to find attribute values in."></parameter>
+                    <parameter id="submission_id" label="Submission Id" menu="" required="false" tooltip="The id of the submission to find values in">&lt;%= @submission['Id']%&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">routine_kd_team_approval_v2_29</task>
+                </dependents>
+            </task>
+            <task definition_id="system_junction_v1" id="system_junction_v1_18" name="Junction" x="563" y="348">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters></parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">routine_kd_update_submission_status_v2_26</task>
+                </dependents>
+            </task>
+            <task definition_id="routine_kd_update_submission_status_v2" id="routine_kd_update_submission_status_v2_25" name="Status - Submitted" x="198" y="110">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>true</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Space Slug" label="Space Slug" menu="" required="false" tooltip="The Slug of the Space this submission belongs to">&lt;%= @space['Slug']%&gt;</parameter>
+                    <parameter id="Submission Id" label="Submission Id" menu="" required="true" tooltip="Id of the Submission that is being updated">&lt;%= @submission['Id']%&gt;</parameter>
+                    <parameter id="Status" label="Status" menu="" required="true" tooltip="Status to set the submission to. (e.g. Submitted, In Progress">Submitted</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">routine_kinetic_request_ce_team_retrieve_v2_27</task>
+                </dependents>
+            </task>
+            <task definition_id="routine_kd_update_submission_status_v2" id="routine_kd_update_submission_status_v2_26" name="Status - Completed" x="561" y="424">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>true</defers>
+                <deferrable>true</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Space Slug" label="Space Slug" menu="" required="false" tooltip="The Slug of the Space this submission belongs to">&lt;%= @space['Slug']%&gt;</parameter>
+                    <parameter id="Submission Id" label="Submission Id" menu="" required="true" tooltip="Id of the Submission that is being updated">&lt;%= @submission['Id']%&gt;</parameter>
+                    <parameter id="Status" label="Status" menu="" required="true" tooltip="Status to set the submission to. (e.g. Submitted, In Progress">&lt;%=@results['Approval']['Decision'] == "Denied" ? "Denied" : "Completed"%&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">routine_kinetic_request_ce_submission_close_v1_8</task>
+                </dependents>
+            </task>
+            <task definition_id="routine_kinetic_request_ce_team_retrieve_v2" id="routine_kinetic_request_ce_team_retrieve_v2_27" name="Retrieve Team" x="209" y="255">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>true</defers>
+                <deferrable>true</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Space Slug" label="Space Slug" menu="" required="false" tooltip="The Slug of the Space this submission belongs to">&lt;%= @space['Slug']%&gt;</parameter>
+                    <parameter id="Team Name" label="Team Name" menu="" required="true" tooltip="Name of the Team to Retrieve">&lt;%= @values['Team Name']%&gt;</parameter>
+                    <parameter id="Return Attributes" label="Return Attributes" menu="" required="false" tooltip="If the function needs to return the teams attributes">false</parameter>
+                    <parameter id="Return Members" label="Return Members" menu="" required="false" tooltip="If the function needs to return the teams members">false</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="Team Exists" type="Complete" value="@results['Retrieve Team']['Exists'].downcase == &quot;true&quot;">routine_kd_build_details_string_v2_28</task>
+                    <task label="Team Doesn't Exist" type="Complete" value="@results['Retrieve Team']['Exists'].downcase != &quot;true&quot;">system_junction_v1_18</task>
+                </dependents>
+            </task>
+            <task definition_id="routine_kd_build_details_string_v2" id="routine_kd_build_details_string_v2_28" name="Build Details" x="814" y="66">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>true</defers>
+                <deferrable>true</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Values JSON" label="Values JSON" menu="" required="false" tooltip="A JSON Formatted String of Q/A Values"></parameter>
+                    <parameter id="Submission Id" label="Submission Id" menu="" required="false" tooltip="If Values were provided the routine will look up the submission">&lt;%= @submission['Id']%&gt;</parameter>
+                    <parameter id="Space Slug" label="Space Slug" menu="" required="false" tooltip="The Slug of the Space this submission belongs to">&lt;%= @space['Slug']%&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">kinetic_request_ce_cascading_attribute_value_retrieve_v1_16</task>
+                </dependents>
+            </task>
+            <task definition_id="routine_kd_team_approval_v2" id="routine_kd_team_approval_v2_29" name="Approval" x="815" y="242">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>true</defers>
+                <deferrable>true</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Space Slug" label="Space Slug" menu="" required="false" tooltip="The Slug of the Space this submission belongs to">&lt;%= @space['Slug']%&gt;</parameter>
+                    <parameter id="Submission Id" label="Submission Id" menu="" required="true" tooltip="Id of the parent submission">&lt;%= @submission['Id']%&gt;</parameter>
+                    <parameter id="Team Name" label="Team Name" menu="" required="true" tooltip="Approval Team Name">&lt;%= @values['Team Name']%&gt;</parameter>
+                    <parameter id="Summary" label="Summary" menu="" required="true" tooltip="Short description for approver (used in submission label and email subject)">&lt;%= @values['Requested By']%&gt; has asked to leave the &lt;%= @values['Team Name']%&gt; Team</parameter>
+                    <parameter id="Details" label="Details" menu="" required="true" tooltip="Long description for approver">&lt;%=@results['Build Details']['LIST']%&gt;</parameter>
+                    <parameter id="Approval Form Slug" label="Approval Form Slug" menu="" required="true" tooltip="Slug of the form the approval is created for">approval</parameter>
+                    <parameter id="Days Due" label="Days Due" menu="" required="true" tooltip="Number of days from now the approval is to be completed by">&lt;%=@results['Days Due']['Value']%&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="Denied" type="Complete" value="@results['Approval']['Decision'] != &quot;Approved&quot;">system_junction_v1_18</task>
+                    <task label="Approved" type="Complete" value="@results['Approval']['Decision'] == &quot;Approved&quot;">routine_kinetic_request_ce_team_membership_delete_v2_31</task>
+                </dependents>
+            </task>
+            <task definition_id="routine_kinetic_request_ce_team_membership_delete_v2" id="routine_kinetic_request_ce_team_membership_delete_v2_31" name="Remove Member" x="1024" y="336">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>true</defers>
+                <deferrable>true</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Space Slug" label="Space Slug" menu="" required="false" tooltip="Slug of the space the user exists in">&lt;%= @space['Slug']%&gt;</parameter>
+                    <parameter id="Team Name" label="Team Name" menu="" required="true" tooltip="Name of the Team to Retrieve">&lt;%= @values['Team Name']%&gt;</parameter>
+                    <parameter id="Username" label="Username" menu="" required="true" tooltip="Username of the user to add to the given team">&lt;%= @values['Requested By']%&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">system_junction_v1_18</task>
+                </dependents>
+            </task>
+        </request>
+    </taskTree>
+</tree>

@@ -1,0 +1,377 @@
+<tree schema_version="1.0">
+    <sourceName>-</sourceName>
+    <sourceGroup>-</sourceGroup>
+    <definitionId>routine_kd_individual_approval_create_v1</definitionId>
+    <type>Global Routine</type>
+    <status>Active</status>
+    <taskTree builder_version="" schema_version="1.0" version="">
+        <name>KD Individual Approval Create</name>
+        <author></author>
+        <notes></notes>
+        <lastID>88</lastID>
+        <taskDefinition id="routine_kd_individual_approval_create_v1" name="KD Individual Approval Create" schema_version="1.0" version="1">
+            <visible>false</visible>
+            <deferrable>true</deferrable>
+            <parameters>
+                <parameter id="Space Slug" label="Space Slug" required="false" tooltip="Slug of the space the approval is created in"></parameter>
+                <parameter id="Kapp Slug" label="Kapp Slug" required="true" tooltip="Slug of the kapp the approval is created in"></parameter>
+                <parameter id="Approval Form Slug" label="Approval Form Slug" required="true" tooltip="Slug of the form the approval is created for"></parameter>
+                <parameter id="Approver Id" label="Approver Id" required="true" tooltip="The Id of the approver who the approval will be assigned to"></parameter>
+                <parameter id="Summary" label="Summary" required="true" tooltip="A summary of what is being approved"></parameter>
+                <parameter id="Details" label="Details" required="true" tooltip="A description of what is being approved "></parameter>
+                <parameter id="Days Due" label="Days Due" required="true" tooltip="Number of days from now the approval is to be completed by"></parameter>
+                <parameter id="Originating System" label="Originating System" required="true" tooltip="Source of parent record (Kinetic Core, Salesforce...etc)"></parameter>
+                <parameter id="Originating Id" label="Originating Id" required="true" tooltip="Id of originating systems record"></parameter>
+                <parameter id="Originating Url" label="Originating Url" required="false" tooltip="Url to the originating systems record"></parameter>
+                <parameter id="System Input" label="System Input" required="false" tooltip="Structured data that can be leveraged by the approval record"></parameter>
+            </parameters>
+            <handler name="system_tree_call" version="1"></handler>
+            <results format="xml">
+                <result name="Decision" tooltip="The approvers decision (typically “Approved” or “Denied”)"></result>
+                <result name="Denial Reason" tooltip="The reason given for why an approval was denied"></result>
+                <result name="Notes for Customer" tooltip="Any additional comments the approver provided"></result>
+                <result name="Approver Id" tooltip="The Id of the approver who completed the approval"></result>
+                <result name="Approval Submission Id" tooltip="The Id of the approval submission"></result>
+                <result name="Fields JSON" tooltip="A JSON map of questions that were answered on the approval record"></result>
+            </results>
+        </taskDefinition>
+        <request>
+            <task definition_id="system_start_v1" id="start" name="Start" x="452" y="66">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters></parameters>
+                <messages></messages>
+                <dependents>
+                    <task label="" type="Complete" value="">routine_kd_verify_individual_assignment_v2_85</task>
+                </dependents>
+            </task>
+            <task definition_id="utilities_defer_v1" id="utilities_defer_v1_4" name="Approval" x="463" y="286">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>true</defers>
+                <deferrable>true</deferrable>
+                <visible>true</visible>
+                <parameters>
+                    <parameter id="deferral_value" label="Initial Deferral Value" menu="" required="false" tooltip=""></parameter>
+                </parameters>
+                <messages>
+                    <message type="Create">Approval Sent to: &lt;%=@results['Verify Assignment']['Assigned Individual'].nil? ? "#{@results['Verify Assignment']['Assigned Team Display Name']} Team" : @results['Verify Assignment']['Assigned Individual Display Name']%&gt;</message>
+                    <message type="Update">&lt;%=@trigger['Message']%&gt;</message>
+                    <message type="Complete">Approval Completed</message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">routine_kinetic_request_ce_submission_get_answers_v1_67</task>
+                    <task label="" type="Create" value="">routine_kinetic_request_ce_submission_create_v1_70</task>
+                    <task label="Activity Update" type="Update" value="@trigger['Message'] == &quot;Activity Update&quot; &amp;&amp; @results.has_key?('Create Activity Record') &amp;&amp; @results['Create Activity Record'].has_key?('Id') &amp;&amp; !@results['Create Activity Record']['Id'].nil?">routine_kd_update_activity_record_with_latest_approval_information_v2_86</task>
+                </dependents>
+            </task>
+            <task definition_id="utilities_echo_v1" id="utilities_echo_v1_50" name="Developer Notes" x="284" y="84">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>true</visible>
+                <parameters>
+                    <parameter id="input" label="Input" menu="" required="true" tooltip="">This routine is designed to create an Individual Approval in Kinetic Core. This routine is designed to be agnostic of what system is creating the approval (e.g. it doesn't necessarily need to be originated via a Kinetic Request Portal Submission)
+                
+                Name: KD Individual Approval Create
+                Def: routine_kd_individual_approval_create_v1</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents></dependents>
+            </task>
+            <task definition_id="routine_kinetic_request_ce_submission_get_answers_v1" id="routine_kinetic_request_ce_submission_get_answers_v1_67" name="Retrieve Approval Answers" x="463" y="385">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>true</defers>
+                <deferrable>true</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Space Slug" label="Space Slug" menu="" required="false" tooltip="Slug of the space to find the submission in">&lt;%=@inputs['Space Slug']%&gt;</parameter>
+                    <parameter id="Submission Id" label="Submission Id" menu="" required="false" tooltip="Id of the submission to retrieve answers from">&lt;%=@results['Create Approval']['Submission Id']%&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">routine_kinetic_request_ce_submission_update_v1_69</task>
+                    <task label="Has Notes for Customer" type="Complete" value="(@results['Retrieve Approval Answers'].has_key?('Notes for Customer') &amp;&amp; !@results['Retrieve Approval Answers']['Notes for Customer'].nil?) || @results['Retrieve Approval Answers']['Decision'] == &quot;Denied&quot;">routine_kinetic_request_ce_submission_get_answers_v1_74</task>
+                </dependents>
+            </task>
+            <task definition_id="routine_kinetic_request_ce_submission_update_v1" id="routine_kinetic_request_ce_submission_update_v1_69" name="Close Approval" x="452" y="547">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>true</defers>
+                <deferrable>true</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Space Slug" label="Space Slug" menu="" required="false" tooltip="Slug of the space where the submission exists">&lt;%=@inputs['Space Slug']%&gt;</parameter>
+                    <parameter id="Submission Id" label="Submission Id" menu="" required="true" tooltip="Id of the submission to update">&lt;%=@results['Create Approval']['Submission Id']%&gt;</parameter>
+                    <parameter id="State" label="State" menu="" required="false" tooltip="Sets the submission state">Closed</parameter>
+                    <parameter id="Values" label="Values" menu="" required="false" tooltip="JSON object of the form values to be pre-populated"></parameter>
+                    <parameter id="Current Page Name" label="Current Page Name" menu="" required="false" tooltip="Name of the Page the Submission to Open to"></parameter>
+                    <parameter id="Current Page Navigation" label="Current Page Navigation" menu="" required="false" tooltip="Sets the current page navigation"></parameter>
+                    <parameter id="Origin Id" label="Origin Id" menu="" required="false" tooltip="Sets the Origin Id"></parameter>
+                    <parameter id="Parent Id" label="Parent Id" menu="" required="false" tooltip="Sets the Parent Id"></parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">routine_kd_update_activity_record_with_latest_approval_information_v2_88</task>
+                </dependents>
+            </task>
+            <task definition_id="routine_kinetic_request_ce_submission_create_v1" id="routine_kinetic_request_ce_submission_create_v1_70" name="Create Approval" x="704" y="286">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>true</defers>
+                <deferrable>true</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Space Slug" label="Space Slug" menu="" required="false" tooltip="Slug of the space to create the submission in">&lt;%=@inputs['Space Slug']%&gt;</parameter>
+                    <parameter id="Kapp Slug" label="Kapp Slug" menu="" required="true" tooltip="Slug of the kapp to create the submission in">&lt;%=@inputs['Kapp Slug']%&gt;</parameter>
+                    <parameter id="Form Slug" label="Form Slug" menu="" required="true" tooltip="Slug of the form to create the submission in">&lt;%=@inputs['Approval Form Slug']%&gt;</parameter>
+                    <parameter id="Values" label="Values" menu="" required="false" tooltip="JSON object of the form values to be pre-populated">&lt;%=
+              # Build Due Date
+              dueDate = (DateTime.now + @inputs['Days Due'].to_f).iso8601
+              {
+                "Assigned Team" =&gt; @results['Verify Assignment']['Assigned Team'],
+                "Assigned Team Display Name" =&gt; @results['Verify Assignment']['Assigned Team Display Name'],
+                "Assigned Individual" =&gt; @results['Verify Assignment']['Assigned Individual'],
+                "Assigned Individual Display Name"  =&gt; @results['Verify Assignment']['Assigned Individual Display Name'],
+                "Deferral Token"  =&gt; @results['Approval']['deferral_token'],
+                "Details"  =&gt; @inputs['Details'],
+                "Due Date" =&gt; dueDate,
+                "Originating Id" =&gt; @inputs['Originating Id'],
+                "Originating System" =&gt; @inputs['Originating System'],
+                "Originating Url" =&gt; @inputs['Originating Url'],
+                "Status" =&gt; "Open",
+                "Summary"  =&gt; @inputs['Summary'],
+                "System Input" =&gt; @inputs['System Input'],
+                "Discussion Id" =&gt; ""
+              }.to_json
+        %&gt;</parameter>
+                    <parameter id="Current Page Name" label="Current Page Name" menu="" required="false" tooltip="Name of the Page the Submission to Open to"></parameter>
+                    <parameter id="Current Page Navigation" label="Current Page Navigation" menu="" required="false" tooltip="Sets the current page navigation"></parameter>
+                    <parameter id="Origin Id" label="Origin Id" menu="" required="false" tooltip="Sets the Origin Id">&lt;%= @inputs['Originating System'] == "Kinetic Core" ? @inputs['Originating Id'] : nil%&gt;</parameter>
+                    <parameter id="Parent Id" label="Parent Id" menu="" required="false" tooltip="Sets the Parent Id">&lt;%= @inputs['Originating System'] == "Kinetic Core" ? @inputs['Originating Id'] : nil%&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Create" value="">routine_kinetic_request_ce_submission_activity_create_v1_75</task>
+                    <task label="Assignment Error" type="Complete" value="@inputs['Approver Id'].to_s.empty? || @inputs['Approver Id'] != @results['Verify Assignment']['Assigned Individual']">routine_kd_add_submission_discussion_message_v2_87</task>
+                </dependents>
+            </task>
+            <task definition_id="system_tree_return_v1" id="system_tree_return_v1_71" name="Return" x="781" y="551">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Decision" label="Decision" menu="" required="false" tooltip="The approvers decision (typically “Approved” or “Denied”)">&lt;%=@results['Retrieve Approval Answers']['Decision']%&gt;</parameter>
+                    <parameter id="Denial Reason" label="Denial Reason" menu="" required="false" tooltip="The reason given for why an approval was denied">&lt;%=@results['Retrieve Approval Answers']['Denial Reason']%&gt;</parameter>
+                    <parameter id="Notes for Customer" label="Notes for Customer" menu="" required="false" tooltip="Any additional comments the approver provided">&lt;%=@results['Retrieve Approval Answers']['Notes for Customer']%&gt;</parameter>
+                    <parameter id="Approver Id" label="Approver Id" menu="" required="false" tooltip="The Id of the approver who completed the approval">&lt;%=@results['Retrieve Approval Answers']['Assigned Individual']%&gt;</parameter>
+                    <parameter id="Approval Submission Id" label="Approval Submission Id" menu="" required="false" tooltip="The Id of the approval submission">&lt;%=@results['Create Approval']['Submission Id']%&gt;</parameter>
+                    <parameter id="Fields JSON" label="Fields JSON" menu="" required="false" tooltip="A JSON map of questions that were answered on the approval record">&lt;%=@results['Retrieve Approval Answers'].to_json%&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents></dependents>
+            </task>
+            <task definition_id="routine_kd_notification_send_using_template_v1" id="routine_kd_notification_send_using_template_v1_73" name="Send Notes to Customer" x="880" y="374">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>true</defers>
+                <deferrable>true</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Recipient List" label="Recipient List" menu="" required="true" tooltip="Comma separated list of recipients (Usernames, SMTP Addresses, and/or Team Names)">&lt;%=@results['Retrieve Orig Submission']['Requested For']%&gt;</parameter>
+                    <parameter id="Notification Template Name" label="Notification Template Name" menu="" required="true" tooltip="">&lt;%=@results['Retrieve Approval Answers']['Decision'] == "Denied" ? "Approval Denied" : "Service Note" %&gt;</parameter>
+                    <parameter id="JSON Vars" label="JSON Vars" menu="" required="false" tooltip="JSON input of miscellaneous values.  These values are used to replace placeholder content in notification messages.">&lt;%={
+          "Note" =&gt; @results['Retrieve Approval Answers']['Notes for Customer'] || "N/A",
+          "Denial Reason" =&gt; @results['Retrieve Approval Answers']['Denial Reason']
+        }.to_json %&gt;</parameter>
+                    <parameter id="System" label="System" menu="" required="false" tooltip="System to search for ID. Defaults to Request">Kinetic Request</parameter>
+                    <parameter id="Space Slug" label="Space Slug" menu="" required="true" tooltip="Space Slug of the submission to get values for. Used to retrieve Request submissions, notification templates, users.">&lt;%=@inputs['Space Slug']%&gt;</parameter>
+                    <parameter id="ID" label="ID" menu="" required="false" tooltip="Id of the submission to get values for, required if using those or attachments in the message">&lt;%=@inputs['Originating Id']%&gt;</parameter>
+                    <parameter id="Admin Kapp Slug" label="Admin Kapp Slug" menu="" required="true" tooltip="Slug of this spaces admin kapp (typically admin)">admin</parameter>
+                    <parameter id="Kapp Slug Initiating Notification" label="Kapp Slug Initiating Notification" menu="" required="true" tooltip="The slug of the Kapp sending the notification (ex: catalog, queue, etc.)">&lt;%=@inputs['Kapp Slug']%&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents></dependents>
+            </task>
+            <task definition_id="routine_kinetic_request_ce_submission_get_answers_v1" id="routine_kinetic_request_ce_submission_get_answers_v1_74" name="Retrieve Orig Submission" x="705" y="389">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>true</defers>
+                <deferrable>true</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Space Slug" label="Space Slug" menu="" required="false" tooltip="Slug of the space to find the submission in">&lt;%=@inputs['Space Slug']%&gt;</parameter>
+                    <parameter id="Submission Id" label="Submission Id" menu="" required="false" tooltip="Id of the submission to retrieve answers from">&lt;%=@inputs['Originating Id']%&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">routine_kd_notification_send_using_template_v1_73</task>
+                </dependents>
+            </task>
+            <task definition_id="routine_kinetic_request_ce_submission_activity_create_v1" id="routine_kinetic_request_ce_submission_activity_create_v1_75" name="Create Activity Record" x="902" y="165">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>true</defers>
+                <deferrable>true</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Space Slug" label="Space Slug" menu="" required="false" tooltip="Slug of the space to create the form in">&lt;%=@inputs['Space Slug']%&gt;</parameter>
+                    <parameter id="Submission Id" label="Submission Id" menu="" required="true" tooltip="The Id of the Submission for which an activity record should be created">&lt;%=@inputs['Originating Id']%&gt;</parameter>
+                    <parameter id="Label" label="Label" menu="" required="false" tooltip="Label for the Submission Activity Record">Approval</parameter>
+                    <parameter id="Description" label="Description" menu="" required="false" tooltip="Description for the Submission Activity Record">An Approval Task Was Needed for Fulfillment</parameter>
+                    <parameter id="Type" label="Type" menu="" required="false" tooltip="Type of Submission Activity Record">Approval</parameter>
+                    <parameter id="Data" label="Data" menu="" required="false" tooltip="Data for the Submission Activity Record (used by the renderer, sometimes complex JSON objects)">&lt;%=
+{
+  "Assigned Team" =&gt; @results['Verify Assignment']['Assigned Team'],
+  "Assigned Individual" =&gt; @results['Verify Assignment']['Assigned Individual'],
+  "Status" =&gt; "Pending Approval",
+  "Comments" =&gt; nil,
+  "Decision" =&gt; nil,
+  "Denial Reason" =&gt; nil
+}.to_json %&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">routine_kinetic_request_ce_submission_update_observers_v1_82</task>
+                </dependents>
+            </task>
+            <task definition_id="routine_kinetic_request_ce_submission_update_observers_v1" id="routine_kinetic_request_ce_submission_update_observers_v1_82" name="Update Parent Observers" x="1034" y="163">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>true</defers>
+                <deferrable>true</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Space Slug" label="Space Slug" menu="" required="false" tooltip="Slug of the space where the submission exists">&lt;%=@inputs['Space Slug']%&gt;</parameter>
+                    <parameter id="Submission Id" label="Submission Id" menu="" required="true" tooltip="Id of the submission to update">&lt;%=@inputs['Originating Id']%&gt;</parameter>
+                    <parameter id="Observing Teams" label="Observing Teams" menu="" required="false" tooltip="JSON array of team names to add to Observing Teams field on Submission">&lt;%=@results['Verify Assignment']['Assigned Team']%&gt;</parameter>
+                    <parameter id="Observing Individuals" label="Observing Individuals" menu="" required="false" tooltip="JSON array of usernames to add to Observing Individuals field on Submission">&lt;%=@results['Verify Assignment']['Assigned Team'].to_s.empty? ? @results['Verify Assignment']['Assigned Individual'] : nil %&gt;</parameter>
+                    <parameter id="Replace Existing" label="Replace Existing" menu="" required="false" tooltip="true or false if existing observers should be replaced">false</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents></dependents>
+            </task>
+            <task definition_id="routine_kd_verify_individual_assignment_v2" id="routine_kd_verify_individual_assignment_v2_85" name="Verify Assignment" x="450" y="154">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>true</defers>
+                <deferrable>true</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Space Slug" label="Space Slug" menu="" required="false" tooltip="The Slug of the Space this submission belongs to">&lt;%=@inputs['Space Slug']%&gt;</parameter>
+                    <parameter id="Originating System" label="Originating System" menu="" required="true" tooltip="Source of the parent record (Kinetic Core, Salesforce...etc)">Kinetic Core</parameter>
+                    <parameter id="Originating Id" label="Originating Id" menu="" required="true" tooltip="Id of the originating systems record">&lt;%=@inputs['Originating Id']%&gt;</parameter>
+                    <parameter id="Assignee Id" label="Assignee Id" menu="" required="true" tooltip="">&lt;%=@inputs['Approver Id']%&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">utilities_defer_v1_4</task>
+                </dependents>
+            </task>
+            <task definition_id="routine_kd_update_activity_record_with_latest_approval_information_v2" id="routine_kd_update_activity_record_with_latest_approval_information_v2_86" name="Update Activity Record" x="719" y="45">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>true</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Activity Record Id" label="Activity Record Id" menu="" required="true" tooltip="Id of the Activity Record to Update">&lt;%=@results['Create Activity Record']['Id']%&gt;</parameter>
+                    <parameter id="Task Record Id" label="Task Record Id" menu="" required="true" tooltip="Id of the Task (approval) record to get update data from">&lt;%=@results['Create Approval']['Submission Id']%&gt;</parameter>
+                    <parameter id="Space Slug" label="Space Slug" menu="" required="false" tooltip="The Slug of the Space this submission belongs to">&lt;%=@inputs['Space Slug']%&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents></dependents>
+            </task>
+            <task definition_id="routine_kd_add_submission_discussion_message_v2" id="routine_kd_add_submission_discussion_message_v2_87" name="Create Assignment Message in Resposne" x="984" y="267">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>true</defers>
+                <deferrable>true</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Space Slug" label="Space Slug" menu="" required="false" tooltip="The Slug of the Space this submission belongs to">&lt;%=@inputs['Space Slug']%&gt;</parameter>
+                    <parameter id="Submission Id" label="Submission Id" menu="" required="true" tooltip="Id of the Submission to add a message to">&lt;%=@results['Create Approval']['Submission Id']%&gt;</parameter>
+                    <parameter id="Message" label="Message" menu="" required="true" tooltip="Discussion Message to create for the given submission">This approval was intended to be routed to &lt;%=@inputs['Approver Id'].to_s.empty? ? "the requester's manager" : @inputs['Approver Id']%&gt;; however, they couldn't be located in the system.</parameter>
+                    <parameter id="Discussion Label" label="Discussion Label" menu="" required="false" tooltip="Label Tag added to discussion if being created via this process">View Approval</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents></dependents>
+            </task>
+            <task definition_id="routine_kd_update_activity_record_with_latest_approval_information_v2" id="routine_kd_update_activity_record_with_latest_approval_information_v2_88" name="Update Activity Record - Closed" x="616" y="530">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>true</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Activity Record Id" label="Activity Record Id" menu="" required="true" tooltip="Id of the Activity Record to Update">&lt;%=@results['Create Activity Record']['Id']%&gt;</parameter>
+                    <parameter id="Task Record Id" label="Task Record Id" menu="" required="true" tooltip="Id of the Task (approval) record to get update data from">&lt;%=@results['Create Approval']['Submission Id']%&gt;</parameter>
+                    <parameter id="Space Slug" label="Space Slug" menu="" required="false" tooltip="The Slug of the Space this submission belongs to">&lt;%=@inputs['Space Slug']%&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">system_tree_return_v1_71</task>
+                </dependents>
+            </task>
+        </request>
+    </taskTree>
+</tree>

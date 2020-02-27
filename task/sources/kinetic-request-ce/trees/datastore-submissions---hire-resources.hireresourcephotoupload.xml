@@ -1,0 +1,90 @@
+<tree schema_version="1.0">
+    <sourceName>Kinetic Request CE</sourceName>
+    <sourceGroup>Datastore Submissions > hire-resources</sourceGroup>
+    <type>Tree</type>
+    <status>Active</status>
+    <taskTree builder_version="" schema_version="1.0" version="">
+        <name>HireResourcePhotoUpload</name>
+        <author></author>
+        <notes></notes>
+        <lastID>57</lastID>
+        <request>
+            <task definition_id="system_start_v1" id="start" name="Start" x="24" y="31">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters></parameters>
+                <messages></messages>
+                <dependents>
+                    <task label="Upload to S3" type="Complete" value="@values['Photo URL'].nil? || @values['Photo URL']==null">utilities_echo_v1_50</task>
+                </dependents>
+            </task>
+            <task definition_id="utilities_echo_v1" id="utilities_echo_v1_50" name="Get Filename" x="264" y="198">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>true</visible>
+                <parameters>
+                    <parameter id="input" label="Input" menu="" required="true" tooltip="">&lt;%= @values['Photo'][0]['name']%&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">amazon_s3_file_upload_from_datastore_submission_v1_56</task>
+                </dependents>
+            </task>
+            <task definition_id="amazon_s3_file_upload_from_datastore_submission_v1" id="amazon_s3_file_upload_from_datastore_submission_v1_56" name="Upload Photo" x="514" y="295">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="region" label="Region" menu="" required="false" tooltip="Id of the region the inteded S3 server is located in (can also be configured as an info value).">ap-southeast-2</parameter>
+                    <parameter id="space_slug" label="Space Slug" menu="" required="false" tooltip="Slug for the space the submission is in (can also be configured as an info value)."></parameter>
+                    <parameter id="bucket" label="Bucket" menu="" required="true" tooltip="Name of the bucket to upload to.">gbmembers-photos</parameter>
+                    <parameter id="file_name" label="File Name" menu="" required="false" tooltip="Name that will be given to the file on upload (if not provided, will default to the default filename stored in Request CE).">&lt;%=@submission['Id']+"-"+@results['Get Filename']['output']%&gt;</parameter>
+                    <parameter id="submission_id" label="Submission Id" menu="" required="true" tooltip="Submission Id that the attachment is located on.">&lt;%=@submission['Id']%&gt;</parameter>
+                    <parameter id="field" label="Field Label" menu="" required="true" tooltip="Field Label for the attachment field.">Photo</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">routine_kinetic_request_ce_datastore_submission_update_v1_57</task>
+                </dependents>
+            </task>
+            <task definition_id="routine_kinetic_request_ce_datastore_submission_update_v1" id="routine_kinetic_request_ce_datastore_submission_update_v1_57" name="Update Photo Link" x="827" y="364">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>true</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Space Slug" label="Space Slug" menu="" required="false" tooltip="Slug of the space where the submission exists"></parameter>
+                    <parameter id="Submission Id" label="Submission Id" menu="" required="true" tooltip="Id of the submission to update">&lt;%= @submission['Id']%&gt;</parameter>
+                    <parameter id="State" label="State" menu="" required="false" tooltip="Sets the submission state"></parameter>
+                    <parameter id="Values" label="Values" menu="" required="false" tooltip="JSON object of the form values to be pre-populated">&lt;%={
+  "Photo URL" =&gt; @results['Upload Photo']['Public Url']
+}.to_json %&gt;</parameter>
+                    <parameter id="Current Page Name" label="Current Page Name" menu="" required="false" tooltip="Name of the Page the Submission to Open to"></parameter>
+                    <parameter id="Current Page Navigation" label="Current Page Navigation" menu="" required="false" tooltip="Sets the current page navigation"></parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents></dependents>
+            </task>
+        </request>
+    </taskTree>
+</tree>

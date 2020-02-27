@@ -1,0 +1,267 @@
+{
+  "afterLogoutPath": "",
+  "attributes": [
+    {
+      "name": "Admin Kapp Slug",
+      "values": [
+        "admin"
+      ]
+    },
+    {
+      "name": "Alerts Form Slug",
+      "values": [
+        "alerts"
+      ]
+    },
+    {
+      "name": "Approval Form Slug",
+      "values": [
+        "approval"
+      ]
+    },
+    {
+      "name": "Billing Company",
+      "values": [
+        "PaySmart"
+      ]
+    },
+    {
+      "name": "Catalog Kapp Slug",
+      "values": [
+        "services"
+      ]
+    },
+    {
+      "name": "Change Manager Form Slug",
+      "values": [
+        "manager-change-request"
+      ]
+    },
+    {
+      "name": "Company Logo",
+      "values": [
+        "/app/datastore/submissions/617f9165-c2cb-11e8-aff8-15815e938e2a/files/Image%20File/0/Logo-GB-Sydney1.png"
+      ]
+    },
+    {
+      "name": "Disable Self Sign Up",
+      "values": [
+        "false"
+      ]
+    },
+    {
+      "name": "Feedback Form Slug",
+      "values": [
+        "feedback"
+      ]
+    },
+    {
+      "name": "Footer Bundle Path",
+      "values": [
+        "space"
+      ]
+    },
+    {
+      "name": "Form Workflow",
+      "values": [
+        "Created - True",
+        "Deleted - True",
+        "Updated - True",
+        "Updated - Update Discussion META"
+      ]
+    },
+    {
+      "name": "Header Bundle Path",
+      "values": [
+        "space"
+      ]
+    },
+    {
+      "name": "Help Form Slug",
+      "values": [
+        "help"
+      ]
+    },
+    {
+      "name": "Hidden Users Regex",
+      "values": [
+        ".*@kinops.io$"
+      ]
+    },
+    {
+      "name": "Invite Others Form Slug",
+      "values": [
+        "kinops-invite-others"
+      ]
+    },
+    {
+      "name": "Kinetic Billing Server URL",
+      "values": [
+        "https://gbbilling.com.au:8443/billingservice"
+      ]
+    },
+    {
+      "name": "Libraries Bundle Path",
+      "values": [
+        "space"
+      ]
+    },
+    {
+      "name": "Member Discounts",
+      "values": [
+        "[{\"discount\":\"0%\",\"cost\":1.0},{\"discount\":\"10%\",\"cost\":0.9},{\"discount\":\"20%\",\"cost\":0.8},{\"discount\":\"30%\",\"cost\":0.7}]"
+      ]
+    },
+    {
+      "name": "Payment Frequencies",
+      "values": [
+        "Fortnightly,Weekly"
+      ]
+    },
+    {
+      "name": "Queue Kapp Slug",
+      "values": [
+        "queue"
+      ]
+    },
+    {
+      "name": "Request Alert Form Slug",
+      "values": [
+        "kinops-request-an-alert"
+      ]
+    },
+    {
+      "name": "School Address",
+      "values": [
+        "Unit 3 456 Main St, NSW 2000"
+      ]
+    },
+    {
+      "name": "School Email",
+      "values": [
+        "test.gboceania@gmail.com"
+      ]
+    },
+    {
+      "name": "School Legal Name",
+      "values": [
+        "Members Template Pty LTD"
+      ]
+    },
+    {
+      "name": "School Name",
+      "values": [
+        "Gracie Barra Template"
+      ]
+    },
+    {
+      "name": "School Telephone",
+      "values": [
+        "02 9899 7778"
+      ]
+    },
+    {
+      "name": "Service Days Due",
+      "values": [
+        "7"
+      ]
+    },
+    {
+      "name": "Shared Workflow Engine",
+      "values": [
+        "False"
+      ]
+    },
+    {
+      "name": "Submission Workflow",
+      "values": [
+        "Closed - False",
+        "Created - False",
+        "Deleted - False",
+        "Saved - False",
+        "Submitted - False",
+        "Updated - False"
+      ]
+    },
+    {
+      "name": "Suggest a Service Form Slug",
+      "values": [
+        "kinops-suggest-a-service"
+      ]
+    },
+    {
+      "name": "Task Assignee Team",
+      "values": [
+        "Default"
+      ]
+    },
+    {
+      "name": "Task Form Slug",
+      "values": [
+        "work-order"
+      ]
+    },
+    {
+      "name": "Task Server Space Slug",
+      "values": [
+        "gbmembers-template"
+      ]
+    },
+    {
+      "name": "Task Source Name",
+      "values": [
+        "Kinetic Request CE"
+      ]
+    },
+    {
+      "name": "Web Server Url",
+      "values": [
+        "https://gbmembers-template.kinops.io"
+      ]
+    }
+  ],
+  "bundlePath": "",
+  "customTranslationContexts": [
+
+  ],
+  "defaultDatastoreFormConfirmationPage": null,
+  "defaultDatastoreFormDisplayPage": null,
+  "defaultLocale": "en-AU",
+  "defaultTimezone": "Australia/Brisbane",
+  "displayType": "Single Page App",
+  "displayValue": "spa.jsp?location=https://s3-ap-southeast-2.amazonaws.com/gbmembers-v2",
+  "enabledLocales": [
+    "en-AU"
+  ],
+  "loginPage": null,
+  "name": "GBMembers Template",
+  "platformComponents": {
+    "agents": [
+
+    ]
+  },
+  "resetPasswordPage": null,
+  "securityPolicies": [
+    {
+      "endpoint": "Display",
+      "name": "Authenticated Users"
+    },
+    {
+      "endpoint": "Teams Access",
+      "name": "Authenticated Users"
+    },
+    {
+      "endpoint": "Users Access",
+      "name": "Authenticated Users"
+    }
+  ],
+  "sessionInactiveLimitInSeconds": 2592000,
+  "sharedBundleBase": "hydrogen-v1",
+  "slug": "gbmembers-template",
+  "trustedFrameDomains": [
+
+  ],
+  "trustedResourceDomains": [
+
+  ]
+}

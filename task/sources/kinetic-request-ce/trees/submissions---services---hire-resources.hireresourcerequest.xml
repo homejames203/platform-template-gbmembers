@@ -1,0 +1,74 @@
+<tree schema_version="1.0">
+    <sourceName>Kinetic Request CE</sourceName>
+    <sourceGroup>Submissions > services > hire-resources</sourceGroup>
+    <type>Tree</type>
+    <status>Active</status>
+    <taskTree builder_version="" schema_version="1.0" version="">
+        <name>HireResourceRequest</name>
+        <author></author>
+        <notes></notes>
+        <lastID>4</lastID>
+        <request>
+            <task definition_id="system_start_v1" id="start" name="Start" x="10" y="10">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters></parameters>
+                <messages></messages>
+                <dependents>
+                    <task label="" type="Complete" value="">smtp_email_send_v1_3</task>
+                </dependents>
+            </task>
+            <task definition_id="smtp_email_send_v1" id="smtp_email_send_v1_3" name="Notify of Hire Request" x="375" y="226">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>true</visible>
+                <parameters>
+                    <parameter dependsOnId="" dependsOnValue="" id="from" label="From (email address)" menu="" required="true" tooltip="The email address of the simulated sender.">&lt;%= @values['School Email']%&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="to" label="To (email address)" menu="" required="true" tooltip="The email address of the intended recipient.">unus.gaffoor@kineticdata.com</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="subject" label="Subject" menu="" required="true" tooltip="The subject of the email.">Hire Resource Requested : &lt;%= @values['Person to Hire Name']%&gt; from &lt;%= @values['School Name']%&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="htmlbody" label="HTML Body" menu="" required="true" tooltip="HTML representing the body of a rich email.">A request to Hire a resource was made.
+&lt;br&gt;
+Please click on the link for more details:&lt;br&gt;
+&lt;a href="https://&lt;%= @space['Slug']%&gt;.kinops.io/#/kapps/services/forms/hire-resources/submissions/&lt;%= @submission['Id']%&gt;?review"&gt;Hire Resource Request&lt;/a&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="textbody" label="Alternate (text) Body" menu="" required="false" tooltip="A plaintext message that will be displayed if the recipient can't display multipart HTML emails.">A request to Hire a resource was made.
+Please click on the link for more details:
+https://&lt;%= @space['Slug']%&gt;.kinops.io/#/kapps/services/forms/hire-resources/submissions/&lt;%= @submission['Id']%&gt;?review</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="attachments" label="Email Attachments" menu="" required="false" tooltip="Email Attachments if any."></parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="fieldname" label="Attachment Field Name" menu="" required="false" tooltip="Attachment Field Name"></parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="memberId" label="Member Id" menu="" required="false" tooltip="Member Id"></parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="campaignId" label="Campaign Id" menu="" required="false" tooltip="Campaign Id"></parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="space" label="Space Slug" menu="" required="false" tooltip="Space slug"></parameter>
+                </parameters>
+                <messages></messages>
+                <dependents>
+                    <task label="" type="Complete" value="">kinetic_request_ce_submission_activity_create_v1_4</task>
+                </dependents>
+            </task>
+            <task definition_id="kinetic_request_ce_submission_activity_create_v1" id="kinetic_request_ce_submission_activity_create_v1_4" name="Display Notifications" x="375" y="426">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter dependsOnId="" dependsOnValue="" id="error_handling" label="Error Handling" menu="Error Message,Raise Error" required="true" tooltip="Determine what to return if an error is encountered.">Error Message</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="space_slug" label="Space Slug" menu="" required="false" tooltip="The Space the submission exists in (defaults to info value if not provided)."></parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="submission_id" label="Submission Id" menu="" required="true" tooltip="The id of the submission for which the activity is being created for.">&lt;%=  @submission['Id'] %&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="label" label="Label" menu="" required="false" tooltip="The label for the submission activity.">Notifications Sent</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="description" label="Description" menu="" required="false" tooltip="The description of the submission activity."></parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="type" label="Type" menu="" required="false" tooltip="Specifies the a submission activity 'Type', which should indicate what type of data is included.">Success</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="data" label="Data" menu="" required="false" tooltip="Additional data that can be used by resources consuming the submission activity record (for example a Request bundle may render submission details based upon JSON content in the activity data).">Notifications for Hire Request for [&lt;%=  @values['Person to Hire Name'] %&gt;] has been emailed to [&lt;%=  @values['Notification Emails'] %&gt;]</parameter>
+                </parameters>
+                <messages>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents></dependents>
+            </task>
+        </request>
+    </taskTree>
+</tree>

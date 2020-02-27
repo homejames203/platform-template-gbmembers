@@ -1,0 +1,14 @@
+{
+  "name": "Tasks",
+  "description": null,
+  "type": "Stored",
+  "handlers": [
+
+  ],
+  "policyRules": [
+    "Form Developers"
+  ],
+  "trees": [
+    "routine_kd_task_v2"
+  ]
+}

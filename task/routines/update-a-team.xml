@@ -1,0 +1,136 @@
+<tree schema_version="1.0">
+    <sourceName>-</sourceName>
+    <sourceGroup>-</sourceGroup>
+    <definitionId>routine_kinetic_request_ce_team_update_v1</definitionId>
+    <type>Global Routine</type>
+    <status>Active</status>
+    <taskTree builder_version="" schema_version="1.0" version="">
+        <name>Update a Team</name>
+        <author></author>
+        <notes></notes>
+        <lastID>32</lastID>
+        <taskDefinition id="routine_kinetic_request_ce_team_update_v1" name="Update a Team" schema_version="1.0" version="1">
+            <visible>false</visible>
+            <deferrable>true</deferrable>
+            <parameters>
+                <parameter id="Space Slug" label="Space Slug" required="false" tooltip="Slug of the space where the submission exists"></parameter>
+                <parameter id="Team Name" label="Team Name" required="true" tooltip="Name of the Team to Update"></parameter>
+                <parameter id="New Team Name" label="New Team Name" required="false" tooltip="If renaming the team, provide new team name"></parameter>
+                <parameter id="Description" label="Description" required="false" tooltip="The description of the team"></parameter>
+                <parameter id="Attributes" label="Attributes" required="false" tooltip="JSON object of the attributes to update"></parameter>
+            </parameters>
+            <handler name="system_tree_call" version="1"></handler>
+            <results format="xml"></results>
+        </taskDefinition>
+        <request>
+            <task definition_id="system_start_v1" id="start" name="Start" x="99" y="68">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters></parameters>
+                <messages></messages>
+                <dependents>
+                    <task label="" type="Complete" value="">kinetic_request_ce_team_update_v1_31</task>
+                </dependents>
+            </task>
+            <task definition_id="routine_handler_failure_error_process_v1" id="routine_handler_failure_error_process_v1_10" name="Error Process" x="518" y="65">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>true</defers>
+                <deferrable>true</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Error Message" label="Error Message" menu="" required="false" tooltip="Error Message ">No Username Returned from Handler indicating an error</parameter>
+                    <parameter id="Handler Name" label="Handler Name" menu="" required="false" tooltip="">kinetic_request_ce_user_update_v3</parameter>
+                    <parameter id="Run Id" label="Run Id" menu="" required="false" tooltip="">&lt;%=@run['Id']%&gt;</parameter>
+                    <parameter id="Inputs JSON" label="Inputs JSON" menu="" required="false" tooltip="">&lt;%=@inputs.to_json%&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">routine_kinetic_request_ce_team_update_v1_32</task>
+                </dependents>
+            </task>
+            <task definition_id="system_tree_return_v1" id="system_tree_return_v1_26" name="Return" x="265" y="242">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters></parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents></dependents>
+            </task>
+            <task definition_id="system_tree_return_v1" id="system_tree_return_v1_27" name="Return From Error" x="895" y="67">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters></parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents></dependents>
+            </task>
+            <task definition_id="kinetic_request_ce_team_update_v1" id="kinetic_request_ce_team_update_v1_31" name="Update Team" x="263" y="55">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>true</visible>
+                <parameters>
+                    <parameter id="error_handling" label="Error Handling" menu="Error Message,Raise Error" required="true" tooltip="Determine what to return if an error is encountered.">Error Message</parameter>
+                    <parameter id="space_slug" label="Space Slug" menu="" required="true" tooltip="Space slug of which the user you are trying to updates belongs to.">&lt;%=@inputs['Space Slug']%&gt;</parameter>
+                    <parameter id="current_name" label="Current Team Name" menu="" required="true" tooltip="Name of team you wish to update.">&lt;%=@inputs['Team Name']%&gt;</parameter>
+                    <parameter id="description" label="Description" menu="" required="false" tooltip="The description for this team.">&lt;%=@inputs['Description']%&gt;</parameter>
+                    <parameter id="new_name" label="New Name" menu="" required="false" tooltip="Change the Name for this team.">&lt;%=@inputs['New Team Name']%&gt;</parameter>
+                    <parameter id="append_or_replace" label="Append or Replace attributes?" menu="Append,Replace" required="true" tooltip="Append or replace the existing attribute values with the attributes provided.">Append</parameter>
+                    <parameter id="attributes" label="Attributes" menu="" required="false" tooltip="Change the attributes for this user. JSON formatted string: [{&quot;name&quot;: &quot;Attribute Name&quot;,&quot;values&quot;: [&quot;Attribute Value&quot;,&quot;Attribute Value&quot;,...]},{&quot;name&quot;: &quot;Attribute Name2&quot;,&quot;values&quot;: [&quot;Attribute Value&quot;,...]},...]">&lt;%=@inputs['Attributes']%&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="Error" type="Complete" value="!@results['Update Team']['Handler Error Message'].nil?">routine_handler_failure_error_process_v1_10</task>
+                    <task label="No Error" type="Complete" value="@results['Update Team']['Handler Error Message'].nil?">system_tree_return_v1_26</task>
+                </dependents>
+            </task>
+            <task definition_id="routine_kinetic_request_ce_team_update_v1" id="routine_kinetic_request_ce_team_update_v1_32" name="Retry" x="705" y="75">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>true</defers>
+                <deferrable>true</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Space Slug" label="Space Slug" menu="" required="false" tooltip="Slug of the space where the submission exists">&lt;%=@results['Error Process']['Space Slug']%&gt;</parameter>
+                    <parameter id="Team Name" label="Team Name" menu="" required="true" tooltip="Name of the Team to Update">&lt;%=@results['Error Process']['Team Name']%&gt;</parameter>
+                    <parameter id="New Team Name" label="New Team Name" menu="" required="false" tooltip="If renaming the team, provide new team name">&lt;%=@results['Error Process']['New Team Name']%&gt;</parameter>
+                    <parameter id="Description" label="Description" menu="" required="false" tooltip="The description of the team">&lt;%=@results['Error Process']['Description']%&gt;</parameter>
+                    <parameter id="Attributes" label="Attributes" menu="" required="false" tooltip="JSON object of the attributes to update">&lt;%=@results['Error Process']['Attributes']%&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">system_tree_return_v1_27</task>
+                </dependents>
+            </task>
+        </request>
+    </taskTree>
+</tree>

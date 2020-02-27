@@ -1,0 +1,154 @@
+<tree schema_version="1.0">
+    <sourceName>-</sourceName>
+    <sourceGroup>-</sourceGroup>
+    <definitionId>routine_kinetic_request_ce_submission_get_answers_v1</definitionId>
+    <type>Global Routine</type>
+    <status>Active</status>
+    <taskTree builder_version="" schema_version="1.0" version="">
+        <name>Retrieve Answer Values</name>
+        <author></author>
+        <notes></notes>
+        <lastID>28</lastID>
+        <taskDefinition id="routine_kinetic_request_ce_submission_get_answers_v1" name="Retrieve Answer Values" schema_version="1.0" version="1">
+            <visible>false</visible>
+            <deferrable>true</deferrable>
+            <parameters>
+                <parameter id="Space Slug" label="Space Slug" required="false" tooltip="Slug of the space to find the submission in"></parameter>
+                <parameter id="Submission Id" label="Submission Id" required="false" tooltip="Id of the submission to retrieve answers from"></parameter>
+            </parameters>
+            <handler name="system_tree_call" version="1"></handler>
+            <results format="xml">
+                <result name="&lt;PLACEHOLDER&gt;" tooltip="Each answer value is returned as a result. Replace &lt;Placeholder&gt; with field name"></result>
+            </results>
+        </taskDefinition>
+        <request>
+            <task definition_id="system_start_v1" id="start" name="Start" x="99" y="66">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters></parameters>
+                <messages></messages>
+                <dependents>
+                    <task label="" type="Complete" value="">kinetic_request_ce_submission_get_answers_v1_24</task>
+                </dependents>
+            </task>
+            <task definition_id="routine_handler_failure_error_process_v1" id="routine_handler_failure_error_process_v1_10" name="Error Process" x="518" y="65">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>true</defers>
+                <deferrable>true</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Error Message" label="Error Message" menu="" required="false" tooltip="Error Message ">&lt;%=@results['Get Answers']['Handler Error Message']%&gt;</parameter>
+                    <parameter id="Handler Name" label="Handler Name" menu="" required="false" tooltip="">kinetic_request_ce_submission_get_ansers_v1</parameter>
+                    <parameter id="Run Id" label="Run Id" menu="" required="false" tooltip="">&lt;%=@run['Id']%&gt;</parameter>
+                    <parameter id="Inputs JSON" label="Inputs JSON" menu="" required="false" tooltip="">&lt;%=@inputs.to_json%&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">routine_kinetic_request_ce_submission_get_answers_v1_28</task>
+                </dependents>
+            </task>
+            <task definition_id="kinetic_request_ce_submission_get_answers_v1" id="kinetic_request_ce_submission_get_answers_v1_24" name="Get Answers" x="275" y="63">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="error_handling" label="Error Handling" menu="Error Message,Raise Error" required="true" tooltip="Determine what to return if an error is encountered.">Error Message</parameter>
+                    <parameter id="space_slug" label="Space Slug" menu="" required="false" tooltip="The Space the submission is being retrieved from.">&lt;%=@inputs['Space Slug']%&gt;</parameter>
+                    <parameter id="submission_id" label="Submission ID" menu="" required="true" tooltip="The id of the submission to retrieve answers for.">&lt;%=@inputs['Submission Id']%&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="Error" type="Complete" value="!@results['Get Answers']['Handler Error Message'].nil?">routine_handler_failure_error_process_v1_10</task>
+                    <task label="No Error" type="Complete" value="@results['Get Answers']['Handler Error Message'].nil?">utilities_create_trigger_v1_26</task>
+                </dependents>
+            </task>
+            <task definition_id="utilities_create_trigger_v1" id="utilities_create_trigger_v1_26" name="Return" x="274" y="235">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="action_type" label="Action Type" menu="Update,Complete" required="true" tooltip="">Complete</parameter>
+                    <parameter id="deferral_token" label="Deferral Token" menu="" required="true" tooltip="">&lt;%=@run['Token']%&gt;</parameter>
+                    <parameter id="deferred_variables" label="Deferred Results" menu="" required="false" tooltip="">&lt;%=
+                # Build up the results to be returned by the Error Process
+                result = "&lt;results&gt;"
+                @results['Get Answers'].keys.each do |key|
+                  result += %|&lt;result name="#{key}"&gt;#{@results['Get Answers'][key].nil? ? nil : REXML::Text.new(@results['Get Answers'][key]).to_s}&lt;/result&gt;|
+                end
+                result += "&lt;/results&gt;"
+                result
+            %&gt;</parameter>
+                    <parameter id="message" label="Message" menu="" required="false" tooltip=""></parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents></dependents>
+            </task>
+            <task definition_id="utilities_create_trigger_v1" id="utilities_create_trigger_v1_27" name="Return From Error" x="903" y="67">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="action_type" label="Action Type" menu="Update,Complete" required="true" tooltip="">Complete</parameter>
+                    <parameter id="deferral_token" label="Deferral Token" menu="" required="true" tooltip="">&lt;%=@run['Token']%&gt;</parameter>
+                    <parameter id="deferred_variables" label="Deferred Results" menu="" required="false" tooltip="">&lt;%=
+                # Build up the results to be returned by the Error Process
+                result = "&lt;results&gt;"
+                @results['Retry'].keys.each do |key|
+                  result += %|&lt;result name="#{key}"&gt;#{@results['Retry'][key].nil? ? nil : REXML::Text.new(@results['Retry'][key]).to_s}&lt;/result&gt;|
+                end
+                result += "&lt;/results&gt;"
+                result
+            %&gt;</parameter>
+                    <parameter id="message" label="Message" menu="" required="false" tooltip=""></parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents></dependents>
+            </task>
+            <task definition_id="routine_kinetic_request_ce_submission_get_answers_v1" id="routine_kinetic_request_ce_submission_get_answers_v1_28" name="Retry" x="704" y="76">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>true</defers>
+                <deferrable>true</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Space Slug" label="Space Slug" menu="" required="false" tooltip="Slug of the space to find the submission in">&lt;%=@results['Error Process']['Space Slug']%&gt;</parameter>
+                    <parameter id="Submission Id" label="Submission Id" menu="" required="false" tooltip="Id of the submission to retrieve answers from">&lt;%=@results['Error Process']['Submission Id']%&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">utilities_create_trigger_v1_27</task>
+                </dependents>
+            </task>
+        </request>
+    </taskTree>
+</tree>

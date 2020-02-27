@@ -1,0 +1,125 @@
+<tree schema_version="1.0">
+    <sourceName>Kinetic Request CE</sourceName>
+    <sourceGroup>Submissions > queue > rfe</sourceGroup>
+    <type>Tree</type>
+    <status>Active</status>
+    <taskTree builder_version="" schema_version="1.0" version="">
+        <name>Submitted</name>
+        <author></author>
+        <notes></notes>
+        <lastID>16</lastID>
+        <request>
+            <task definition_id="system_start_v1" id="start" name="Start" x="10" y="10">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters></parameters>
+                <messages></messages>
+                <dependents>
+                    <task label="Empty Resolution" type="Complete" value="@values.has_key?(&quot;Resolution&quot;) &amp;&amp; @values['Resolution'].nil?">utilities_echo_v1_10</task>
+                    <task label="" type="Complete" value="">system_junction_v1_12</task>
+                </dependents>
+            </task>
+            <task definition_id="kinetic_request_ce_submission_update_v1" id="kinetic_request_ce_submission_update_v1_9" name="Update Resolution" x="11" y="231">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="error_handling" label="Error Handling" menu="Error Message,Raise Error" required="true" tooltip="Determine what to return if an error is encountered.">Raise Error</parameter>
+                    <parameter id="space_slug" label="Space Slug" menu="" required="false" tooltip="The Space the submission is being retrieved from.">&lt;%= @space['Slug']%&gt;</parameter>
+                    <parameter id="submission_id" label="Submission Id" menu="" required="true" tooltip="The id of the submission being updated.">&lt;%= @submission['Id']%&gt;</parameter>
+                    <parameter id="state" label="State" menu="" required="false" tooltip="The value used to set the submission state."></parameter>
+                    <parameter id="values" label="Values" menu="" required="false" tooltip="A JSON map of field names to values that should be set.">{"Resolution":&lt;%=@results['Assemble Resolution Content']['output'].to_json%&gt;}</parameter>
+                    <parameter id="current_page_name" label="Current Page Name:" menu="" required="false" tooltip="Set the current page name."></parameter>
+                    <parameter id="current_page_navigation" label="Current Page Navigation:" menu="" required="false" tooltip="Set the current page navigation."></parameter>
+                    <parameter id="origin_id" label="Origin ID:" menu="" required="false" tooltip="Set the origin ID."></parameter>
+                    <parameter id="parent_id" label="Parent ID:" menu="" required="false" tooltip="Set the parent ID."></parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">system_junction_v1_12</task>
+                </dependents>
+            </task>
+            <task definition_id="utilities_echo_v1" id="utilities_echo_v1_10" name="Assemble Resolution Content" x="14" y="111">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="input" label="Input" menu="" required="true" tooltip="">&lt;%= 
+resolution_text = "Completed by #{@values['Assigned Individual']}"
+
+if @values.has_key?('Decision') &amp;&amp; @values['Decision']=="Denied"
+  resolution_text += "\n\n"
+  resolution_text += "Denial reason: #{@values['Denial Reason']}"
+end
+
+if @values.has_key?('Notes for Customer') &amp;&amp; !@values['Notes for Customer'].to_s.empty?
+  resolution_text += "\n\n"
+  resolution_text += "Additional comments: #{@values['Notes for Customer']}"
+end
+
+if @values.has_key?('Cancellation Reason') &amp;&amp; !@values['Cancellation Reason'].to_s.empty?
+  resolution_text += "\n\n"
+  resolution_text += "Cancellation reason: #{@values['Cancellation Reason']}"
+end
+
+resolution_text
+%&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">kinetic_request_ce_submission_update_v1_9</task>
+                </dependents>
+            </task>
+            <task definition_id="system_junction_v1" id="system_junction_v1_12" name="Junction" x="176" y="241">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters></parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="Has Deferral Token" type="Complete" value="!@values['Deferral Token'].to_s.empty?">utilities_create_trigger_v1_16</task>
+                </dependents>
+            </task>
+            <task definition_id="utilities_create_trigger_v1" id="utilities_create_trigger_v1_16" name="Trigger Complete" x="406" y="231">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>true</visible>
+                <parameters>
+                    <parameter id="action_type" label="Action Type" menu="Update,Complete" required="true" tooltip="">Complete</parameter>
+                    <parameter id="deferral_token" label="Deferral Token" menu="" required="true" tooltip="">&lt;%= @values['Deferral Token']%&gt;</parameter>
+                    <parameter id="deferred_variables" label="Deferred Results" menu="" required="false" tooltip=""></parameter>
+                    <parameter id="message" label="Message" menu="" required="false" tooltip=""></parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents></dependents>
+            </task>
+        </request>
+    </taskTree>
+</tree>

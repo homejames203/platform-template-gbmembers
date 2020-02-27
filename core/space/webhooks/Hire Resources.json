@@ -1,0 +1,21 @@
+{
+  "authStrategy": {
+    "type": "Signature",
+    "properties": [
+      {
+        "name": "Key",
+        "value": "kinops-request-ce"
+      },
+      {
+        "name": "Secret",
+        "sensitive": "true"
+      }
+    ]
+  },
+  "event": "Saved",
+  "filter": "form('name')==\"Hire Resources\"",
+  "name": "Hire Resources",
+  "type": "Datastore Submission",
+  "url": "/app/api/v1/run-tree/${space('attribute:Task Source Name')}/Datastore%20Submissions%20%3E%20hire-resources/HireResourcePhotoUpload",
+  "attributes": null
+}

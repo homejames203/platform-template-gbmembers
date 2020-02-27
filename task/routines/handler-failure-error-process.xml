@@ -1,0 +1,249 @@
+<tree schema_version="1.0">
+    <sourceName>-</sourceName>
+    <sourceGroup>-</sourceGroup>
+    <definitionId>routine_handler_failure_error_process_v1</definitionId>
+    <type>Global Routine</type>
+    <status>Active</status>
+    <taskTree builder_version="" schema_version="1.0" version="">
+        <name>Handler Failure Error Process</name>
+        <author></author>
+        <notes></notes>
+        <lastID>12</lastID>
+        <taskDefinition id="routine_handler_failure_error_process_v1" name="Handler Failure Error Process" schema_version="1.0" version="1">
+            <visible>false</visible>
+            <deferrable>true</deferrable>
+            <parameters>
+                <parameter id="Error Message" label="Error Message" required="false" tooltip="Error Message "></parameter>
+                <parameter id="Handler Name" label="Handler Name" required="false" tooltip=""></parameter>
+                <parameter id="Run Id" label="Run Id" required="false" tooltip=""></parameter>
+                <parameter id="Inputs JSON" label="Inputs JSON" required="false" tooltip=""></parameter>
+            </parameters>
+            <handler name="system_tree_call" version="1"></handler>
+            <results format="xml">
+                <result name="&lt;REPLACE WITH INPUT NAME&gt;" tooltip="The Error Process will always return all of the inputs from the original run with values that may have been updated"></result>
+            </results>
+        </taskDefinition>
+        <request>
+            <task definition_id="system_start_v1" id="start" name="Start" x="473" y="197">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters></parameters>
+                <messages></messages>
+                <dependents>
+                    <task label="" type="Complete" value="">utilities_echo_v1_12</task>
+                </dependents>
+            </task>
+            <task definition_id="utilities_create_trigger_v1" id="utilities_create_trigger_v1_1" name="Manual Return" x="1540" y="176">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="action_type" label="Action Type" menu="Update,Complete" required="true" tooltip="">Complete</parameter>
+                    <parameter id="deferral_token" label="Deferral Token" menu="" required="true" tooltip="">&lt;%=@run['Token']%&gt;</parameter>
+                    <parameter id="deferred_variables" label="Deferred Results" menu="" required="false" tooltip="">&lt;%=@results['Build Return Values']['output']%&gt;</parameter>
+                    <parameter id="message" label="Message" menu="" required="false" tooltip=""></parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents></dependents>
+            </task>
+            <task definition_id="utilities_echo_v1" id="utilities_echo_v1_4" name="Build Error Submission Values" x="836" y="297">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="input" label="Input" menu="" required="true" tooltip="">&lt;%=
+  require 'date'
+  dueDate = (DateTime.now + 1).iso8601
+  details = "The #{@inputs['Handler Name']} handler failed while trying to execute. The following reason was given for this failure: #{@inputs['Error Message']}"
+  # Remove Space Slug from Inputs JSON -- tenant spaces can't change this
+  inputsJSON = JSON.parse(@inputs['Inputs JSON'])
+  inputsJSON.delete('Space Slug')
+  {
+    "Assigned Team" =&gt; "Administrators",
+    "Assigned Team Display Name" =&gt; "Administrators",
+    "Assigned Individual" =&gt; nil,
+    "Assigned Individual Display Name" =&gt; "Unassigned",
+    "Due Date" =&gt; dueDate,
+    "Deferral Token"  =&gt; @results['Defer']['deferral_token'],
+    "Status" =&gt; "Open",
+    "Details"  =&gt; details,
+    "Summary" =&gt; "Workflow Error using the #{@inputs['Handler Name']} handler",
+    "Error Message" =&gt; @inputs['Error Message'],
+    "Run Id" =&gt; @inputs['Run Id'],
+    "Handler Name" =&gt; @inputs['Handler Name'],
+    "Inputs JSON" =&gt; inputsJSON.to_json,
+    "Discussion Id" =&gt; ""
+  }.to_json
+%&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">kinetic_request_ce_submission_create_v1_6</task>
+                </dependents>
+            </task>
+            <task definition_id="utilities_defer_v1" id="utilities_defer_v1_5" name="Defer" x="836" y="198">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>true</defers>
+                <deferrable>true</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="deferral_value" label="Initial Deferral Value" menu="" required="false" tooltip=""></parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Create" value="">utilities_echo_v1_4</task>
+                    <task label="" type="Complete" value="">kinetic_request_ce_submission_get_answers_v1_11</task>
+                </dependents>
+            </task>
+            <task definition_id="kinetic_request_ce_submission_create_v1" id="kinetic_request_ce_submission_create_v1_6" name="Create Error Work Order" x="836" y="428">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="space_slug" label="Space Slug" menu="" required="false" tooltip="The Space the submission is being retrieved from.">&lt;%=@results['Space Slug']['output']%&gt;</parameter>
+                    <parameter id="kapp_slug" label="Kapp Slug:" menu="" required="true" tooltip="The slug of the Kapp the submission is for.">queue</parameter>
+                    <parameter id="form_slug" label="Form Slug:" menu="" required="true" tooltip="The slug of the form the submission is for.">admin-workflow-errors</parameter>
+                    <parameter id="values" label="Values:" menu="" required="false" tooltip="JSON map of submission field values.">&lt;%=@results['Build Error Submission Values']['output']%&gt;</parameter>
+                    <parameter id="current_page_name" label="Current Page Name:" menu="" required="false" tooltip="Set the current page name."></parameter>
+                    <parameter id="current_page_navigation" label="Current Page Navigation:" menu="" required="false" tooltip="Set the current page navigation."></parameter>
+                    <parameter id="origin_id" label="Origin ID:" menu="" required="false" tooltip="Set the origin ID."></parameter>
+                    <parameter id="parent_id" label="Parent ID:" menu="" required="false" tooltip="Set the parent ID."></parameter>
+                    <parameter id="error_handling" label="Error Handling" menu="Raise,Return" required="true" tooltip="Determine what to return if an error is encountered.">Raise</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents></dependents>
+            </task>
+            <task definition_id="utilities_echo_v1" id="utilities_echo_v1_7" name="Build Return Values" x="1342" y="176">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="input" label="Input" menu="" required="true" tooltip="">&lt;%=
+                # Set an outputs variable and default it to the same values as inputs
+                @outputs = JSON.parse(@inputs['Inputs JSON'])
+                
+                # If the Admin overrode the inputs on the failure workorder, use those inputs
+                if @results['Retrieve Work Order Answers']['Inputs Updated'].downcase != "retry"
+                    @outputs = JSON.parse(@results['Retrieve Work Order Answers']['Inputs JSON'])
+                    @outputs['Space Slug'] = @results['Space Slug']['output']
+                end
+            
+                # Build up the results to be returned by the Error Process
+                result = "&lt;results&gt;"
+                @outputs.keys.each do |key|
+                  result += %|&lt;result name="#{key}"&gt;#{@outputs[key].nil? ? nil : REXML::Text.new(@outputs[key]).to_s}&lt;/result&gt;|
+                end
+                result += "&lt;/results&gt;"
+                result
+            %&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">utilities_create_trigger_v1_1</task>
+                </dependents>
+            </task>
+            <task definition_id="kinetic_request_ce_submission_update_v1" id="kinetic_request_ce_submission_update_v1_9" name="Complete Work Order" x="1199" y="187">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>true</visible>
+                <parameters>
+                    <parameter id="space_slug" label="Space Slug" menu="" required="false" tooltip="The Space the submission is being retrieved from.">&lt;%=@results['Space Slug']['output']%&gt;</parameter>
+                    <parameter id="submission_id" label="Submission Id" menu="" required="true" tooltip="The id of the submission being updated.">&lt;%=@results['Create Error Work Order']['Submission ID']%&gt;</parameter>
+                    <parameter id="state" label="State" menu="" required="false" tooltip="The value used to set the submission state.">Closed</parameter>
+                    <parameter id="values" label="Values" menu="" required="false" tooltip="A JSON map of field names to values that should be set.">&lt;%=
+  {
+    "Resolution" =&gt; "Action Taken: #{@results['Retrieve Work Order Answers']['Action']}"
+  }.to_json
+%&gt;</parameter>
+                    <parameter id="current_page_name" label="Current Page Name:" menu="" required="false" tooltip="Set the current page name."></parameter>
+                    <parameter id="current_page_navigation" label="Current Page Navigation:" menu="" required="false" tooltip="Set the current page navigation."></parameter>
+                    <parameter id="origin_id" label="Origin ID:" menu="" required="false" tooltip="Set the origin ID."></parameter>
+                    <parameter id="parent_id" label="Parent ID:" menu="" required="false" tooltip="Set the parent ID."></parameter>
+                    <parameter id="error_handling" label="Error Handling" menu="Raise,Return" required="true" tooltip="Determine what to return if an error is encountered.">Raise</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">utilities_echo_v1_7</task>
+                </dependents>
+            </task>
+            <task definition_id="kinetic_request_ce_submission_get_answers_v1" id="kinetic_request_ce_submission_get_answers_v1_11" name="Retrieve Work Order Answers" x="991" y="177">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="space_slug" label="Space Slug" menu="" required="false" tooltip="The Space the submission is being retrieved from.">&lt;%=@results['Space Slug']['output']%&gt;</parameter>
+                    <parameter id="submission_id" label="Submission ID" menu="" required="true" tooltip="The id of the submission to retrieve answers for.">&lt;%=@results['Create Error Work Order']['Submission ID']%&gt;</parameter>
+                    <parameter id="error_handling" label="Error Handling" menu="Raise,Return" required="true" tooltip="Determine what to return if an error is encountered.">Raise</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="Action != Stop Processing" type="Complete" value="@results['Retrieve Work Order Answers']['Action'] != &quot;Stop Processing&quot;">kinetic_request_ce_submission_update_v1_9</task>
+                </dependents>
+            </task>
+            <task definition_id="utilities_echo_v1" id="utilities_echo_v1_12" name="Space Slug" x="638" y="197">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>true</visible>
+                <parameters>
+                    <parameter id="input" label="Input" menu="" required="true" tooltip="">&lt;%= inputsJSON = JSON.parse(@inputs['Inputs JSON'])
+
+inputsJSON['Space Slug']%&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="Has Slug" type="Complete" value="!@results['Space Slug']['output'].to_s.empty?">utilities_defer_v1_5</task>
+                </dependents>
+            </task>
+        </request>
+    </taskTree>
+</tree>
