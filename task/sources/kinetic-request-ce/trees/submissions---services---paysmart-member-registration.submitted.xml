@@ -7,7 +7,7 @@
         <name>Submitted</name>
         <author></author>
         <notes></notes>
-        <lastID>28</lastID>
+        <lastID>29</lastID>
         <request>
             <task definition_id="system_start_v1" id="start" name="Start" x="11" y="11">
                 <version>1</version>
@@ -32,7 +32,7 @@
                     <parameter dependsOnId="" dependsOnValue="" id="space" label="Space slug" menu="" required="true" tooltip="Space slug for School">&lt;%= @space['Slug']%&gt;</parameter>
                     <parameter dependsOnId="" dependsOnValue="" id="billing_company" label="Billing Company" menu="" required="true" tooltip="Billing Company that the service will operate against.(eg, PaySmart)">PaySmart</parameter>
                     <parameter dependsOnId="" dependsOnValue="" id="json_args" label="JSON arguments" menu="" required="true" tooltip="A JSON structure containing all argument passed to the Billing Service">{
-  "customerId": "&lt;%= (!@values.has_key?('Billing Customer Id') ? @values['Member ID'] : @values['Billing Customer Id'])%&gt;",
+  "customerId": "&lt;%= @values['Member ID']%&gt;",
   "firstName": "&lt;%= @values['First Name']%&gt;",
   "lastName": "&lt;%= @values['Last Name']%&gt;",
   "dob": "&lt;%= @values['DOB']%&gt;",
@@ -65,7 +65,9 @@
   "gbmemberId": "&lt;%= @submission['Id']%&gt;"
 }</parameter>
                 </parameters>
-                <messages></messages>
+                <messages>
+                    <message type="Complete"></message>
+                </messages>
                 <dependents>
                     <task label="Error" type="Complete" value="JSON.parse(@results['Register Billing User']['Result JSON'])['error']==100">kinetic_request_ce_submission_activity_create_v1_8</task>
                     <task label="Success" type="Complete" value="JSON.parse(@results['Register Billing User']['Result JSON'])['error']==0">system_wait_v1_17</task>
@@ -445,9 +447,7 @@ Error Message: &lt;%=JSON.parse(@results['Register Billing User']['Result JSON']
                     <parameter dependsOnId="" dependsOnValue="" id="type" label="Type" menu="" required="false" tooltip="Specifies the a submission activity 'Type', which should indicate what type of data is included.">Success</parameter>
                     <parameter dependsOnId="" dependsOnValue="" id="data" label="Data" menu="" required="false" tooltip="Additional data that can be used by resources consuming the submission activity record (for example a Request bundle may render submission details based upon JSON content in the activity data).">{"Message":"Registration for &lt;%= @values['First Name']%&gt; &lt;%= @values['Last Name']%&gt; has yet to be approved. Waiting 1 day to process."}</parameter>
                 </parameters>
-                <messages>
-                    <message type="Complete"></message>
-                </messages>
+                <messages></messages>
                 <dependents></dependents>
             </task>
             <task definition_id="kinetic_request_ce_submission_activity_create_v1" id="kinetic_request_ce_submission_activity_create_v1_25" name="Display wait 60 minutes" x="-36.613842" y="306.4012">
@@ -465,9 +465,7 @@ Error Message: &lt;%=JSON.parse(@results['Register Billing User']['Result JSON']
                     <parameter dependsOnId="" dependsOnValue="" id="type" label="Type" menu="" required="false" tooltip="Specifies the a submission activity 'Type', which should indicate what type of data is included.">Success</parameter>
                     <parameter dependsOnId="" dependsOnValue="" id="data" label="Data" menu="" required="false" tooltip="Additional data that can be used by resources consuming the submission activity record (for example a Request bundle may render submission details based upon JSON content in the activity data).">{"Message":"Registration for &lt;%= @values['First Name']%&gt; &lt;%= @values['Last Name']%&gt; has yet to be approved. Waiting 60 minutes to process."}</parameter>
                 </parameters>
-                <messages>
-                    <message type="Complete"></message>
-                </messages>
+                <messages></messages>
                 <dependents></dependents>
             </task>
             <task definition_id="kinetic_request_ce_submission_activity_create_v1" id="kinetic_request_ce_submission_activity_create_v1_26" name="Display 2nd 1 day wait" x="-38.613842" y="759.51654">
@@ -485,9 +483,7 @@ Error Message: &lt;%=JSON.parse(@results['Register Billing User']['Result JSON']
                     <parameter dependsOnId="" dependsOnValue="" id="type" label="Type" menu="" required="false" tooltip="Specifies the a submission activity 'Type', which should indicate what type of data is included.">Success</parameter>
                     <parameter dependsOnId="" dependsOnValue="" id="data" label="Data" menu="" required="false" tooltip="Additional data that can be used by resources consuming the submission activity record (for example a Request bundle may render submission details based upon JSON content in the activity data).">{"Message":"Registration for &lt;%= @values['First Name']%&gt; &lt;%= @values['Last Name']%&gt; has yet to be approved. Waiting 1 day to process."}</parameter>
                 </parameters>
-                <messages>
-                    <message type="Complete"></message>
-                </messages>
+                <messages></messages>
                 <dependents></dependents>
             </task>
             <task definition_id="kinetic_request_ce_submission_activity_create_v1" id="kinetic_request_ce_submission_activity_create_v1_27" name="Display 3rd 1 day wait" x="-38.613842" y="965.9358">

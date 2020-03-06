@@ -28,15 +28,11 @@
                 <deferrable>false</deferrable>
                 <visible>true</visible>
                 <parameters>
-                    <parameter id="error_handling" label="Error Handling" menu="Error Message,Raise Error" required="true" tooltip="Determine what to return if an error is encountered.">Raise Error</parameter>
-                    <parameter id="space_slug" label="Space Slug" menu="" required="false" tooltip="The Space the submission is being retrieved from."></parameter>
-                    <parameter id="username" label="Username:" menu="" required="true" tooltip="The username of the user whose password is being reset.">&lt;%= @user['Username']%&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="error_handling" label="Error Handling" menu="Error Message,Raise Error" required="true" tooltip="Determine what to return if an error is encountered.">Raise Error</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="space_slug" label="Space Slug" menu="" required="false" tooltip="The Space the submission is being retrieved from."></parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="username" label="Username:" menu="" required="true" tooltip="The username of the user whose password is being reset.">&lt;%= @user['Username']%&gt;</parameter>
                 </parameters>
-                <messages>
-                    <message type="Create"></message>
-                    <message type="Update"></message>
-                    <message type="Complete"></message>
-                </messages>
+                <messages></messages>
                 <dependents>
                     <task label="" type="Complete" value="">routine_kd_notification_send_using_template_v1_2</task>
                 </dependents>
@@ -48,18 +44,18 @@
                 <deferrable>true</deferrable>
                 <visible>false</visible>
                 <parameters>
-                    <parameter id="Recipient List" label="Recipient List" menu="" required="true" tooltip="Comma separated list of recipients (Usernames, SMTP Addresses, and/or Team Names)">&lt;%= @user['Email']%&gt;</parameter>
-                    <parameter id="Notification Template Name" label="Notification Template Name" menu="" required="true" tooltip="">Account Created</parameter>
-                    <parameter id="JSON Vars" label="JSON Vars" menu="" required="false" tooltip="JSON input of miscellaneous values.  These values are used to replace placeholder content in notification messages.">&lt;%={
+                    <parameter dependsOnId="" dependsOnValue="" id="Recipient List" label="Recipient List" menu="" required="true" tooltip="Comma separated list of recipients (Usernames, SMTP Addresses, and/or Team Names)">&lt;%=  @user['Username'] %&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="Notification Template Name" label="Notification Template Name" menu="" required="true" tooltip="">Account Created</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="JSON Vars" label="JSON Vars" menu="" required="false" tooltip="JSON input of miscellaneous values.  These values are used to replace placeholder content in notification messages.">&lt;%={
     "Email Link"=&gt; "#{@space_attributes['Web Server Url']}/#/reset-password/#{@results['Generate Token']['Token']}?#{URI.encode_www_form("u" =&gt; @user['Username'])}",
     "Company Name" =&gt; "#{@space['Name']}",
     "Username" =&gt; "#{@user['Username']}"
      }.to_json %&gt;</parameter>
-                    <parameter id="System" label="System" menu="" required="false" tooltip="System to search for ID. Defaults to Request">Kinetic Request</parameter>
-                    <parameter id="Space Slug" label="Space Slug" menu="" required="true" tooltip="Space Slug of the submission to get values for. Used to retrieve Request submissions, notification templates, users.">&lt;%= @space['Slug']%&gt;</parameter>
-                    <parameter id="ID" label="ID" menu="" required="false" tooltip="Id of the submission to get values for, required if using those or attachments in the message"></parameter>
-                    <parameter id="Admin Kapp Slug" label="Admin Kapp Slug" menu="" required="true" tooltip="Slug of this spaces admin kapp (typically admin)">&lt;%= @space_attributes['Admin Kapp Slug']%&gt;</parameter>
-                    <parameter id="Kapp Slug Initiating Notification" label="Kapp Slug Initiating Notification" menu="" required="true" tooltip="The slug of the Kapp sending the notification (ex: catalog, queue, etc.)">&lt;%= @space_attributes['Admin Kapp Slug']%&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="System" label="System" menu="" required="false" tooltip="System to search for ID. Defaults to Request">Kinetic Request</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="Space Slug" label="Space Slug" menu="" required="true" tooltip="Space Slug of the submission to get values for. Used to retrieve Request submissions, notification templates, users.">&lt;%= @space['Slug']%&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="ID" label="ID" menu="" required="false" tooltip="Id of the submission to get values for, required if using those or attachments in the message"></parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="Admin Kapp Slug" label="Admin Kapp Slug" menu="" required="true" tooltip="Slug of this spaces admin kapp (typically admin)">&lt;%= @space_attributes['Admin Kapp Slug']%&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="Kapp Slug Initiating Notification" label="Kapp Slug Initiating Notification" menu="" required="true" tooltip="The slug of the Kapp sending the notification (ex: catalog, queue, etc.)">&lt;%= @space_attributes['Admin Kapp Slug']%&gt;</parameter>
                 </parameters>
                 <messages>
                     <message type="Create"></message>
@@ -77,15 +73,15 @@
                 <deferrable>true</deferrable>
                 <visible>false</visible>
                 <parameters>
-                    <parameter id="Space Slug" label="Space Slug" menu="" required="false" tooltip="Slug of the space where the submission exists">&lt;%= @space['Slug']%&gt;</parameter>
-                    <parameter id="Username" label="Username" menu="" required="true" tooltip="Username of the user to update">&lt;%= @user['Username']%&gt;</parameter>
-                    <parameter id="Display Name" label="Display Name" menu="" required="false" tooltip="Updated Display Name"></parameter>
-                    <parameter id="Email" label="Email" menu="" required="false" tooltip="Updated Email"></parameter>
-                    <parameter id="Locale" label="Locale" menu="" required="false" tooltip="Updated Locale"></parameter>
-                    <parameter id="Enabled" label="Enabled" menu="" required="false" tooltip="True or False -- if the user should be enabled or not"></parameter>
-                    <parameter id="Space Admin" label="Space Admin" menu="" required="false" tooltip="True or False -- if the user should be a space admin or not"></parameter>
-                    <parameter id="Attributes" label="Attributes" menu="" required="false" tooltip="JSON object of the attributes to update"></parameter>
-                    <parameter id="Profile Attributes" label="Profile Attributes" menu="" required="false" tooltip="JSON object of the profile attributes to update">&lt;%=
+                    <parameter dependsOnId="" dependsOnValue="" id="Space Slug" label="Space Slug" menu="" required="false" tooltip="Slug of the space where the submission exists">&lt;%= @space['Slug']%&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="Username" label="Username" menu="" required="true" tooltip="Username of the user to update">&lt;%= @user['Username']%&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="Display Name" label="Display Name" menu="" required="false" tooltip="Updated Display Name"></parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="Email" label="Email" menu="" required="false" tooltip="Updated Email"></parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="Locale" label="Locale" menu="" required="false" tooltip="Updated Locale"></parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="Enabled" label="Enabled" menu="" required="false" tooltip="True or False -- if the user should be enabled or not"></parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="Space Admin" label="Space Admin" menu="" required="false" tooltip="True or False -- if the user should be a space admin or not"></parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="Attributes" label="Attributes" menu="" required="false" tooltip="JSON object of the attributes to update"></parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="Profile Attributes" label="Profile Attributes" menu="" required="false" tooltip="JSON object of the profile attributes to update">&lt;%=
  [
    {
     "name":"Guided Tour",
@@ -93,11 +89,7 @@
    }
  ].to_json%&gt;</parameter>
                 </parameters>
-                <messages>
-                    <message type="Create"></message>
-                    <message type="Update"></message>
-                    <message type="Complete"></message>
-                </messages>
+                <messages></messages>
                 <dependents></dependents>
             </task>
         </request>

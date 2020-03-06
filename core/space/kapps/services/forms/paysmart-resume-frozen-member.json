@@ -480,7 +480,7 @@
           "name": "Load Review",
           "type": "Load",
           "action": "Custom",
-          "code": "K('section[Student Information]').show();\nK('section[Cancellation Information]').show();\nK('section[List of Documents]').show();    \nK('section[Terms]').show();\n\nK('section[Member Select Space]').hide();    \n",
+          "code": "K('section[Student Information]').show(); \nK('section[Terms]').show();\n\nK('section[Member Select Space]').hide();    \n",
           "runIf": "form('review')"
         },
         {

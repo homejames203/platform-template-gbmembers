@@ -1,6 +1,6 @@
 <tree schema_version="1.0">
     <sourceName>Kinetic Request CE</sourceName>
-    <sourceGroup>gbmembers-template</sourceGroup>
+    <sourceGroup>Submissions > gbmembers > email-campaigns</sourceGroup>
     <type>Tree</type>
     <status>Active</status>
     <taskTree builder_version="" schema_version="1.0" version="">

@@ -167,6 +167,11 @@ task_handler_configurations = {
     "tls" => (smtp["tls"] || "true").to_s,
     "username" => smtp["username"] || "joe.blow",
     "password" => smtp["password"] || "password",
+    "update_read_count_url" => "https://gbbilling.com.au:8443/billingservice/getCampaignImage",
+    "api_server" => vars["core"]["server"],
+    "api_username" => vars["core"]["service_user_username"],
+    "api_password" => vars["core"]["service_user_password"],
+
   },
   "kinetic_request_ce_notification_template_send" => {
     "smtp_server" => smtp["server"] || "mysmtp.com",

@@ -128,5 +128,8 @@
       "name": "Admins"
     }
   ],
-  "slug": "registrations"
+  "slug": "registrations",
+  "webApis": [
+
+  ]
 }

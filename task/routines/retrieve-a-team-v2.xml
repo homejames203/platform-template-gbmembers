@@ -49,16 +49,12 @@
                 <deferrable>true</deferrable>
                 <visible>false</visible>
                 <parameters>
-                    <parameter id="Error Message" label="Error Message" menu="" required="false" tooltip="Error Message ">&lt;%=@results['Retrieve Team']['Handler Error Message']%&gt;</parameter>
-                    <parameter id="Handler Name" label="Handler Name" menu="" required="false" tooltip="">kinetic_request_ce_team_retrieve_v1</parameter>
-                    <parameter id="Run Id" label="Run Id" menu="" required="false" tooltip="">&lt;%=@run['Id']%&gt;</parameter>
-                    <parameter id="Inputs JSON" label="Inputs JSON" menu="" required="false" tooltip="">&lt;%=@inputs.to_json%&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="Error Message" label="Error Message" menu="" required="false" tooltip="Error Message ">&lt;%=@results['Retrieve Team']['Handler Error Message']%&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="Handler Name" label="Handler Name" menu="" required="false" tooltip="">kinetic_request_ce_team_retrieve_v1</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="Run Id" label="Run Id" menu="" required="false" tooltip="">&lt;%=@run['Id']%&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="Inputs JSON" label="Inputs JSON" menu="" required="false" tooltip="">&lt;%=@inputs.to_json%&gt;</parameter>
                 </parameters>
-                <messages>
-                    <message type="Create"></message>
-                    <message type="Update"></message>
-                    <message type="Complete"></message>
-                </messages>
+                <messages></messages>
                 <dependents>
                     <task label="" type="Complete" value="">routine_kinetic_request_ce_team_retrieve_v2_32</task>
                 </dependents>
@@ -70,15 +66,13 @@
                 <deferrable>false</deferrable>
                 <visible>false</visible>
                 <parameters>
-                    <parameter id="error_handling" label="Error Handling" menu="Error Message,Raise Error" required="true" tooltip="Determine what to return if an error is encountered.">Error Message</parameter>
-                    <parameter id="space_slug" label="Space Slug:" menu="" required="false" tooltip="The slug of the space">&lt;%=@inputs['Space Slug']%&gt;</parameter>
-                    <parameter id="team_name" label="Team Name:" menu="" required="false" tooltip="Optional. If only one team's information is desired, specify team name">&lt;%=@inputs['Team Name']%&gt;</parameter>
-                    <parameter id="membership" label="Include Membership:" menu="" required="true" tooltip="Whether or not to include the memberships of the team(s), default: true, possible options: true, false">&lt;%=@inputs['Return Members']%&gt;</parameter>
-                    <parameter id="attributes" label="Include Attributes:" menu="" required="true" tooltip="Whether or not to include the attributes of the team(s), default: true, possible options: true, false">&lt;%=@inputs['Return Attributes']%&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="error_handling" label="Error Handling" menu="Error Message,Raise Error" required="true" tooltip="Determine what to return if an error is encountered.">Error Message</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="space_slug" label="Space Slug:" menu="" required="false" tooltip="The slug of the space"></parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="team_name" label="Team Name:" menu="" required="false" tooltip="Optional. If only one team's information is desired, specify team name">&lt;%=@inputs['Team Name']%&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="membership" label="Include Membership:" menu="" required="true" tooltip="Whether or not to include the memberships of the team(s), default: true, possible options: true, false">&lt;%=@inputs['Return Members']%&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="attributes" label="Include Attributes:" menu="" required="true" tooltip="Whether or not to include the attributes of the team(s), default: true, possible options: true, false">&lt;%=@inputs['Return Attributes']%&gt;</parameter>
                 </parameters>
                 <messages>
-                    <message type="Create"></message>
-                    <message type="Update"></message>
                     <message type="Complete"></message>
                 </messages>
                 <dependents>
@@ -93,19 +87,15 @@
                 <deferrable>false</deferrable>
                 <visible>false</visible>
                 <parameters>
-                    <parameter id="Name" label="Name" menu="" required="false" tooltip="Username of the Team">&lt;%=@results['Retrieve Team']['Name']%&gt;</parameter>
-                    <parameter id="Slug" label="Slug" menu="" required="false" tooltip="Display Name of the Team">&lt;%=@results['Retrieve Team']['Slug']%&gt;</parameter>
-                    <parameter id="Description" label="Description" menu="" required="false" tooltip="Description of the Team">&lt;%=@results['Retrieve Team']['Description']%&gt;</parameter>
-                    <parameter id="Attributes JSON" label="Attributes JSON" menu="" required="false" tooltip="JSON array of attributes">&lt;%=@results['Retrieve Team']['Attributes JSON']%&gt;</parameter>
-                    <parameter id="Membership JSON" label="Membership JSON" menu="" required="false" tooltip="JSON array of members">&lt;%=@results['Retrieve Team']['Membership JSON']%&gt;</parameter>
-                    <parameter id="Has Members" label="Has Members" menu="" required="false" tooltip="If the team has members or not">&lt;%=@results['Retrieve Team']['Has Members']%&gt;</parameter>
-                    <parameter id="Exists" label="Exists" menu="" required="false" tooltip="If the team exists or not">&lt;%=@results['Retrieve Team']['Exists']%&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="Name" label="Name" menu="" required="false" tooltip="Username of the Team">&lt;%=@results['Retrieve Team']['Name']%&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="Slug" label="Slug" menu="" required="false" tooltip="Display Name of the Team">&lt;%=@results['Retrieve Team']['Slug']%&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="Description" label="Description" menu="" required="false" tooltip="Description of the Team">&lt;%=@results['Retrieve Team']['Description']%&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="Attributes JSON" label="Attributes JSON" menu="" required="false" tooltip="JSON array of attributes">&lt;%=@results['Retrieve Team']['Attributes JSON']%&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="Membership JSON" label="Membership JSON" menu="" required="false" tooltip="JSON array of members">&lt;%=@results['Retrieve Team']['Membership JSON']%&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="Has Members" label="Has Members" menu="" required="false" tooltip="If the team has members or not">&lt;%=@results['Retrieve Team']['Has Members']%&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="Exists" label="Exists" menu="" required="false" tooltip="If the team exists or not">&lt;%=@results['Retrieve Team']['Exists']%&gt;</parameter>
                 </parameters>
-                <messages>
-                    <message type="Create"></message>
-                    <message type="Update"></message>
-                    <message type="Complete"></message>
-                </messages>
+                <messages></messages>
                 <dependents></dependents>
             </task>
             <task definition_id="system_tree_return_v1" id="system_tree_return_v1_30" name="Return From Error" x="839" y="47">
@@ -115,19 +105,15 @@
                 <deferrable>false</deferrable>
                 <visible>false</visible>
                 <parameters>
-                    <parameter id="Name" label="Name" menu="" required="false" tooltip="Username of the Team">&lt;%=@results['Retry']['Name']%&gt;</parameter>
-                    <parameter id="Slug" label="Slug" menu="" required="false" tooltip="Display Name of the Team">&lt;%=@results['Retry']['Slug']%&gt;</parameter>
-                    <parameter id="Description" label="Description" menu="" required="false" tooltip="Description of the Team">&lt;%=@results['Retry']['Description']%&gt;</parameter>
-                    <parameter id="Attributes JSON" label="Attributes JSON" menu="" required="false" tooltip="JSON array of attributes">&lt;%=@results['Retry']['Attributes JSON']%&gt;</parameter>
-                    <parameter id="Membership JSON" label="Membership JSON" menu="" required="false" tooltip="JSON array of members">&lt;%=@results['Retry']['Membership JSON']%&gt;</parameter>
-                    <parameter id="Has Members" label="Has Members" menu="" required="false" tooltip="If the team has members or not">&lt;%=@results['Retry']['Has Members']%&gt;</parameter>
-                    <parameter id="Exists" label="Exists" menu="" required="false" tooltip="If the team exists or not">&lt;%=@results['Retry']['Exists']%&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="Name" label="Name" menu="" required="false" tooltip="Username of the Team">&lt;%=@results['Retry']['Name']%&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="Slug" label="Slug" menu="" required="false" tooltip="Display Name of the Team">&lt;%=@results['Retry']['Slug']%&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="Description" label="Description" menu="" required="false" tooltip="Description of the Team">&lt;%=@results['Retry']['Description']%&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="Attributes JSON" label="Attributes JSON" menu="" required="false" tooltip="JSON array of attributes">&lt;%=@results['Retry']['Attributes JSON']%&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="Membership JSON" label="Membership JSON" menu="" required="false" tooltip="JSON array of members">&lt;%=@results['Retry']['Membership JSON']%&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="Has Members" label="Has Members" menu="" required="false" tooltip="If the team has members or not">&lt;%=@results['Retry']['Has Members']%&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="Exists" label="Exists" menu="" required="false" tooltip="If the team exists or not">&lt;%=@results['Retry']['Exists']%&gt;</parameter>
                 </parameters>
-                <messages>
-                    <message type="Create"></message>
-                    <message type="Update"></message>
-                    <message type="Complete"></message>
-                </messages>
+                <messages></messages>
                 <dependents></dependents>
             </task>
             <task definition_id="routine_kinetic_request_ce_team_retrieve_v2" id="routine_kinetic_request_ce_team_retrieve_v2_32" name="Retry" x="671" y="54">
@@ -137,16 +123,12 @@
                 <deferrable>true</deferrable>
                 <visible>false</visible>
                 <parameters>
-                    <parameter id="Space Slug" label="Space Slug" menu="" required="false" tooltip="The Slug of the Space this submission belongs to">&lt;%=@results['Error Process']['Space Slug']%&gt;</parameter>
-                    <parameter id="Team Name" label="Team Name" menu="" required="true" tooltip="Name of the Team to Retrieve">&lt;%=@results['Error Process']['Team Name']%&gt;</parameter>
-                    <parameter id="Return Attributes" label="Return Attributes" menu="" required="false" tooltip="If the function needs to return the teams attributes">&lt;%=@results['Error Process']['Return Attributes']%&gt;</parameter>
-                    <parameter id="Return Members" label="Return Members" menu="" required="false" tooltip="If the function needs to return the teams members">&lt;%=@results['Error Process']['Return Members']%&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="Space Slug" label="Space Slug" menu="" required="false" tooltip="The Slug of the Space this submission belongs to">&lt;%=@results['Error Process']['Space Slug']%&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="Team Name" label="Team Name" menu="" required="true" tooltip="Name of the Team to Retrieve">&lt;%=@results['Error Process']['Team Name']%&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="Return Attributes" label="Return Attributes" menu="" required="false" tooltip="If the function needs to return the teams attributes">&lt;%=@results['Error Process']['Return Attributes']%&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="Return Members" label="Return Members" menu="" required="false" tooltip="If the function needs to return the teams members">&lt;%=@results['Error Process']['Return Members']%&gt;</parameter>
                 </parameters>
-                <messages>
-                    <message type="Create"></message>
-                    <message type="Update"></message>
-                    <message type="Complete"></message>
-                </messages>
+                <messages></messages>
                 <dependents>
                     <task label="" type="Complete" value="">system_tree_return_v1_30</task>
                 </dependents>

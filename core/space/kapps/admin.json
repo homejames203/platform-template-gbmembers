@@ -178,5 +178,8 @@
       "name": "Submission Support"
     }
   ],
-  "slug": "admin"
+  "slug": "admin",
+  "webApis": [
+
+  ]
 }
