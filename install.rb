@@ -161,7 +161,7 @@ task_source_properties = {
 # task handler info values
 smtp = vars["data"]["smtp"] || {}
 task_handler_configurations = {
-  "smtp_email_send" => {
+  "smtp_email_send_v1" => {
     "server" => smtp["server"] || "mysmtp.com",
     "port" => (smtp["port"] || "25").to_s,
     "tls" => (smtp["tls"] || "true").to_s,
@@ -173,7 +173,7 @@ task_handler_configurations = {
     "api_password" => vars["core"]["service_user_password"],
 
   },
-  "kinetic_request_ce_notification_template_send" => {
+  "kinetic_request_ce_notification_template_send_v1" => {
     "smtp_server" => smtp["server"] || "mysmtp.com",
     "smtp_port" => (smtp["port"] || "25").to_s,
     "smtp_tls" => (smtp["tls"] || "true").to_s,
