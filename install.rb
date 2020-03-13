@@ -423,11 +423,11 @@ task_sdk.find_handlers.content["handlers"].each do |handler|
       })
     elsif handler_definition_id.start_with?("kinetic_request_ce_notification_template_send_v")
       task_sdk.update_handler(handler_definition_id, {
-        "properties" => task_handler_configurations["kinetic_request_ce_notification_template_send"],
+        "properties" => task_handler_configurations["kinetic_request_ce_notification_template_send_v1"],
       })
     elsif handler_definition_id.start_with?("smtp_email_send")
       task_sdk.update_handler(handler_definition_id, {
-        "properties" => task_handler_configurations["smtp_email_send"],
+        "properties" => task_handler_configurations["smtp_email_send_v1"],
       })
     elsif handler_definition_id.start_with?("kinetic_request_ce")
       task_sdk.update_handler(handler_definition_id, {
