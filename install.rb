@@ -173,7 +173,7 @@ task_handler_configurations = {
     "api_password" => vars["core"]["service_user_password"],
 
   },
-  "kinetic_request_ce_notification_template_send_v1" => {
+  "kinetic_request_ce_notification_template_send_v2" => {
     "smtp_server" => smtp["server"] || "mysmtp.com",
     "smtp_port" => (smtp["port"] || "25").to_s,
     "smtp_tls" => (smtp["tls"] || "true").to_s,
@@ -460,7 +460,7 @@ if (vars["data"]["requesting_user"])
     "email" => vars["data"]["requesting_user"]["email"],
     "displayName" => vars["data"]["requesting_user"]["displayName"],
 ##    "password" => KineticSdk::Utils::Random.simple(16),
-    "password" => "gbfms@2017",
+    "password" => "gbfms@2107",
     "enabled" => true,
     "spaceAdmin" => true,
     "memberships" => [
