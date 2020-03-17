@@ -459,7 +459,8 @@ if (vars["data"]["requesting_user"])
     "username" => vars["data"]["requesting_user"]["username"],
     "email" => vars["data"]["requesting_user"]["email"],
     "displayName" => vars["data"]["requesting_user"]["displayName"],
-    "password" => KineticSdk::Utils::Random.simple(16),
+##    "password" => KineticSdk::Utils::Random.simple(16),
+    "password" => "gbfms@2017",
     "enabled" => true,
     "spaceAdmin" => true,
     "memberships" => [
