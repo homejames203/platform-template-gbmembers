@@ -1,0 +1,17 @@
+{
+  "name": "_Handlers",
+  "description": "Handlers in the system",
+  "type": "Stored",
+  "handlers": [
+    "generate_monthly_billing_statistics_v1",
+    "kinetic_core_api_v1",
+    "kinetic_task_api_v1",
+    "kinetic_task_api_v2"
+  ],
+  "policyRules": [
+
+  ],
+  "trees": [
+
+  ]
+}

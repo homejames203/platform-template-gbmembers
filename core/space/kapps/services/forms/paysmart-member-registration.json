@@ -1503,7 +1503,10 @@
               "omitWhenHidden": null,
               "pattern": null,
               "constraints": [
-
+                {
+                  "content": "new Date(values('DOB')). getFullYear()>1900",
+                  "message": "DOB Must be a year greater than 1900"
+                }
               ],
               "events": [
 

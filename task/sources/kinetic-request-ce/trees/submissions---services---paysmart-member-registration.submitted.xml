@@ -65,9 +65,7 @@
   "gbmemberId": "&lt;%= @submission['Id']%&gt;"
 }</parameter>
                 </parameters>
-                <messages>
-                    <message type="Complete"></message>
-                </messages>
+                <messages></messages>
                 <dependents>
                     <task label="Error" type="Complete" value="JSON.parse(@results['Register Billing User']['Result JSON'])['error']==100">kinetic_request_ce_submission_activity_create_v1_8</task>
                     <task label="Success" type="Complete" value="JSON.parse(@results['Register Billing User']['Result JSON'])['error']==0">system_wait_v1_17</task>
@@ -84,15 +82,17 @@
                     <parameter dependsOnId="" dependsOnValue="" id="space" label="Space slug" menu="" required="true" tooltip="Space slug for School">&lt;%= @space['Slug']%&gt;</parameter>
                     <parameter dependsOnId="" dependsOnValue="" id="billing_company" label="Billing Company" menu="" required="true" tooltip="Billing Company that the service will operate against.(eg, PaySmart)">PaySmart</parameter>
                     <parameter dependsOnId="" dependsOnValue="" id="json_args" label="JSON arguments" menu="" required="true" tooltip="A JSON structure containing all argument passed to the Billing Service">{
-  "customerId": "&lt;%= (!@values.has_key?('Billing Customer Id') ? @values['Member ID'] : @values['Billing Customer Id'])%&gt;",
+  "customerId": "&lt;%= @values['Member ID']%&gt;",
   "billingService": "PaySmart",
   "space": "&lt;%= @space['Slug']%&gt;"
 }</parameter>
                 </parameters>
-                <messages></messages>
+                <messages>
+                    <message type="Complete"></message>
+                </messages>
                 <dependents>
                     <task label="Found" type="Complete" value="JSON.parse(@results['Get Billing User']['Result JSON'])['error']==0">kinetic_request_ce_submission_update_v1_5</task>
-                    <task label="Not Processed" type="Complete" value="$JSON.parse(@results['Get Billing User']['Result JSON'])['error']==100">system_wait_v1_18</task>
+                    <task label="Not Processed" type="Complete" value="JSON.parse(@results['Get Billing User']['Result JSON'])['error']==100">system_wait_v1_18</task>
                 </dependents>
             </task>
             <task definition_id="kinetic_request_ce_submission_update_v1" id="kinetic_request_ce_submission_update_v1_5" name="Update Billing Member" x="526" y="459">
@@ -345,15 +345,17 @@ Error Message: &lt;%=JSON.parse(@results['Register Billing User']['Result JSON']
                     <parameter dependsOnId="" dependsOnValue="" id="space" label="Space slug" menu="" required="true" tooltip="Space slug for School">&lt;%= @space['Slug']%&gt;</parameter>
                     <parameter dependsOnId="" dependsOnValue="" id="billing_company" label="Billing Company" menu="" required="true" tooltip="Billing Company that the service will operate against.(eg, PaySmart)">PaySmart</parameter>
                     <parameter dependsOnId="" dependsOnValue="" id="json_args" label="JSON arguments" menu="" required="true" tooltip="A JSON structure containing all argument passed to the Billing Service">{
-  "customerId": "&lt;%= (!@values.has_key?('Billing Customer Id') ? @values['Member ID'] : @values['Billing Customer Id'])%&gt;",
+  "customerId": "&lt;%= @values['Member ID']%&gt;",
   "billingService": "PaySmart",
   "space": "&lt;%= @space['Slug']%&gt;"
 }</parameter>
                 </parameters>
-                <messages></messages>
+                <messages>
+                    <message type="Complete"></message>
+                </messages>
                 <dependents>
                     <task label="Found" type="Complete" value="JSON.parse(@results['Get Billing User 2']['Result JSON'])['error']==0">kinetic_request_ce_submission_update_v1_5</task>
-                    <task label="Not Processed" type="Complete" value="$JSON.parse(@results['Get Billing User 2']['Result JSON'])['error']==100">system_wait_v1_20</task>
+                    <task label="Not Processed" type="Complete" value="JSON.parse(@results['Get Billing User 2']['Result JSON'])['error']==100">system_wait_v1_20</task>
                 </dependents>
             </task>
             <task definition_id="system_wait_v1" id="system_wait_v1_20" name="Wait 2nd 1 day" x="162.99097" y="761.12134">
@@ -383,15 +385,17 @@ Error Message: &lt;%=JSON.parse(@results['Register Billing User']['Result JSON']
                     <parameter dependsOnId="" dependsOnValue="" id="space" label="Space slug" menu="" required="true" tooltip="Space slug for School">&lt;%= @space['Slug']%&gt;</parameter>
                     <parameter dependsOnId="" dependsOnValue="" id="billing_company" label="Billing Company" menu="" required="true" tooltip="Billing Company that the service will operate against.(eg, PaySmart)">PaySmart</parameter>
                     <parameter dependsOnId="" dependsOnValue="" id="json_args" label="JSON arguments" menu="" required="true" tooltip="A JSON structure containing all argument passed to the Billing Service">{
-  "customerId": "&lt;%= (!@values.has_key?('Billing Customer Id') ? @values['Member ID'] : @values['Billing Customer Id'])%&gt;",
+  "customerId": "&lt;%= @values['Member ID']%&gt;",
   "billingService": "PaySmart",
   "space": "&lt;%= @space['Slug']%&gt;"
 }</parameter>
                 </parameters>
-                <messages></messages>
+                <messages>
+                    <message type="Complete"></message>
+                </messages>
                 <dependents>
                     <task label="Found" type="Complete" value="JSON.parse(@results['Get Billing User 3']['Result JSON'])['error']==0">kinetic_request_ce_submission_update_v1_5</task>
-                    <task label="Not Processed" type="Complete" value="$JSON.parse(@results['Get Billing User 3']['Result JSON'])['error']==100">system_wait_v1_22</task>
+                    <task label="Not Processed" type="Complete" value="JSON.parse(@results['Get Billing User 3']['Result JSON'])['error']==100">system_wait_v1_22</task>
                 </dependents>
             </task>
             <task definition_id="system_wait_v1" id="system_wait_v1_22" name="Wait 3rd 1 day" x="160.98495" y="964.5316">
@@ -421,15 +425,17 @@ Error Message: &lt;%=JSON.parse(@results['Register Billing User']['Result JSON']
                     <parameter dependsOnId="" dependsOnValue="" id="space" label="Space slug" menu="" required="true" tooltip="Space slug for School">&lt;%= @space['Slug']%&gt;</parameter>
                     <parameter dependsOnId="" dependsOnValue="" id="billing_company" label="Billing Company" menu="" required="true" tooltip="Billing Company that the service will operate against.(eg, PaySmart)">PaySmart</parameter>
                     <parameter dependsOnId="" dependsOnValue="" id="json_args" label="JSON arguments" menu="" required="true" tooltip="A JSON structure containing all argument passed to the Billing Service">{
-  "customerId": "&lt;%= (!@values.has_key?('Billing Customer Id') ? @values['Member ID'] : @values['Billing Customer Id'])%&gt;",
+  "customerId": "&lt;%= @values['Member ID']%&gt;",
   "billingService": "PaySmart",
   "space": "&lt;%= @space['Slug']%&gt;"
 }</parameter>
                 </parameters>
-                <messages></messages>
+                <messages>
+                    <message type="Complete"></message>
+                </messages>
                 <dependents>
                     <task label="Found" type="Complete" value="JSON.parse(@results['Get Billing User 3']['Result JSON'])['error']==0">kinetic_request_ce_submission_update_v1_5</task>
-                    <task label="Not Processed" type="Complete" value="$JSON.parse(@results['Get Billing User 4']['Result JSON'])['error']==100">kinetic_request_ce_submission_activity_create_v1_28</task>
+                    <task label="Not Processed" type="Complete" value="JSON.parse(@results['Get Billing User 4']['Result JSON'])['error']==100">kinetic_request_ce_submission_activity_create_v1_28</task>
                 </dependents>
             </task>
             <task definition_id="kinetic_request_ce_submission_activity_create_v1" id="kinetic_request_ce_submission_activity_create_v1_24" name="Display 1st 1 day wait" x="-43.628887" y="564.1304">

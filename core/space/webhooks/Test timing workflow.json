@@ -1,5 +1,4 @@
 {
-  "authStrategy": null,
   "event": "Saved",
   "filter": "form('slug')===\"wait-workflow-test\"",
   "name": "Test timing workflow",

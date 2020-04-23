@@ -1,17 +1,4 @@
 {
-  "authStrategy": {
-    "type": "Signature",
-    "properties": [
-      {
-        "name": "Key",
-        "value": "kinops-request-ce"
-      },
-      {
-        "name": "Secret",
-        "sensitive": "true"
-      }
-    ]
-  },
   "event": "Submitted",
   "filter": "form('name')==\"Hire Resources\"",
   "name": "Hire Resource Requested",
