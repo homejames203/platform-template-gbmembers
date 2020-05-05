@@ -421,6 +421,15 @@ task_sdk.find_handlers.content["handlers"].each do |handler|
           "api_password" => vars["core"]["service_user_password"],
         },
       })
+    elsif handler_definition_id.start_with?("kinetic_task_tree")
+      logger.info "Updating handler #{handler_definition_id}"
+      task_sdk.update_handler(handler_definition_id, {
+        "properties" => {
+          "username" => vars["core"]["service_user_username"],
+          "password" => vars["core"]["service_user_password"],
+          "kinetic_task_location" => vars["core"]["task_api_v2"].gsub("/app/api/v2",""),
+        },
+      })
     elsif handler_definition_id.start_with?("kinetic_request_ce_notification_template_send_v")
       task_sdk.update_handler(handler_definition_id, {
         "properties" => task_handler_configurations["kinetic_request_ce_notification_template_send_v1"],
