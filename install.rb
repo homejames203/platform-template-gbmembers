@@ -160,26 +160,27 @@ task_source_properties = {
 
 # task handler info values
 smtp = vars["data"]["smtp"] || {}
-task_handler_configurations = {
-  "smtp_email_send_v1" => {
-    "server" => smtp["server"] || "mysmtp.com",
-    "port" => (smtp["port"] || "25").to_s,
-    "tls" => (smtp["tls"] || "true").to_s,
-    "username" => smtp["username"] || "joe.blow",
-    "password" => smtp["password"] || "password",
+task_handler_configurations = task_handler_configurations.merge(vars["data"]["handlers"] || {})
+task_handler_configurations["smtp_email_send_v1"] => {
+    "server" => "pro.turbo-smtp.com",
+    "port" => "587",
+    "tls" => "true",
+    "username" => "info@gbsydney.com.au",
+    "password" => "TdcjGVs5",
     "update_read_count_url" => "https://gbbilling.com.au:8443/billingservice/getCampaignImage",
     "api_server" => vars["core"]["server"],
     "api_username" => vars["core"]["service_user_username"],
     "api_password" => vars["core"]["service_user_password"],
 
-  },
-  "kinetic_request_ce_notification_template_send_v2" => {
-    "smtp_server" => smtp["server"] || "mysmtp.com",
-    "smtp_port" => (smtp["port"] || "25").to_s,
-    "smtp_tls" => (smtp["tls"] || "true").to_s,
-    "smtp_username" => smtp["username"] || "joe.blow",
-    "smtp_password" => smtp["password"] || "password",
-    "smtp_from_address" => smtp["from_address"] || "j@j.com",
+  }
+
+  task_handler_configurations["kinetic_request_ce_notification_template_send_v"] => {
+    "smtp_server" => "pro.turbo-smtp.com",
+    "smtp_port" => "587",
+    "smtp_tls" => "true",
+    "smtp_username" => "info@gbsydney.com.au",
+    "smtp_password" => "TdcjGVs5",
+    "smtp_from_address" => "wally@kinops.io",
     "smtp_auth_type" => "plain",
     "api_server" => vars["core"]["server"],
     "api_username" => vars["core"]["service_user_username"],
@@ -187,8 +188,6 @@ task_handler_configurations = {
     "space_slug" => nil,
     "enable_debug_logging" => "No",
   },
-}
-task_handler_configurations = task_handler_configurations.merge(vars["data"]["handlers"] || {})
 
 http_options = (vars["http_options"] || {}).each_with_object({}) do |(k, v), result|
   result[k.to_sym] = v
@@ -432,7 +431,7 @@ task_sdk.find_handlers.content["handlers"].each do |handler|
       })
     elsif handler_definition_id.start_with?("kinetic_request_ce_notification_template_send_v")
       task_sdk.update_handler(handler_definition_id, {
-        "properties" => task_handler_configurations["kinetic_request_ce_notification_template_send_v1"],
+        "properties" => task_handler_configurations["kinetic_request_ce_notification_template_send_v"],
       })
     elsif handler_definition_id.start_with?("smtp_email_send")
       task_sdk.update_handler(handler_definition_id, {
