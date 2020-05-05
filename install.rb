@@ -160,6 +160,7 @@ task_source_properties = {
 
 # task handler info values
 smtp = vars["data"]["smtp"] || {}
+task_handler_configurations={}
 task_handler_configurations = task_handler_configurations.merge(vars["data"]["handlers"] || {})
 task_handler_configurations["smtp_email_send_v1"] => {
     "server" => "pro.turbo-smtp.com",
