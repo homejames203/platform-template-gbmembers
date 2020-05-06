@@ -161,8 +161,7 @@ task_source_properties = {
 # task handler info values
 smtp = vars["data"]["smtp"] || {}
 task_handler_configurations={}
-task_handler_configurations = task_handler_configurations.merge(vars["data"]["handlers"] || {})
-task_handler_configurations["smtp_email_send_v1"] => {
+task_handler_configurations["smtp_email_send_v1"] = {
     "server" => "pro.turbo-smtp.com",
     "port" => "587",
     "tls" => "true",
@@ -175,7 +174,7 @@ task_handler_configurations["smtp_email_send_v1"] => {
 
   }
 
-  task_handler_configurations["kinetic_request_ce_notification_template_send_v"] => {
+  task_handler_configurations["kinetic_request_ce_notification_template_send_v"] = {
     "smtp_server" => "pro.turbo-smtp.com",
     "smtp_port" => "587",
     "smtp_tls" => "true",
@@ -188,7 +187,8 @@ task_handler_configurations["smtp_email_send_v1"] => {
     "api_password" => vars["core"]["service_user_password"],
     "space_slug" => nil,
     "enable_debug_logging" => "No",
-  },
+  }
+  task_handler_configurations = task_handler_configurations.merge(vars["data"]["handlers"] || {})
 
 http_options = (vars["http_options"] || {}).each_with_object({}) do |(k, v), result|
   result[k.to_sym] = v
