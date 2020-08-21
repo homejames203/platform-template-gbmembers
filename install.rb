@@ -162,24 +162,23 @@ task_source_properties = {
 smtp = vars["data"]["smtp"] || {}
 task_handler_configurations={}
 task_handler_configurations["smtp_email_send_v1"] = {
-    "server" => "pro.turbo-smtp.com",
-    "port" => "587",
-    "tls" => "true",
-    "username" => "info@gbsydney.com.au",
-    "password" => "87hJJt64bnMmqZzQ",
-    "update_read_count_url" => "https://gbbilling.com.au:8443/billingservice/getCampaignImage",
+    "server" => smtp["server"],
+    "port" => smtp["port"],
+    "tls" => smtp["tls"],
+    "username" => smtp["username"],
+    "password" => smtp["password"],
+    "update_read_count_url" => smtp["update_read_count_url"],
     "api_server" => vars["core"]["server"],
-    "api_username" => vars["core"]["service_user_username"],
-    "api_password" => vars["core"]["service_user_password"],
-
+    "api_server_user" => vars["core"]["service_user_username"],
+    "api_server_password" => vars["core"]["service_user_password"]
   }
 
   task_handler_configurations["kinetic_request_ce_notification_template_send_v"] = {
-    "smtp_server" => "pro.turbo-smtp.com",
-    "smtp_port" => "587",
-    "smtp_tls" => "true",
-    "smtp_username" => "info@gbsydney.com.au",
-    "smtp_password" => "87hJJt64bnMmqZzQ",
+    "smtp_server" => smtp["server"],
+    "smtp_port" => smtp["port"],
+    "smtp_tls" => smtp["tls"],
+    "smtp_username" => smtp["username"],
+    "smtp_password" => smtp["password"],
     "smtp_from_address" => "wally@kinops.io",
     "smtp_auth_type" => "plain",
     "api_server" => vars["core"]["server"],
