@@ -1081,7 +1081,7 @@
   "securityPolicies": [
     {
       "endpoint": "Display",
-      "name": "Authenticated Users"
+      "name": "Admins"
     },
     {
       "endpoint": "Submission Access",

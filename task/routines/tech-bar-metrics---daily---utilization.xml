@@ -1,0 +1,189 @@
+<tree schema_version="1.0">
+    <sourceName>-</sourceName>
+    <sourceGroup>-</sourceGroup>
+    <definitionId>routine_tech_bar_metrics_daily_utilization_v1</definitionId>
+    <type>Global Routine</type>
+    <status>Active</status>
+    <taskTree builder_version="" schema_version="1.0" version="">
+        <name>Tech Bar Metrics - Daily - Utilization</name>
+        <author></author>
+        <notes></notes>
+        <lastID>24</lastID>
+        <taskDefinition id="routine_tech_bar_metrics_daily_utilization_v1" name="Tech Bar Metrics - Daily - Utilization" schema_version="1.0" version="1">
+            <visible>false</visible>
+            <deferrable>true</deferrable>
+            <parameters>
+                <parameter id="Scheduler Id" label="Scheduler Id" required="true" tooltip="The scheduler for which to retrieve records"></parameter>
+                <parameter id="Starting Date" label="Starting Date" required="true" tooltip="The starting date from which to retrieve data (YYYY-MM-DD)"></parameter>
+                <parameter id="Page Token" label="Page Token" required="false" tooltip="The value to use as the offset for the page of submissions to return. The submission that matches this value will not be included in the results."></parameter>
+            </parameters>
+            <handler name="system_tree_call" version="1"></handler>
+            <results format="xml">
+                <result name="Output" tooltip="JSON output for the results"></result>
+            </results>
+        </taskDefinition>
+        <request>
+            <task definition_id="system_start_v1" id="start" name="Start" x="10" y="10">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters></parameters>
+                <messages></messages>
+                <dependents>
+                    <task label="" type="Complete" value="">routine_kinetic_datastore_submissions_retrieve_list_v1_23</task>
+                </dependents>
+            </task>
+            <task definition_id="system_junction_v1" id="system_junction_v1_6" name="Junction" x="417" y="253">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters></parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">system_tree_return_v1_8</task>
+                </dependents>
+            </task>
+            <task definition_id="system_tree_return_v1" id="system_tree_return_v1_8" name="Return" x="575" y="251">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Output" label="Output" menu="" required="false" tooltip="JSON output for the results">&lt;%=
+if @results.has_key? ('Override Availability Minutes')
+  @results['Override Availability Minutes']['output']
+else 
+  @results['Availability Minutes']['output']
+end
+%&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents></dependents>
+            </task>
+            <task definition_id="utilities_echo_v1" id="utilities_echo_v1_20" name="Override Availability Minutes" x="76" y="236">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>true</visible>
+                <parameters>
+                    <parameter id="input" label="Input" menu="" required="true" tooltip="">&lt;%=
+
+availability = JSON.parse( @results['Get Availability Overrides']['Submissions List JSON'] )
+available_minutes = 0
+
+availability.each{|record|
+  end_time = Time.parse( record['values']['End Time'] )
+  start_time = Time.parse( record['values']['Start Time'] )
+  minutes = ((end_time-start_time)/60).to_i
+  slots = record['values']['Slots'].to_i
+  available_minutes += (minutes * slots)
+}
+
+available_minutes
+%&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">system_junction_v1_6</task>
+                </dependents>
+            </task>
+            <task definition_id="utilities_echo_v1" id="utilities_echo_v1_21" name="Availability Minutes" x="418" y="110">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>true</visible>
+                <parameters>
+                    <parameter id="input" label="Input" menu="" required="true" tooltip="">&lt;%=
+
+availability = JSON.parse( @results['Get Availability']['Submissions List JSON'] )
+available_minutes = 0
+
+availability.each{|record|
+  end_time = Time.parse( record['values']['End Time'] )
+  start_time = Time.parse( record['values']['Start Time'] )
+  minutes = ((end_time-start_time)/60).to_i
+  slots = record['values']['Slots'].to_i
+  available_minutes += (minutes * slots)
+}
+
+available_minutes
+%&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">system_junction_v1_6</task>
+                </dependents>
+            </task>
+            <task definition_id="routine_kinetic_datastore_submissions_retrieve_list_v1" id="routine_kinetic_datastore_submissions_retrieve_list_v1_23" name="Get Availability Overrides" x="74" y="111">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>true</defers>
+                <deferrable>true</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Form Slug" label="Form Slug" menu="" required="false" tooltip="The slug of the Form to find submissions in.">scheduler-override</parameter>
+                    <parameter id="Index To Search" label="Index To Search" menu="" required="false" tooltip="The Index definition to search (i.e. values[Name],values[Status])">values[Scheduler Id],values[Date],values[Start Time],values[End Time]</parameter>
+                    <parameter id="Core State" label="Core State" menu="" required="false" tooltip="Searches for submissions that have a core state that matches this parameter. If no value is provided, the results will contain submissions in all core states."></parameter>
+                    <parameter id="Limit" label="Limit" menu="" required="false" tooltip="Limit the number of results returned. If not provided, the server will limit the results to 25 submissions. Maximum limit 1000"></parameter>
+                    <parameter id="Query" label="Query" menu="" required="false" tooltip="Query to use to fetch submissions. (i.e values[First Name]=&quot;Fred&quot;)">values[Scheduler Id]="&lt;%=@inputs['Scheduler Id']%&gt;" AND values[Date]="&lt;%=@inputs['Starting Date']%&gt;"</parameter>
+                    <parameter id="Next Page Token" label="Next Page Token" menu="" required="false" tooltip="The value to use as the offset for the page of submissions to return. The submission that matches this value will not be included in the results."></parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="Overrides" type="Complete" value="@results['Get Availability Overrides']['Count'].to_i &gt; 0">utilities_echo_v1_20</task>
+                    <task label="No Overrides" type="Complete" value="@results['Get Availability Overrides']['Count'].to_i == 0">routine_kinetic_datastore_submissions_retrieve_list_v1_24</task>
+                </dependents>
+            </task>
+            <task definition_id="routine_kinetic_datastore_submissions_retrieve_list_v1" id="routine_kinetic_datastore_submissions_retrieve_list_v1_24" name="Get Availability" x="254" y="110">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>true</defers>
+                <deferrable>true</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Form Slug" label="Form Slug" menu="" required="false" tooltip="The slug of the Form to find submissions in.">scheduler-availability</parameter>
+                    <parameter id="Index To Search" label="Index To Search" menu="" required="false" tooltip="The Index definition to search (i.e. values[Name],values[Status])">values[Scheduler Id],values[Day],values[Start Time],values[End Time]</parameter>
+                    <parameter id="Core State" label="Core State" menu="" required="false" tooltip="Searches for submissions that have a core state that matches this parameter. If no value is provided, the results will contain submissions in all core states."></parameter>
+                    <parameter id="Limit" label="Limit" menu="" required="false" tooltip="Limit the number of results returned. If not provided, the server will limit the results to 25 submissions. Maximum limit 1000"></parameter>
+                    <parameter id="Query" label="Query" menu="" required="false" tooltip="Query to use to fetch submissions. (i.e values[First Name]=&quot;Fred&quot;)">values[Scheduler Id]="&lt;%=@inputs['Scheduler Id']%&gt;" AND values[Day]="&lt;%=Date.parse( @inputs['Starting Date'] ).strftime("%w")%&gt;"</parameter>
+                    <parameter id="Next Page Token" label="Next Page Token" menu="" required="false" tooltip="The value to use as the offset for the page of submissions to return. The submission that matches this value will not be included in the results."></parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">utilities_echo_v1_21</task>
+                </dependents>
+            </task>
+        </request>
+    </taskTree>
+</tree>

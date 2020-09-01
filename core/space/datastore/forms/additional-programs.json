@@ -63,6 +63,13 @@
       "unique": false
     },
     {
+      "name": "values[Exclude from Grading]",
+      "parts": [
+        "values[Exclude from Grading]"
+      ],
+      "unique": false
+    },
+    {
       "name": "values[Program]",
       "parts": [
         "values[Program]"
@@ -147,6 +154,38 @@
           "rows": 1
         },
         {
+          "type": "field",
+          "name": "Exclude from Grading",
+          "label": "Exclude from Grading",
+          "key": "f3",
+          "defaultValue": null,
+          "defaultResourceName": null,
+          "visible": true,
+          "enabled": true,
+          "required": false,
+          "requiredMessage": null,
+          "omitWhenHidden": null,
+          "pattern": null,
+          "constraints": [
+
+          ],
+          "events": [
+
+          ],
+          "renderAttributes": {
+          },
+          "dataType": "json",
+          "renderType": "checkbox",
+          "choicesResourceName": null,
+          "choicesRunIf": null,
+          "choices": [
+            {
+              "label": "Exclude from Grading",
+              "value": "Exclude from Grading"
+            }
+          ]
+        },
+        {
           "type": "button",
           "label": "Submit",
           "name": "Submit Button",
@@ -185,5 +224,5 @@
   ],
   "slug": "additional-programs",
   "status": null,
-  "submissionLabelExpression": null
+  "submissionLabelExpression": "${values('Program')} - ${values('Exclude from Grading')}"
 }

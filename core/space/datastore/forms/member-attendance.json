@@ -6,7 +6,7 @@
 
   ],
   "customHeadContent": null,
-  "description": "",
+  "description": ".",
   "indexDefinitions": [
     {
       "name": "createdAt",

@@ -18,6 +18,12 @@
     "type": "Submission"
   },
   {
+    "message": "Must be a member of the assigned team, the assigned individual, the creator, or explicitly added as an observer.",
+    "name": "Assigned Team - Assigned Individual - Observers - Creators",
+    "rule": "(function() {\n  // Helper method\n  var hasIntersection = function(obj1, obj2) {\n    // Ensure the objects are not empty\n    obj1 = (obj1 === null || obj1 === undefined) ? [] : obj1;\n    obj2 = (obj2 === null || obj2 === undefined) ? [] : obj2;\n    // If the parameters are not lists, wrap them in lists\n    var list1 = (obj1 instanceof Array) ? obj1 : [obj1];\n    var list2 = (obj2 instanceof Array) ? obj2 : [obj2];\n    // Find the intersection\n    var intersection = list1.filter(function(n) {\n      return list2.indexOf(n) != -1;\n    });\n    // Return whether any intersecting values were found\n    return list1.find(function(value) {return hasValue(list2, value)}) !== undefined;\n  };\n  // Helper method\n  var hasValue = function(list, value) {\n    return (list instanceof Array) && list.indexOf(value) != -1\n  };\n\n  return (\n    // Assigned Team\n    hasIntersection(values('Assigned Team'), identity('teams'))\n    // Assigned Individual\n    || hasIntersection(values('Assigned Individual'), identity('username'))\n    // Observers\n    || hasIntersection(values('Observing Individuals', []), identity('username'))\n    || hasIntersection(values('Observing Teams', []), identity('teams'))\n    // Last updater (this is necessary so that a user can see that they successfully\n    // re-assigned a submission)\n    || submission('updatedBy') == identity('username')\n    // Creator (this is necessary so that a user find submissions they created)\n    || submission('createdBy') == identity('username')\n  );\n})()\n",
+    "type": "Kapp"
+  },
+  {
     "message": "Must be authenticated.",
     "name": "Authenticated Users",
     "rule": "identity('authenticated')",

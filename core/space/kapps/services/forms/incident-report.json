@@ -1342,7 +1342,7 @@
   "securityPolicies": [
     {
       "endpoint": "Display",
-      "name": "Authenticated Users"
+      "name": "Program Managers and Coaches"
     },
     {
       "endpoint": "Submission Access",

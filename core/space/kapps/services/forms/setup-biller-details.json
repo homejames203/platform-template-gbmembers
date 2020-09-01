@@ -119,9 +119,9 @@
       }
     }
   ],
-  "customHeadContent": "<style>\n  .hidden{\n   display:none; \n  }\n</style>\n<script>\nvar discounts=(K('space').attributes('Member Discounts')!==undefined ? JSON.parse(K('space').attributes('Member Discounts')) : []);  \nfunction completeTableChange(){\n  K('field[Family Member]').value(\"\");\n  K('field[Programs]').value(\"\");\n  K('field[tableMemberID]').value(\"\");\n  K('field[tableMemberName]').value(\"\");\n  K('field[tableProgram]').value(\"\");\n  K('field[tableFee]').value(\"\");\n  \n  // Sort table\n  viewerConfig.response.sort(function(a, b){return b.cost - a.cost});\n  // Let calculate the discounts\n  viewerConfig.response.forEach(function(item, index){\n    if (index<=discounts.length-1){\n      item.discount=discounts[index].discount;\n      item.fee=((new Number(item.cost))*discounts[index].cost).toFixed(2);\n    } else if (index>discounts.length-1 && discounts.length>0){\n      item.discount=discounts[discounts.length-1].discount;\n      item.fee=((new Number(item.cost))*discounts[discounts.length-1].cost).toFixed(2);\n    } else {\n    item.discount=\"0%\";\n    item.fee=((new Number(item.cost))).toFixed(2);\n    }\n  });\n  \n  // Set payment value\n  var total=0;\n  viewerConfig.response.forEach(function(item, index){\n\t\ttotal=total+(new Number((new Number(item.fee)).toFixed(2)));\n  });\n  K('field[Payment Total]').value(total);\n\n  global.viewerConfig.renderer.type($('#memberTableDiv'),global.viewerConfig);\n\n  $('#member-table tbody tr').on( 'click', function () {\n    if ( $(this).hasClass('selected') ) {\n      $(this).removeClass('selected');\n    }\n    else {\n      $('#member-table').DataTable().$('tr.selected').removeClass('selected');\n      $(this).addClass('selected');\n    }\n  } );  \n  \n}  \n  \nfunction memberProgramAdded(memberID, feeProgram) {\n  found=false;\n\n  viewerConfig.response.forEach(function(item){\n      if (item.id===memberID && item.feeProgram===feeProgram) {\n        found=true;\n      }\n  });  \n  return found;\n}\n</script>",
-  "description": "Use to configure an existing Billing Member to assign programs and fees.",
-  "name": "Setup Biller Details",
+  "customHeadContent": "<style>\n  .hidden{\n   display:none; \n  }\n</style>\n<script>\nvar discounts;\nfunction completeTableChange(){\n  K('field[Family Member]').value(\"\");\n  K('field[Programs]').value(\"\");\n  K('field[tableMemberID]').value(\"\");\n  K('field[tableMemberName]').value(\"\");\n  K('field[tableProgram]').value(\"\");\n  K('field[tableFee]').value(\"\");\n  \n  // Sort table\n  viewerConfig.response.sort(function(a, b){return b.cost - a.cost});\n  // Let calculate the discounts\n  viewerConfig.response.forEach(function(item, index){\n    if (index<=discounts.length-1){\n      item.discount=discounts[index].discount;\n      item.fee=((new Number(item.cost))*discounts[index].cost).toFixed(2);\n    } else if (index>discounts.length-1 && discounts.length>0){\n      item.discount=discounts[discounts.length-1].discount;\n      item.fee=((new Number(item.cost))*discounts[discounts.length-1].cost).toFixed(2);\n    } else {\n    item.discount=\"0%\";\n    item.fee=((new Number(item.cost))).toFixed(2);\n    }\n  });\n  \n  // Set payment value\n  var total=0;\n  viewerConfig.response.forEach(function(item, index){\n\t\ttotal=total+(new Number((new Number(item.fee)).toFixed(2)));\n  });\n  K('field[Payment Total]').value(total);\n\n  global.viewerConfig.renderer.type($('#memberTableDiv'),global.viewerConfig);\n\n  $('#member-table tbody tr').on( 'click', function () {\n    if ( $(this).hasClass('selected') ) {\n      $(this).removeClass('selected');\n    }\n    else {\n      $('#member-table').DataTable().$('tr.selected').removeClass('selected');\n      $(this).addClass('selected');\n    }\n  } );  \n  \n}  \n  \nfunction memberProgramAdded(memberID, feeProgram) {\n  found=false;\n\n  viewerConfig.response.forEach(function(item){\n      if (item.id===memberID && item.feeProgram===feeProgram) {\n        found=true;\n      }\n  });  \n  return found;\n}\n</script>",
+  "description": "Paysmart Use to configure an existing Billing Member to assign programs and fees.",
+  "name": "Paysmart Setup Biller Details",
   "notes": null,
   "pages": [
     {
@@ -160,7 +160,7 @@
                   "name": "Get Members",
                   "type": "Change",
                   "action": "Custom",
-                  "code": "K('bridgedResource[Get Member]').load({\n  attributes: ['Member ID', 'First Name', 'Last Name'],\n  values: {'ID' : 'Allen'},\n  success: function(bridgedData) {\n    K('field[Member ID]').value(bridgedData['Member ID']);\n    K('field[Billing Customer Id]').value(bridgedData['Billing Customer Id']);\n    K('field[Student First Name]').value(bridgedData['First Name']);\n    K('field[Student Last Name]').value(bridgedData['Last Name']);\n    K('section[Student Information]').show();\n/*    K('section[Family Members]').show();\n    K('section[Program Information]').show();\n    K('section[Terms]').show();\n    K('section[Member Select Space]').hide();    \n*/\n  }\n});",
+                  "code": "K('bridgedResource[Get Member]').load({\n  attributes: ['Member ID', 'First Name', 'Last Name'],\n  values: {'ID' : 'Allen'},\n  success: function(bridgedData) {\n    K('field[Member ID]').value(bridgedData['Member ID']);\n    K('field[Billing Customer Id]').value(bridgedData['Billing Customer Id']);\n    K('field[Student First Name]').value(bridgedData['First Name']);\n    K('field[Student Last Name]').value(bridgedData['Last Name']);\n    K('section[Student Information]').show();\n\n    $.ajax({\n      method: \"POST\",\n      url: K('space').attributes(\"Kinetic Billing Server URL\")+\"/billingInfo\",\n      data: JSON.stringify({ \n        customerId: bridgedData['Billing Customer Id'],\n        space: K('space').slug(),\n        billingService: K('space').attributes(\"Billing Company\"),\n      }),\n      headers: {\n        'Accept': 'application/json, text/plain, */*',\n        'Content-Type': 'application/json;charset=UTF-8'\n    \t}\n    })\n      .done(function( data ) {\n        if (data.data===null) {\n          K('field[Date Affective]').value(\"\");\n          K('field[Billing Period]').value(\"\");\n        } else {\n          K('field[Date Affective]').value(moment(data.data['nextBillingDate'],'DD-MM-YYYY').format('YYYY-MM-DD'));\n          K('field[Billing Period]').value(data.data['paymentPeriod']);\n          \n          bundle.config.widgets.xdsoftDatepickerRemove({\n              element: K(\"form\").find(\"#dateaffective\")[0]\n          });          \n          bundle.config.widgets.xdsoftDatepickerRemove({\n              element: K(\"form\").find(\"#datepaymentsresume\")[0]\n          });          \n          period=7;\n          if (data.data['paymentPeriod']===\"Fortnightly\"){\n            period=14;\n          }\n          debugger;\n         allowDates=[];\n          for (i=0;i<22;i++){\n            if (moment(data.data['nextBillingDate'], \"DD-MM-YYYY\").add(period*i,\"days\").isAfter(moment())) {\n \t\t\t\t\t\t  allowDates[allowDates.length]=moment(data.data['nextBillingDate'], \"DD-MM-YYYY\").add(period*i,\"days\").format(\"DD-MM-YYYY\");\n            }\n\t\t\t\t\t}\n          bundle.config.widgets.xdsoftDatepicker({\n              element: K(\"form\").find(\"#dateaffective\")[0],\n              timepicker: false,\n              displayDateFormat: \"DD/MM/YYYY\",\n              options: {\n                allowDates: allowDates,\n                formatDate:\"d-m-Y\",\n                validateOnBlur:false\n              },\n              onSelectDate:function(ct,$i){\n                K('field[Date Affective]').value(ct.dateFormat('YYYY-MM-DD'));\n              }                \n          });          \n          bundle.config.widgets.xdsoftDatepicker({\n              element: K(\"form\").find(\"#datepaymentsresume\")[0],\n              timepicker: false,\n              displayDateFormat: \"DD/MM/YYYY\",\n              options: {\n                allowDates: allowDates,\n                formatDate:\"d-m-Y\",\n                validateOnBlur:false\n              },\n              onSelectDate:function(ct,$i){\n                K('field[Date Payments Resume]').value(ct.dateFormat('YYYY-MM-DD'));\n              }                \n          });          \n        }\n      });    \n  }\n});",
                   "bridgedResourceName": null,
                   "runIf": "values('Members')!==\"\""
                 },
@@ -284,6 +284,31 @@
               "name": "Billing Customer Id",
               "label": "Billing Customer Id",
               "key": "f55",
+              "defaultValue": null,
+              "defaultResourceName": null,
+              "visible": true,
+              "enabled": false,
+              "required": false,
+              "requiredMessage": null,
+              "omitWhenHidden": null,
+              "pattern": null,
+              "constraints": [
+
+              ],
+              "events": [
+
+              ],
+              "renderAttributes": {
+              },
+              "dataType": "string",
+              "renderType": "text",
+              "rows": 1
+            },
+            {
+              "type": "field",
+              "name": "Billing Period",
+              "label": "Billing Period",
+              "key": "f60",
               "defaultValue": null,
               "defaultResourceName": null,
               "visible": true,
@@ -790,7 +815,7 @@
               "defaultResourceName": null,
               "visible": true,
               "enabled": true,
-              "required": false,
+              "required": true,
               "requiredMessage": null,
               "omitWhenHidden": null,
               "pattern": null,
@@ -805,6 +830,161 @@
               "dataType": "string",
               "renderType": "text",
               "rows": 1
+            },
+            {
+              "type": "content",
+              "renderType": "html",
+              "name": "Update Information",
+              "text": "If you want to also apply this update to PaySmart, please select the <b>Update PaySmart</b> option.",
+              "visible": true,
+              "renderAttributes": {
+              }
+            },
+            {
+              "type": "field",
+              "name": "Update as a PaySmart variation",
+              "label": "",
+              "key": "f56",
+              "defaultValue": null,
+              "defaultResourceName": null,
+              "visible": true,
+              "enabled": true,
+              "required": false,
+              "requiredMessage": null,
+              "omitWhenHidden": null,
+              "pattern": null,
+              "constraints": [
+
+              ],
+              "events": [
+
+              ],
+              "renderAttributes": {
+              },
+              "dataType": "json",
+              "renderType": "checkbox",
+              "choicesResourceName": null,
+              "choicesRunIf": null,
+              "choices": [
+                {
+                  "label": "Update Paysmart",
+                  "value": "Update Paysmart"
+                }
+              ]
+            },
+            {
+              "type": "section",
+              "renderType": null,
+              "name": "Update Paysmart details",
+              "title": null,
+              "visible": "values('Update as a PaySmart variation')==\"Update Paysmart\"",
+              "omitWhenHidden": true,
+              "renderAttributes": {
+              },
+              "elements": [
+                {
+                  "type": "content",
+                  "renderType": "html",
+                  "name": "Date Affective HTML",
+                  "text": "<div class=\"form-group required\" linkedField=\"Date Affective\">  \n  <label class=\"field-label\" for=\"dateaffective\">Date Affective</label>\n  <div id=\"dateaffective\"></div>\n</div>",
+                  "visible": "!form('review') ",
+                  "renderAttributes": {
+                  }
+                },
+                {
+                  "type": "field",
+                  "name": "Date Affective",
+                  "label": "Date Affective",
+                  "key": "f57",
+                  "defaultValue": null,
+                  "defaultResourceName": null,
+                  "visible": "form('review')",
+                  "enabled": true,
+                  "required": "values('Update as a PaySmart variation')==\"Update Paysmart\"",
+                  "requiredMessage": null,
+                  "omitWhenHidden": false,
+                  "pattern": null,
+                  "constraints": [
+
+                  ],
+                  "events": [
+
+                  ],
+                  "renderAttributes": {
+                  },
+                  "dataType": "string",
+                  "renderType": "date"
+                },
+                {
+                  "type": "field",
+                  "name": "Resume Date Option",
+                  "label": "Resume Date Option",
+                  "key": "f61",
+                  "defaultValue": null,
+                  "defaultResourceName": null,
+                  "visible": "!form('review') ",
+                  "enabled": true,
+                  "required": "values('Update as a PaySmart variation')==\"Update Paysmart\"",
+                  "requiredMessage": null,
+                  "omitWhenHidden": true,
+                  "pattern": null,
+                  "constraints": [
+
+                  ],
+                  "events": [
+
+                  ],
+                  "renderAttributes": {
+                  },
+                  "dataType": "string",
+                  "renderType": "radio",
+                  "choicesResourceName": null,
+                  "choicesRunIf": null,
+                  "choices": [
+                    {
+                      "label": "Until Further Notice",
+                      "value": "Until Further Notice"
+                    },
+                    {
+                      "label": "Resume Date",
+                      "value": "Resume Date"
+                    }
+                  ]
+                },
+                {
+                  "type": "content",
+                  "renderType": "html",
+                  "name": "Date Payments Resume HTML",
+                  "text": "<div class=\"form-group required\" linkedField=\"Date Payments Resume\">  \n  <label class=\"field-label\" for=\"datepaymentsresume\">Date Payments Resume</label>\n  <div id=\"datepaymentsresume\"></div>\n</div>",
+                  "visible": "!form('review') && values('Resume Date Option')==\"Resume Date\"",
+                  "renderAttributes": {
+                  }
+                },
+                {
+                  "type": "field",
+                  "name": "Date Payments Resume",
+                  "label": "Date Payments Resume",
+                  "key": "f59",
+                  "defaultValue": null,
+                  "defaultResourceName": null,
+                  "visible": "form('review') ",
+                  "enabled": "values('Resume Date Option')===\"Resume Date\"",
+                  "required": "values('Resume Date Option')===\"Resume Date\"",
+                  "requiredMessage": null,
+                  "omitWhenHidden": false,
+                  "pattern": null,
+                  "constraints": [
+
+                  ],
+                  "events": [
+
+                  ],
+                  "renderAttributes": {
+                  },
+                  "dataType": "string",
+                  "renderType": "date"
+                }
+              ]
             }
           ]
         },
@@ -845,7 +1025,8 @@
           "name": "Load Members Select",
           "type": "Load",
           "action": "Custom",
-          "code": "bundle.config.widgets.selectMenu({\n  element: K(\"form\").find(\"#selectMemberMenu\")[0],\n\toptions: K('field[Members]').options(),\n  onChange: function(option) {\n\t  K('field[Members]').value(option.value);\n    setTimeout(function(){\n    \t$(K(\"form\").find(\"#selectMemberMenu .css-1492t68\")).html(option.label);\n    },100);\n\t},\n  value: K('field[Members]').value(),\n});\n\nbundle.config.widgets.selectMenu({\n  element: K(\"form\").find(\"#selectFamilyMemberMenu\")[0],\n\toptions: K('field[Family Member]').options(),\n  onChange: function(option) {\n\t  K('field[Family Member]').value(option.value);\n    setTimeout(function(){\n\t    $(K(\"form\").find(\"#selectFamilyMemberMenu .css-1492t68\")).html(option.label);\n    },100);\n\t},\n  value: K('field[Family Member]').value(),\n});\n"
+          "code": "discounts=(K('space').attributes('Member Discounts')!==undefined ? JSON.parse(K('space').attributes('Member Discounts')) : []);  \n\nbundle.config.widgets.selectMenu({\n  element: K(\"form\").find(\"#selectMemberMenu\")[0],\n\toptions: K('field[Members]').options(),\n  onChange: function(option) {\n\t  K('field[Members]').value(option.value);\n    setTimeout(function(){\n    \t$(K(\"form\").find(\"#selectMemberMenu .css-1492t68\")).html(option.label);\n    },100);\n\t},\n  value: K('field[Members]').value(),\n});\n\nbundle.config.widgets.selectMenu({\n  element: K(\"form\").find(\"#selectFamilyMemberMenu\")[0],\n\toptions: K('field[Family Member]').options(),\n  onChange: function(option) {\n\t  K('field[Family Member]').value(option.value);\n    setTimeout(function(){\n\t    $(K(\"form\").find(\"#selectFamilyMemberMenu .css-1492t68\")).html(option.label);\n    },100);\n\t},\n  value: K('field[Family Member]').value(),\n});\n",
+          "runIf": "!form('review')"
         },
         {
           "name": "Handle Errors",
@@ -857,7 +1038,7 @@
           "name": "Load Previous set page",
           "type": "Load",
           "action": "Custom",
-          "code": "K('section[Student Information]').show();\nK('section[Program Information]').show();\nK('section[Terms]').show();\n\nK('section[Member Select Space]').hide();    \n",
+          "code": "K('section[Student Information]').show();\nK('section[Program Information]').show();\n\nK('section[Member Select Space]').hide();    \n",
           "runIf": "values('Members')!==null"
         },
         {
@@ -888,7 +1069,7 @@
   "securityPolicies": [
     {
       "endpoint": "Display",
-      "name": "Program Managers"
+      "name": "PaySmart Program Managers"
     },
     {
       "endpoint": "Submission Access",

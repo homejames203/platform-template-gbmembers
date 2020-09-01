@@ -11,6 +11,12 @@
       "name": "Billing Customer Reference"
     },
     {
+      "name": "Billing User"
+    },
+    {
+      "name": "Covid19 Waiver"
+    },
+    {
       "name": "Date Joined"
     },
     {
@@ -44,6 +50,9 @@
       "name": "Last Promotion"
     },
     {
+      "name": "Max Weekly Classes"
+    },
+    {
       "name": "Medical Allergies"
     },
     {
@@ -63,6 +72,9 @@
     },
     {
       "name": "Postcode"
+    },
+    {
+      "name": "Program"
     },
     {
       "name": "Ranking Belt"
@@ -180,6 +192,22 @@
         {
           "name": "Billing Customer Reference",
           "structureField": "${fields('values[Billing Customer Reference]')}"
+        },
+        {
+          "name": "Covid19 Waiver",
+          "structureField": "${fields('values[Covid19 Waiver]')}"
+        },
+        {
+          "name": "Billing User",
+          "structureField": "${fields('values[Billing User]')}"
+        },
+        {
+          "name": "Program",
+          "structureField": "${fields('values[Ranking Program]')}"
+        },
+        {
+          "name": "Max Weekly Classes",
+          "structureField": "${fields('values[Max Weekly Classes]')}"
         }
       ],
       "bridgeSlug": "kinetic-core",
@@ -199,7 +227,15 @@
         },
         {
           "name": "Get Frozen Members",
-          "query": "kappSlug=gbmembers&formSlug=member&q=values[Status]=\"Frozen\""
+          "query": "kappSlug=gbmembers&formSlug=member&q=values[Status]=\"Frozen\" OR values[Status]=\"Pending Freeze\""
+        },
+        {
+          "name": "Get Member by Username",
+          "query": "kappSlug=gbmembers&formSlug=member&q=values[Member ID]=\"${parameters(\"username\")}\""
+        },
+        {
+          "name": "Get Active and Frozen Members",
+          "query": "kappSlug=gbmembers&formSlug=member&q=values[Status]=\"Active\" OR  values[Status]=\"Frozen\" OR values[Status]=\"Pending Freeze\""
         }
       ],
       "structure": "Submissions"
@@ -209,6 +245,13 @@
   "qualifications": [
     {
       "name": "Active Members",
+      "parameters": [
+
+      ],
+      "resultType": "Multiple"
+    },
+    {
+      "name": "Get Active and Frozen Members",
       "parameters": [
 
       ],
@@ -233,6 +276,15 @@
       "parameters": [
         {
           "name": "ID"
+        }
+      ],
+      "resultType": "Single"
+    },
+    {
+      "name": "Get Member by Username",
+      "parameters": [
+        {
+          "name": "username"
         }
       ],
       "resultType": "Single"

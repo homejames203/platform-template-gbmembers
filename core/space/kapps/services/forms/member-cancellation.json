@@ -63,8 +63,8 @@
     }
   ],
   "customHeadContent": "",
-  "description": "Request to cancel a Membership",
-  "name": "Member Cancellation",
+  "description": "Paysmart Request to cancel a Membership",
+  "name": "Paysmart Member Cancellation",
   "notes": null,
   "pages": [
     {
@@ -103,7 +103,7 @@
                   "name": "Get Member",
                   "type": "Change",
                   "action": "Custom",
-                  "code": "loadingDetails=true;\nK('bridgedResource[Get Member]').load({\n  attributes: ['Member ID', 'First Name', 'Last Name'],\n  values: {'ID' : 'Allen'},\n  success: function(bridgedData) {\n    K('field[Member ID]').value(bridgedData['Member ID']);\n    K('field[Student First Name]').value(bridgedData['First Name']);\n    K('field[Student Last Name]').value(bridgedData['Last Name']);\n    K('field[Billing Customer Id]').value(bridgedData['Billing Customer Id']);\n\n    $.ajax({\n      type: \"post\",\n        url: K('space').attributes(\"Kinetic Billing Server URL\")+\"/billingInfo\",\n        data: JSON.stringify({ \n          customerId: bridgedData['Billing Customer Id'],\n          space: K('space').slug(),\n          billingService: K('space').attributes(\"Billing Company\"),\n        }),\n        headers: {\n          'Accept': 'application/json, text/plain, */*',\n          'Content-Type': 'application/json;charset=UTF-8'\n      \t}\n      })\n      .done(function( data ) {\n        if (data.data===null) {\n  \t      K('field[The last debit will be taken on]').value(\"\");\n          K('field[Billing Period]').value(\"\");\n        } else {\n  \t      K('field[The last debit will be taken on]').value(moment(data.data['nextBillingDate'],'DD-MM-YYYY').format('YYYY-MM-DD'));\n          K('field[Billing Period]').value(data.data['paymentPeriod']);\n\n          bundle.config.widgets.xdsoftDatepickerRemove({\n              element: K(\"form\").find(\"#lastdebitdate\")[0]\n          });          \n          period=7;\n          if (data.data['paymentPeriod']===\"Fortnightly\"){\n            period=14;\n          }\n          allowDates=[];\n          for (i=0;i<20;i++){\n            if (moment(data.data['nextBillingDate'], \"DD-MM-YYYY\").add(period*i,\"days\").isAfter(moment())) {\n  \t\t\t\t\t\t  allowDates[allowDates.length]=moment(data.data['nextBillingDate'], \"DD-MM-YYYY\").add(period*i,\"days\").format(\"DD-MM-YYYY\");\n            }\n  \t\t\t\t}\n          bundle.config.widgets.xdsoftDatepicker({\n              element: K(\"form\").find(\"#lastdebitdate\")[0],\n              timepicker: false,\n              displayDateFormat: \"DD/MM/YYYY\",\n              options: {\n                allowDates: allowDates,\n                formatDate:\"d-m-Y\",\n                validateOnBlur:false\n              },\n              onSelectDate:function(ct,$i){\n                K('field[The last debit will be taken on]').value(ct.dateFormat('YYYY-MM-DD'));\n              }                \n          });          \n         }\n      });\n    loadingDetails=false;\n    \n    K('section[Member Select Space]').hide();    \n    }\n});\n\n",
+                  "code": "loadingDetails=true;\nK('bridgedResource[Get Member]').load({\n  attributes: ['Member ID', 'First Name', 'Last Name'],\n  values: {'ID' : 'Allen'},\n  success: function(bridgedData) {\n    K('field[Member ID]').value(bridgedData['Member ID']);\n    K('field[Student First Name]').value(bridgedData['First Name']);\n    K('field[Student Last Name]').value(bridgedData['Last Name']);\n    K('field[Billing Customer Id]').value(bridgedData['Billing Customer Id']);\n\n    $.ajax({\n      type: \"post\",\n        url: K('space').attributes(\"Kinetic Billing Server URL\")+\"/billingInfo\",\n        data: JSON.stringify({ \n          customerId: bridgedData['Billing Customer Id'],\n          space: K('space').slug(),\n          billingService: K('space').attributes(\"Billing Company\"),\n        }),\n        headers: {\n          'Accept': 'application/json, text/plain, */*',\n          'Content-Type': 'application/json;charset=UTF-8'\n      \t}\n      })\n      .done(function( data ) {\n        if (data.data===null) {\n  \t      K('field[The last debit will be taken on]').value(\"\");\n          K('field[Billing Period]').value(\"\");\n        } else {\n  \t      K('field[The last debit will be taken on]').value(moment(data.data['nextBillingDate'],'DD-MM-YYYY').format('YYYY-MM-DD'));\n          K('field[Billing Period]').value(data.data['paymentPeriod']);\n\n          bundle.config.widgets.xdsoftDatepickerRemove({\n              element: K(\"form\").find(\"#lastdebitdate\")[0]\n          });          \n          period=7;\n          if (data.data['paymentPeriod']===\"Fortnightly\"){\n            period=14;\n          }\n          allowDates=[];\n          for (i=0;i<20;i++){\n            if (moment(data.data['nextBillingDate'], \"DD-MM-YYYY\").add(period*i,\"days\").isAfter(moment())) {\n  \t\t\t\t\t\t  allowDates[allowDates.length]=moment(data.data['nextBillingDate'], \"DD-MM-YYYY\").add(period*i,\"days\").format(\"DD-MM-YYYY\");\n            }\n  \t\t\t\t}\n          debugger;\n          bundle.config.widgets.xdsoftDatepicker({\n              element: K(\"form\").find(\"#lastdebitdate\")[0],\n              timepicker: false,\n              displayDateFormat: \"DD/MM/YYYY\",\n              options: {\n                allowDates: allowDates,\n                formatDate:\"d-m-Y\",\n                validateOnBlur:false\n              },\n              onSelectDate:function(ct,$i){\n                K('field[The last debit will be taken on]').value(ct.dateFormat('YYYY-MM-DD'));\n              }                \n          });          \n         }\n      });\n    loadingDetails=false;\n    \n    K('section[Member Select Space]').hide();    \n    }\n});\n\n",
                   "bridgedResourceName": null,
                   "runIf": "values('Members')!==\"\""
                 },
@@ -490,8 +490,8 @@
               "defaultResourceName": null,
               "visible": true,
               "enabled": true,
-              "required": true,
-              "requiredMessage": "At least one document must be supplied.",
+              "required": false,
+              "requiredMessage": null,
               "omitWhenHidden": null,
               "pattern": null,
               "constraints": [
@@ -687,7 +687,7 @@
   "securityPolicies": [
     {
       "endpoint": "Display",
-      "name": "Program Managers"
+      "name": "PaySmart Program Managers"
     },
     {
       "endpoint": "Submission Access",

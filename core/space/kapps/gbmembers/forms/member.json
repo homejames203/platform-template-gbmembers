@@ -750,6 +750,31 @@
             },
             {
               "type": "field",
+              "name": "Max Weekly Classes",
+              "label": "Max Weekly Classes",
+              "key": "f76",
+              "defaultValue": null,
+              "defaultResourceName": null,
+              "visible": true,
+              "enabled": true,
+              "required": false,
+              "requiredMessage": null,
+              "omitWhenHidden": null,
+              "pattern": null,
+              "constraints": [
+
+              ],
+              "events": [
+
+              ],
+              "renderAttributes": {
+              },
+              "dataType": "string",
+              "renderType": "text",
+              "rows": 1
+            },
+            {
+              "type": "field",
               "name": "Additional Program 1",
               "label": "Additional Program 1",
               "key": "f67",
@@ -1482,6 +1507,30 @@
               },
               "dataType": "string",
               "renderType": "date"
+            },
+            {
+              "type": "field",
+              "name": "Last Attendance Date",
+              "label": "Last Attendance Date",
+              "key": "f75",
+              "defaultValue": null,
+              "defaultResourceName": null,
+              "visible": true,
+              "enabled": true,
+              "required": false,
+              "requiredMessage": null,
+              "omitWhenHidden": null,
+              "pattern": null,
+              "constraints": [
+
+              ],
+              "events": [
+
+              ],
+              "renderAttributes": {
+              },
+              "dataType": "string",
+              "renderType": "date"
             }
           ]
         },
@@ -1833,6 +1882,31 @@
           "rows": 1
         },
         {
+          "type": "field",
+          "name": "Covid19 Waiver",
+          "label": "Covid19 Waiver",
+          "key": "f74",
+          "defaultValue": null,
+          "defaultResourceName": null,
+          "visible": true,
+          "enabled": true,
+          "required": false,
+          "requiredMessage": null,
+          "omitWhenHidden": null,
+          "pattern": null,
+          "constraints": [
+
+          ],
+          "events": [
+
+          ],
+          "renderAttributes": {
+          },
+          "dataType": "string",
+          "renderType": "text",
+          "rows": 1
+        },
+        {
           "type": "button",
           "label": "Submit",
           "name": "Submit Button",
@@ -1866,7 +1940,7 @@
     },
     {
       "endpoint": "Submission Modification",
-      "name": "Program Managers"
+      "name": "Everyone"
     }
   ],
   "slug": "member",

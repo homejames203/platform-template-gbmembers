@@ -6,6 +6,11 @@
   },
   {
     "allowsMultiple": false,
+    "description": "JSON object that defines the default filter configuration when this team is selected in Queue",
+    "name": "Default Queue Filter"
+  },
+  {
+    "allowsMultiple": false,
     "description": "The guid of the response discussion used by this team.",
     "name": "Discussion Id"
   },

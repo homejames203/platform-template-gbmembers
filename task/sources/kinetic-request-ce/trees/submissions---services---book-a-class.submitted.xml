@@ -1,0 +1,132 @@
+<tree schema_version="1.0">
+    <sourceName>Kinetic Request CE</sourceName>
+    <sourceGroup>Submissions > services > book-a-class</sourceGroup>
+    <type>Tree</type>
+    <status>Active</status>
+    <taskTree builder_version="" schema_version="1.0" version="">
+        <name>Submitted</name>
+        <author></author>
+        <notes></notes>
+        <lastID>8</lastID>
+        <request>
+            <task definition_id="system_start_v1" id="start" name="Start" x="10" y="10">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters></parameters>
+                <messages></messages>
+                <dependents>
+                    <task label="" type="Complete" value="">routine_kinetic_request_ce_datastore_submission_create_v1_1</task>
+                </dependents>
+            </task>
+            <task definition_id="routine_kinetic_request_ce_datastore_submission_create_v1" id="routine_kinetic_request_ce_datastore_submission_create_v1_1" name="Create Class Booking" x="69" y="205">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>true</defers>
+                <deferrable>true</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter dependsOnId="" dependsOnValue="" id="Space Slug" label="Space Slug" menu="" required="false" tooltip="Slug of the space to create the submission in"></parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="Form Slug" label="Form Slug" menu="" required="true" tooltip="Slug of the form to create the submission in">class-booking</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="Values" label="Values" menu="" required="false" tooltip="JSON object of the form values to be pre-populated">{
+  "Status": "Booked",
+  "Program": "&lt;%=  @values['Program'] %&gt;",
+  "Class Date": "&lt;%=  @values['Date Selected'] %&gt;",
+  "Class Time": "&lt;%=  @values['Start'] %&gt;",
+  "Member ID": "&lt;%=  @values['Member ID'] %&gt;",
+  "Member GUID": "&lt;%=  @values['Member GUID'] %&gt;",
+  "Member Name": "&lt;%=  @values['Member Name'] %&gt;"
+}</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="Current Page Name" label="Current Page Name" menu="" required="false" tooltip="Name of the Page the Submission to Open to"></parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="Current Page Navigation" label="Current Page Navigation" menu="" required="false" tooltip="Sets the current page navigation"></parameter>
+                </parameters>
+                <messages></messages>
+                <dependents>
+                    <task label="" type="Complete" value="">routine_kinetic_request_ce_submission_update_v1_7</task>
+                </dependents>
+            </task>
+            <task definition_id="kinetic_request_ce_submission_activity_create_v1" id="kinetic_request_ce_submission_activity_create_v1_4" name="Booking Registered" x="490" y="198">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter dependsOnId="" dependsOnValue="" id="error_handling" label="Error Handling" menu="Error Message,Raise Error" required="true" tooltip="Determine what to return if an error is encountered.">Error Message</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="space_slug" label="Space Slug" menu="" required="false" tooltip="The Space the submission exists in (defaults to info value if not provided)."></parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="submission_id" label="Submission Id" menu="" required="true" tooltip="The id of the submission for which the activity is being created for.">&lt;%=  @submission['Id'] %&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="label" label="Label" menu="" required="false" tooltip="The label for the submission activity.">Booking Registered</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="description" label="Description" menu="" required="false" tooltip="The description of the submission activity."></parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="type" label="Type" menu="" required="false" tooltip="Specifies the a submission activity 'Type', which should indicate what type of data is included.">Success</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="data" label="Data" menu="" required="false" tooltip="Additional data that can be used by resources consuming the submission activity record (for example a Request bundle may render submission details based upon JSON content in the activity data).">Your booking has been registered for Date &lt;%=  Date.parse(@values['Date Selected']).strftime("%d %B %Y") %&gt;, class &lt;%=  @values['Program'] %&gt; starting at &lt;%= DateTime.new(DateTime.now.year, DateTime.now.month, DateTime.now.day, @values['Start'].split(":")[0].to_i, @values['Start'].split(":")[1].to_i, 0, DateTime.now.zone).strftime("%-l:%M %p")%&gt;&lt;br&gt;
+&lt;br&gt;
+&lt;a href="/#/kapps/services/categories/class-bookings/cancel-class-booking?id=&lt;%= @results['Create Class Booking']['Submission Id'] %&gt;"&gt;Click here to Cancel your Class Booking&lt;/a&gt;&lt;br&gt;
+&lt;br&gt;
+&lt;a href="/#/kapps/services/categories/class-bookings/book-a-class"&gt;Click here to Book another Class&lt;/a&gt;&lt;br&gt;
+&lt;br&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">routine_kinetic_request_ce_submission_close_v1_5</task>
+                    <task label="" type="Complete" value="">routine_kinetic_email_template_notification_send_v1_8</task>
+                </dependents>
+            </task>
+            <task definition_id="routine_kinetic_request_ce_submission_close_v1" id="routine_kinetic_request_ce_submission_close_v1_5" name="Close Booking" x="514" y="410">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>true</defers>
+                <deferrable>true</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter dependsOnId="" dependsOnValue="" id="Space Slug" label="Space Slug" menu="" required="false" tooltip="Slug of the space the submission exists in"></parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="Submission Id" label="Submission Id" menu="" required="true" tooltip="Id of the submission to close">&lt;%=  @submission['Id'] %&gt;</parameter>
+                </parameters>
+                <messages></messages>
+                <dependents></dependents>
+            </task>
+            <task definition_id="routine_kinetic_request_ce_submission_update_v1" id="routine_kinetic_request_ce_submission_update_v1_7" name="Set Class Booking ID" x="281" y="198">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>true</defers>
+                <deferrable>true</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter dependsOnId="" dependsOnValue="" id="Space Slug" label="Space Slug" menu="" required="false" tooltip="Slug of the space where the submission exists"></parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="Submission Id" label="Submission Id" menu="" required="true" tooltip="Id of the submission to update">&lt;%=  @submission['Id'] %&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="State" label="State" menu="" required="false" tooltip="Sets the submission state"></parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="Values" label="Values" menu="" required="false" tooltip="JSON object of the form values to be pre-populated">{"Class Booking ID": "&lt;%= @results['Create Class Booking']['Submission Id'] %&gt;"}</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="Current Page Name" label="Current Page Name" menu="" required="false" tooltip="Name of the Page the Submission to Open to"></parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="Current Page Navigation" label="Current Page Navigation" menu="" required="false" tooltip="Sets the current page navigation"></parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="Origin Id" label="Origin Id" menu="" required="false" tooltip="Sets the Origin Id"></parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="Parent Id" label="Parent Id" menu="" required="false" tooltip="Sets the Parent Id"></parameter>
+                </parameters>
+                <messages></messages>
+                <dependents>
+                    <task label="" type="Complete" value="">kinetic_request_ce_submission_activity_create_v1_4</task>
+                </dependents>
+            </task>
+            <task definition_id="routine_kinetic_email_template_notification_send_v1" id="routine_kinetic_email_template_notification_send_v1_8" name="Send Confirmation" x="732" y="199">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>true</defers>
+                <deferrable>true</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter dependsOnId="" dependsOnValue="" id="Recipient List" label="Recipient List" menu="" required="true" tooltip="Comma separated list of recipients (Usernames, SMTP Addresses, and/or Team Names)">&lt;%=  @values['Member ID'] %&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="Notification Template Name" label="Notification Template Name" menu="" required="true" tooltip="Name of the notification template to use when sending this email">Class Booking Confirmation</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="JSON Variables" label="JSON Variables" menu="" required="false" tooltip="JSON input of miscellaneous values.  These values are used to replace placeholder content in notification messages."></parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="Kapp Slug Initiating Notification" label="Kapp Slug Initiating Notification" menu="" required="true" tooltip="The slug of the Kapp sending the notification (ex: services, queue, etc.)">&lt;%= @kapp['Slug']%&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="Related Submission Id" label="Related Submission Id" menu="" required="false" tooltip="Id of the submission to get values for, required if using those or attachments in the message">&lt;%= @submission['Id']%&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="Form Slug Initiating Notification" label="Form Slug Initiating Notification" menu="" required="false" tooltip="The slug of the Form sending the notification (ex: work-order, cleaning, etc.)">&lt;%= @form['Slug']%&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="Is Datastore" label="Is Datastore" menu="" required="false" tooltip="If the Related Submission Id, or Form Slug is a datastore form.">false</parameter>
+                </parameters>
+                <messages></messages>
+                <dependents></dependents>
+            </task>
+        </request>
+    </taskTree>
+</tree>

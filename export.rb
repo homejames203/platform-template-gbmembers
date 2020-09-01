@@ -77,6 +77,7 @@ SUBMISSIONS_TO_EXPORT = [
   { "datastore" => true, "formSlug" => "program-belts" },
   { "datastore" => true, "formSlug" => "stored-images" },
   { "datastore" => true, "formSlug" => "robot-definitions" },
+  { "datastore" => true, "formSlug" => "terms-and-conditions" },
 ]
 
 REMOVE_DATA_PROPERTIES = [

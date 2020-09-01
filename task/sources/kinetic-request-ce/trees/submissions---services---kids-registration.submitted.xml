@@ -97,14 +97,17 @@ values.to_json
   "Postcode": "&lt;%= @values['Postcode']%&gt;",
   "Email": "&lt;%= @values['Email']%&gt;",
   "Phone Number": "&lt;%= @values['Phone']%&gt;",
-  "DOB": "&lt;%= @values['Date of birth']%&gt;"
+  "DOB": "&lt;%= @values['Date of birth']%&gt;",
+  "Is New Reply Received": "true"
 }</parameter>
                     <parameter dependsOnId="" dependsOnValue="" id="current_page_name" label="Current Page Name" menu="" required="false" tooltip="Set the current page name."></parameter>
                     <parameter dependsOnId="" dependsOnValue="" id="current_page_navigation" label="Current Page Navigation" menu="" required="false" tooltip="Set the current page navigation."></parameter>
                     <parameter dependsOnId="" dependsOnValue="" id="origin_id" label="Origin ID" menu="" required="false" tooltip="Set the origin ID."></parameter>
                     <parameter dependsOnId="" dependsOnValue="" id="parent_id" label="Parent ID" menu="" required="false" tooltip="Set the parent ID."></parameter>
                 </parameters>
-                <messages></messages>
+                <messages>
+                    <message type="Complete"></message>
+                </messages>
                 <dependents>
                     <task label="" type="Complete" value="">kinetic_request_ce_submission_create_v1_10</task>
                 </dependents>
@@ -147,11 +150,7 @@ values.to_json
                     <parameter dependsOnId="" dependsOnValue="" id="Origin Id" label="Origin Id" menu="" required="false" tooltip="Sets the Origin Id"></parameter>
                     <parameter dependsOnId="" dependsOnValue="" id="Parent Id" label="Parent Id" menu="" required="false" tooltip="Sets the Parent Id"></parameter>
                 </parameters>
-                <messages>
-                    <message type="Create"></message>
-                    <message type="Update"></message>
-                    <message type="Complete"></message>
-                </messages>
+                <messages></messages>
                 <dependents>
                     <task label="" type="Complete" value="">kinetic_request_ce_submission_activity_create_v1_7</task>
                 </dependents>

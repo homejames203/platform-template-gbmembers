@@ -96,9 +96,7 @@ values.to_json
                     <parameter dependsOnId="" dependsOnValue="" id="origin_id" label="Origin ID" menu="" required="false" tooltip="Set the origin ID."></parameter>
                     <parameter dependsOnId="" dependsOnValue="" id="parent_id" label="Parent ID" menu="" required="false" tooltip="Set the parent ID."></parameter>
                 </parameters>
-                <messages>
-                    <message type="Complete"></message>
-                </messages>
+                <messages></messages>
                 <dependents>
                     <task label="" type="Complete" value="">kinetic_request_ce_submission_create_v1_9</task>
                 </dependents>
@@ -119,7 +117,7 @@ values.to_json
   "space": "&lt;%= @space['Slug']%&gt;",
   "keepManualPayments": "YES",
   "startDate": "&lt;%= @values['Date of Last Payment']%&gt;",
-  "resumeDate": "&lt;%= @values['Date Payments Resume']%&gt;"
+  "resumeDate": "&lt;%= (@values['Resume Date Option']=="Resume Date" ? @values['Date Payments Resume'] : "")%&gt;"
 }</parameter>
                 </parameters>
                 <messages></messages>
@@ -164,7 +162,7 @@ startDt=Date.parse(@values['Date of Last Payment'])
                 <messages></messages>
                 <dependents>
                     <task label="" type="Complete" value="">system_wait_v1_16</task>
-                    <task label="" type="Complete" value="">utilities_echo_v1_15</task>
+                    <task label="Has Resume Date" type="Complete" value=" @values['Resume Date Option']==&quot;Resume Date&quot;">utilities_echo_v1_15</task>
                 </dependents>
             </task>
             <task definition_id="utilities_echo_v1" id="utilities_echo_v1_15" name="Resume Date Delay" x="-150" y="471">

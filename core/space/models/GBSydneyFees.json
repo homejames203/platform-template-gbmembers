@@ -28,7 +28,7 @@
           "structureField": "${fields('values[Program]')}"
         }
       ],
-      "bridgeSlug": "hq-gbmembers-template",
+      "bridgeSlug": "kinetic-core",
       "name": "SydneyFees",
       "qualifications": [
         {

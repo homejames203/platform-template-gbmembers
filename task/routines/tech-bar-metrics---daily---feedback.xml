@@ -1,0 +1,378 @@
+<tree schema_version="1.0">
+    <sourceName>-</sourceName>
+    <sourceGroup>-</sourceGroup>
+    <definitionId>routine_tech_bar_metrics_daily_feedback_v1</definitionId>
+    <type>Global Routine</type>
+    <status>Active</status>
+    <taskTree builder_version="" schema_version="1.0" version="">
+        <name>Tech Bar Metrics - Daily - Feedback</name>
+        <author></author>
+        <notes></notes>
+        <lastID>24</lastID>
+        <taskDefinition id="routine_tech_bar_metrics_daily_feedback_v1" name="Tech Bar Metrics - Daily - Feedback" schema_version="1.0" version="1">
+            <visible>false</visible>
+            <deferrable>true</deferrable>
+            <parameters>
+                <parameter id="Scheduler Id" label="Scheduler Id" required="true" tooltip="The scheduler for which to retrieve records"></parameter>
+                <parameter id="Starting Timestamp" label="Starting Timestamp" required="true" tooltip="The starting timestamp from which to retrieve data"></parameter>
+                <parameter id="Ending Timestamp" label="Ending Timestamp" required="true" tooltip="The ending timestamp from which to retrieve data"></parameter>
+                <parameter id="Page Token" label="Page Token" required="false" tooltip="The value to use as the offset for the page of submissions to return. The submission that matches this value will not be included in the results."></parameter>
+            </parameters>
+            <handler name="system_tree_call" version="1"></handler>
+            <results format="xml">
+                <result name="Output" tooltip="JSON output for the results"></result>
+            </results>
+        </taskDefinition>
+        <request>
+            <task definition_id="system_start_v1" id="start" name="Start" x="10" y="10">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters></parameters>
+                <messages></messages>
+                <dependents>
+                    <task label="" type="Complete" value="">routine_kinetic_submissions_retrieve_list_v1_15</task>
+                </dependents>
+            </task>
+            <task definition_id="system_junction_v1" id="system_junction_v1_6" name="Junction" x="250" y="330">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters></parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">utilities_echo_v1_7</task>
+                </dependents>
+            </task>
+            <task definition_id="utilities_echo_v1" id="utilities_echo_v1_7" name="Summarize" x="250" y="407">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>true</visible>
+                <parameters>
+                    <parameter id="input" label="Input" menu="" required="true" tooltip="">&lt;%=
+starting_data = {}
+if @results.has_key? ('Call Self')
+  starting_data = JSON.parse(@results['Call Self']['Output'])
+end
+
+# Summarize Retrieved Data into Starting Data
+feedback = starting_data['feedback'] || {}
+event_types = starting_data['event_types'] || {}
+
+retrieved_data = JSON.parse( @results['Retrieve Data']['Submissions List JSON'] )
+retrieved_data.each{|record|
+  experience = record['values']['Experience']
+  event_type = record['values']['Event Type']
+  if !feedback.has_key? ( experience )
+    feedback[experience] = 1
+  else
+    feedback[experience] += 1
+  end
+
+  if !event_type.nil?
+    if !event_types.has_key? ( event_type )
+      # event_types[event_type] = { "count" =&gt; { experience =&gt; 1 } }  # For future
+      event_types[event_type] = { experience =&gt; 1 }
+    else
+      # if !event_types[event_type]['count'].has_key? (experience)  # For future
+      if !event_types[event_type].has_key? (experience)
+        # event_types[event_type]['count'][experience] = 1  # For future
+        event_types[event_type][experience] = 1
+      else
+        # event_types[event_type]['count'][experience] += 1  # For future
+        event_types[event_type][experience] += 1
+      end
+    end
+  end 
+}
+
+
+if @results.has_key?('Assemble Details')
+  @results['Assemble Details'].collect { |i, v|
+    detail_record = JSON.parse( v['output'] )
+    if !event_types.has_key?( detail_record['Event Type'] )
+      event_types[detail_record['Event Type']]
+    end
+    if !event_types[detail_record['Event Type']].has_key? ( 'details' )
+       event_types[detail_record['Event Type']]['details'] = []
+    end
+    event_types[detail_record['Event Type']]['details'].push( detail_record )
+  }
+end
+
+
+{
+  "feedback":feedback,
+  "event_types":event_types
+}.to_json
+
+%&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">system_tree_return_v1_8</task>
+                </dependents>
+            </task>
+            <task definition_id="system_tree_return_v1" id="system_tree_return_v1_8" name="Return" x="254" y="495">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Output" label="Output" menu="" required="false" tooltip="JSON output for the results">&lt;%=@results['Summarize']['output']%&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents></dependents>
+            </task>
+            <task definition_id="routine_tech_bar_metrics_daily_feedback_v1" id="routine_tech_bar_metrics_daily_feedback_v1_13" name="Call Self" x="66" y="328">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>true</defers>
+                <deferrable>true</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Scheduler Id" label="Scheduler Id" menu="" required="true" tooltip="The scheduler for which to retrieve records">&lt;%=@inputs['Scheduler Id']%&gt;</parameter>
+                    <parameter id="Starting Timestamp" label="Starting Timestamp" menu="" required="true" tooltip="The starting timestamp from which to retrieve data">&lt;%=@inputs['Starting Timestamp']%&gt;</parameter>
+                    <parameter id="Ending Timestamp" label="Ending Timestamp" menu="" required="true" tooltip="The ending timestamp from which to retrieve data">&lt;%=@inputs['Ending Timestamp']%&gt;</parameter>
+                    <parameter id="Page Token" label="Page Token" menu="" required="false" tooltip="The value to use as the offset for the page of submissions to return. The submission that matches this value will not be included in the results.">&lt;%=@results['Retrieve Data']['Next Page Token']%&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">system_junction_v1_6</task>
+                </dependents>
+            </task>
+            <task definition_id="routine_kinetic_submissions_retrieve_list_v1" id="routine_kinetic_submissions_retrieve_list_v1_15" name="Retrieve Data" x="70" y="99">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>true</defers>
+                <deferrable>true</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Kapp Slug" label="Kapp Slug" menu="" required="true" tooltip="The slug of the Kapp to find submissions in.">tech-bar</parameter>
+                    <parameter id="Form Slug" label="Form Slug" menu="" required="false" tooltip="The slug of the Form to find submissions in. If none provided, can only use Kapp Fields in search query">feedback</parameter>
+                    <parameter id="Form Type" label="Form Type" menu="" required="false" tooltip="The Type of Form to find submissions in."></parameter>
+                    <parameter id="Core State" label="Core State" menu="" required="false" tooltip="Searches for submissions that have a core state that matches this parameter. If no value is provided, the results will contain submissions in all core states."></parameter>
+                    <parameter id="Limit" label="Limit" menu="" required="false" tooltip="Limit the number of results returned. If not provided, the server will limit the results to 25 submissions. Maximum limit 1000">100</parameter>
+                    <parameter id="Query" label="Query" menu="" required="false" tooltip="Query to use to fetch submissions. (i.e values[First Name]=&quot;Fred&quot;)">values[Scheduler Id]="&lt;%=@inputs['Scheduler Id']%&gt;"</parameter>
+                    <parameter id="Timeline" label="Timeline" menu="" required="false" tooltip="Date property to search by. The default value is createdAt."></parameter>
+                    <parameter id="Direction" label="Direction" menu="" required="false" tooltip="Result Set sorting direction. The default value is descending."></parameter>
+                    <parameter id="Start Date/Time" label="Start Date/Time" menu="" required="false" tooltip="Start date/time of the timeline. This value should be used to both refine and limit the search results. Format should be yyyy-MM-dd'T'HH:mm:ss'Z'">&lt;%=@inputs['Starting Timestamp']%&gt;</parameter>
+                    <parameter id="End Date/Time" label="End Date/Time" menu="" required="false" tooltip="End date/time of the timeline. This value should be used to both refine and limit the search results. Formatshould be yyyy-MM-dd'T'HH:mm:ss'Z'">&lt;%=@inputs['Ending Timestamp']%&gt;</parameter>
+                    <parameter id="Next Page Token" label="Next Page Token" menu="" required="false" tooltip="The value to use as the offset for the page of submissions to return. The submission that matches this value will not be included in the results.">&lt;%=@inputs['Page Token']%&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="More Records" type="Complete" value="!@results['Retrieve Data']['Next Page Token'].nil?">routine_tech_bar_metrics_daily_feedback_v1_13</task>
+                    <task label="" type="Complete" value="">utility_json_to_xml_v1_16</task>
+                </dependents>
+            </task>
+            <task definition_id="utility_json_to_xml_v1" id="utility_json_to_xml_v1_16" name="JSON to XML" x="332" y="99">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>true</visible>
+                <parameters>
+                    <parameter id="json" label="JSON" menu="" required="true" tooltip="The JSON String to be converted to XML">&lt;%=@results['Retrieve Data']['Submissions List JSON']%&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">system_loop_head_v1_17</task>
+                </dependents>
+            </task>
+            <task definition_id="system_loop_head_v1" id="system_loop_head_v1_17" name="Loop Begin" x="488" y="108">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="data_source" label="Data Source:" menu="" required="true" tooltip="The source that contains the data to use to create each task in the loop.">&lt;%=@results['JSON to XML']['XML']%&gt;</parameter>
+                    <parameter id="loop_path" label="Loop Path:" menu="" required="true" tooltip="The XPath statement to indicate what data records to process.">/node/node/node[@name="id"]</parameter>
+                    <parameter id="var_name" label="Variable Name:" menu="" required="false" tooltip="The local variable name used to represent the data used in loop tasks."></parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">system_loop_tail_v1_18</task>
+                    <task label="" type="Complete" value="">utilities_echo_v1_20</task>
+                </dependents>
+            </task>
+            <task definition_id="system_loop_tail_v1" id="system_loop_tail_v1_18" name="Loop End" x="484" y="327">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="type" label="Type:" menu="All,Some,Any" required="true" tooltip="How many loop processes must be completed before continuing?">All</parameter>
+                    <parameter dependsOnId="type" dependsOnValue="Some" id="number" label="Number:" menu="" required="false" tooltip="If some, how many?"></parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">system_junction_v1_6</task>
+                </dependents>
+            </task>
+            <task definition_id="utilities_echo_v1" id="utilities_echo_v1_20" name="Echo Feedback Id" x="638" y="99">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>true</visible>
+                <parameters>
+                    <parameter id="input" label="Input" menu="" required="true" tooltip="">&lt;%=@results['Loop Begin']['Value']%&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="No Appt. Id" type="Complete" value="feedback_record = JSON.parse( @results['Retrieve Data']['Submissions List JSON'] )[@results['Loop Begin']['Index']]&#10;feedback_values = feedback_record['values']&#10;feedback_values['Appointment Id'].nil?">system_junction_v1_21</task>
+                    <task label="Has Appt. Id" type="Complete" value="feedback_record = JSON.parse( @results['Retrieve Data']['Submissions List JSON'] )[@results['Loop Begin']['Index']]&#10;feedback_values = feedback_record['values']&#10;!feedback_values['Appointment Id'].nil?">routine_kinetic_submission_retrieve_v1_22</task>
+                </dependents>
+            </task>
+            <task definition_id="system_junction_v1" id="system_junction_v1_21" name="Junction 2" x="638" y="327">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters></parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">system_loop_tail_v1_18</task>
+                </dependents>
+            </task>
+            <task definition_id="routine_kinetic_submission_retrieve_v1" id="routine_kinetic_submission_retrieve_v1_22" name="Retrieve Appt or Walkin Details" x="842" y="77">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>true</defers>
+                <deferrable>true</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Id" label="Id" menu="" required="true" tooltip="The Id of the submission to retrieve">&lt;%=
+record = JSON.parse( @results['Retrieve Data']['Submissions List JSON'] )[@results['Loop Begin']['Index']]
+values = record['values']
+values['Appointment Id']
+%&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">routine_kinetic_submission_retrieve_v1_23</task>
+                </dependents>
+            </task>
+            <task definition_id="routine_kinetic_submission_retrieve_v1" id="routine_kinetic_submission_retrieve_v1_23" name="Retrieve Queue" x="847" y="209">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>true</defers>
+                <deferrable>true</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Id" label="Id" menu="" required="true" tooltip="The Id of the submission to retrieve">&lt;%=JSON.parse(@results['Retrieve Appt or Walkin Details']['Children JSON'])[0]['id']%&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">utilities_echo_v1_24</task>
+                </dependents>
+            </task>
+            <task definition_id="utilities_echo_v1" id="utilities_echo_v1_24" name="Assemble Details" x="847" y="319">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>true</visible>
+                <parameters>
+                    <parameter id="input" label="Input" menu="" required="true" tooltip="">&lt;%=
+feedback_record = JSON.parse( @results['Retrieve Data']['Submissions List JSON'] )[@results['Loop Begin']['Index']]
+feedback_values = feedback_record['values']
+type = @results['Retrieve Appt or Walkin Details']['Form Slug']
+appointment_values = JSON.parse(@results['Retrieve Appt or Walkin Details']['Values JSON'])
+queue_values = JSON.parse(@results['Retrieve Queue']['Values JSON'])
+
+feedback = {}
+feedback['Feedback Experience'] = feedback_values['Experience']
+feedback['Feedback Submitted At'] = feedback_record['submittedAt']
+feedback['Requested For'] = appointment_values['Requested For'] || appointment_values['Network Username'].to_s.downcase
+feedback['Requested For Display Name'] = appointment_values['Requested For Display Name']
+feedback['Type'] = "Scheduled Appointment" if type == "appointment"
+feedback['Type'] = "Walk-In" if type == "walk-in"
+feedback['Issue Summary'] = appointment_values['Summary']
+feedback['Event Date'] = appointment_values['Event Date'] || appointment_values['Date']
+feedback['Event Time'] = appointment_values['Event Time'] || appointment_values['Time']
+feedback['Wait Time'] = appointment_values['Wait Time'] || "Unknown"
+feedback['Event Duration'] = appointment_values['Event Duration Actual'] || "Unknown"
+feedback['Event Type'] = appointment_values['Event Type']
+feedback['Agent Id'] = queue_values['Assigned Individual']
+feedback['Agent Name'] = queue_values['Assigned Individual Display Name']
+feedback['Fulfillment Status'] = queue_values['Status']
+feedback['Fulfillment Resolution'] = queue_values['Resolution']
+feedback['Fulfillment Notes Internal'] = queue_values['Notes Internal']
+feedback['Fulfillment Notes For Customer'] = queue_values['Notes for Customer']
+feedback['Remedy Ticket'] = queue_values['Remedy Ticket']
+
+feedback.to_json
+%&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">system_junction_v1_21</task>
+                </dependents>
+            </task>
+        </request>
+    </taskTree>
+</tree>

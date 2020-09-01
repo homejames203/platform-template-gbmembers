@@ -73,6 +73,21 @@
       "status": "Active"
     },
     {
+      "model": "Terms and Conditions",
+      "name": "Get Terms and Conditions",
+      "order": [
+
+      ],
+      "parameters": [
+        {
+          "mapping": "Paysmart Member Registration",
+          "name": "Type"
+        }
+      ],
+      "qualification": "Paysmart Member Registration",
+      "status": "Active"
+    },
+    {
       "model": "Members",
       "name": "Members",
       "order": [
@@ -107,7 +122,7 @@
       }
     }
   ],
-  "customHeadContent": "<style>\n  .hidden{\n   display:none; \n  }\n</style>\n<script>\nfunction completeTableChange(){\n  K('field[Family Member]').value(\"\");\n  K('field[Programs]').value(\"\");\n  K('field[tableMemberID]').value(\"\");\n  K('field[tableMemberName]').value(\"\");\n  K('field[tableProgram]').value(\"\");\n  K('field[tableFee]').value(\"\");\n  \n  // Sort table\n  viewerConfig.response.sort(function(a, b){return b.cost - a.cost});\n  // Let calculate the discounts\n  viewerConfig.response.forEach(function(item, index){\n    if (index===0){\n      item.discount=\"0%\";\n      item.fee=((new Number(item.cost))).toFixed(2);\n    } else if(index===1){\n      item.discount=\"10%\";\n      item.fee=((new Number(item.cost))*0.9).toFixed(2);\n    } else if(index===2){\n      item.discount=\"20%\";\n      item.fee=((new Number(item.cost))*0.8).toFixed(2);\n    } else if(index>=3){\n      item.discount=\"30%\";\n      item.fee=((new Number(item.cost))*0.7).toFixed(2);\n    }      \n  });\n  \n  // Set payment value\n  var total=0;\n  viewerConfig.response.forEach(function(item, index){\n\t\ttotal=total+(new Number((new Number(item.fee)).toFixed(2)));\n  });\n  K('field[I promise to pay equal FREQUENCY instalments of]').value(total);\n\n  global.viewerConfig.renderer.type($('#memberTableDiv'),global.viewerConfig);\n\n  $('#member-table tbody tr').on( 'click', function () {\n    if ( $(this).hasClass('selected') ) {\n      $(this).removeClass('selected');\n    }\n    else {\n      $('#member-table').DataTable().$('tr.selected').removeClass('selected');\n      $(this).addClass('selected');\n    }\n  } );  \n  \n}  \n  \nfunction memberProgramAdded(memberID, feeProgram) {\n  found=false;\n\n  viewerConfig.response.forEach(function(item){\n      if (item.id===memberID && item.feeProgram===feeProgram) {\n        found=true;\n      }\n  });  \n  return found;\n}\n</script>",
+  "customHeadContent": "<style>\n  .hidden{\n   display:none; \n  }\nbutton.editButton {\n    border-radius: .25rem;\n    line-height: 1.0rem;\n    padding: .2rem 0.8rem;\n    margin-right: .5rem;\n    border: none;\n    color: #fff;\n    font-size: .75rem;\n    background-color: #0c384f;\n}\n</style>\n<script>\nfunction completeTableChange(){\n  K('field[Family Member]').value(\"\");\n  K('field[Programs]').value(\"\");\n  K('field[tableMemberID]').value(\"\");\n  K('field[tableMemberName]').value(\"\");\n  K('field[tableProgram]').value(\"\");\n  K('field[tableFee]').value(\"\");\n  \n  // Sort table\n  viewerConfig.response.sort(function(a, b){return b.cost - a.cost});\n  // Let calculate the discounts\n  viewerConfig.response.forEach(function(item, index){\n    if (index===0){\n      item.discount=\"0%\";\n      item.fee=((new Number(item.cost))).toFixed(2);\n    } else if(index===1){\n      item.discount=\"10%\";\n      item.fee=((new Number(item.cost))*0.9).toFixed(2);\n    } else if(index===2){\n      item.discount=\"20%\";\n      item.fee=((new Number(item.cost))*0.8).toFixed(2);\n    } else if(index>=3){\n      item.discount=\"30%\";\n      item.fee=((new Number(item.cost))*0.7).toFixed(2);\n    }      \n  });\n  \n  // Set payment value\n  var total=0;\n  viewerConfig.response.forEach(function(item, index){\n\t\ttotal=total+(new Number((new Number(item.fee)).toFixed(2)));\n  });\n  K('field[I promise to pay equal FREQUENCY instalments of]').value(total);\n\n  global.viewerConfig.renderer.type($('#memberTableDiv'),global.viewerConfig);\n\n  $('#member-table tbody tr').on( 'click', function () {\n    if ( $(this).hasClass('selected') ) {\n      $(this).removeClass('selected');\n    }\n    else {\n      $('#member-table').DataTable().$('tr.selected').removeClass('selected');\n      $(this).addClass('selected');\n    }\n  } );  \n  \n}  \n  \nfunction memberProgramAdded(memberID, feeProgram) {\n  found=false;\n\n  viewerConfig.response.forEach(function(item){\n      if (item.id===memberID && item.feeProgram===feeProgram) {\n        found=true;\n      }\n  });  \n  return found;\n}\n</script>\n<script>\nfunction enabledAddressEdit(){\n  K('field[Address]').enable();\n  K('field[Suburb]').enable();\n  K('field[State]').enable();\n  K('field[Postcode]').enable();\n}\nfunction geolocate() {\n  if (navigator.geolocation) {\n    navigator.geolocation.getCurrentPosition(function(position) {\n      var geolocation = {\n        lat: position.coords.latitude,\n        lng: position.coords.longitude\n      };\n      var circle = new google.maps.Circle(\n          {center: geolocation, radius: position.coords.accuracy});\n      autocomplete.setBounds(circle.getBounds());\n    });\n  }\n}\nfunction fillInAddress() {\n  K(\"field[Address]\").value(\"\");\n\n  // Get the place details from the autocomplete object.\n  var place = autocomplete.getPlace();\n\ndebugger;\n  // Get each component of the address from the place details,\n  // and then fill-in the corresponding field on the form.\n  for (var i = 0; i < place.address_components.length; i++) {\n    var addressType = place.address_components[i].types[0];\n\n    if (addressType===\"street_number\") {\n    \tK(\"field[Address]\").value(place.address_components[i][\"long_name\"]);\n    }\n    if (addressType===\"route\") {\n    \tK(\"field[Address]\").value(K(\"field[Address]\").value()+\" \"+place.address_components[i][\"long_name\"]);\n    }\n    if (addressType===\"locality\") {\n    \tK(\"field[Suburb]\").value(place.address_components[i][\"long_name\"]);\n    }\n    if (addressType===\"administrative_area_level_1\") {\n    \tK(\"field[State]\").value(place.address_components[i][\"short_name\"]);\n    }\n    if (addressType===\"postal_code\") {\n    \tK(\"field[Postcode]\").value(place.address_components[i][\"short_name\"]);\n    }\n    if (addressType===\"country\") {\n    \tK(\"field[Country]\").value(place.address_components[i][\"long_name\"]);\n    }\n  }\n}  \nfunction initAutocomplete() {\n  debugger;\n  if (document.getElementById('autocomplete')!==undefined) {\n    // Create the autocomplete object, restricting the search predictions to\n    // geographical location types.\n    autocomplete = new google.maps.places.Autocomplete(\n        document.getElementById('autocomplete'), {types: ['geocode']});\n\n    // Avoid paying for data that you don't need by restricting the set of\n    // place fields that are returned to just the address components.\n    autocomplete.setFields(['address_component']);\n\n    // When the user selects an address from the drop-down, populate the\n    // address fields in the form.\n    autocomplete.addListener('place_changed', fillInAddress);\n  }\n}  \n</script>\n\n<script src=\"https://maps.googleapis.com/maps/api/js?key=AIzaSyANn8OeuTR-YH0f-l7S-Qk04cROra8iUfM&libraries=places&callback=initAutocomplete\"\n        async defer>\n</script>",
   "description": "Member payment registration form. Use to initiate a scheduled payment or alter an existing schedule of payments.",
   "name": "PaySmart Member Registration",
   "notes": null,
@@ -148,7 +163,7 @@
                   "name": "Get Members",
                   "type": "Change",
                   "action": "Custom",
-                  "code": "K('bridgedResource[Get Member]').load({\n  attributes: ['Member ID', 'First Name', 'Last Name'],\n  values: {'ID' : 'Allen'},\n  success: function(bridgedData) {\n    K('field[Member ID]').value(bridgedData['Member ID']);\n    K('field[Student First Name]').value(bridgedData['First Name']);\n    K('field[Student Last Name]').value(bridgedData['Last Name']);\n    K('field[Billing Customer Id]').value(bridgedData['Billing Customer Id']);\n    \n    K('section[Student Information]').show();\n    var tomorrow = new Date((new Date()).getTime() + 24 * 60 * 60 * 1000);\n    bundle.config.widgets.xdsoftDatepicker({\n      element: K(\"form\").find(\"#firstinstallmentdate\")[0],\n      timepicker: false,\n      displayDateFormat: \"DD/MM/YYYY\",\n      options: {\n        startDate: tomorrow,\n        disabledDates: ['12-02-2020'], \n        minDate: 0,\n        formatDate:\"d-m-Y\",\n        validateOnBlur:false\n      },\n      onSelectDate:function(ct,$i){\n        K('field[The first instalment is due on]').value(ct.dateFormat('YYYY-MM-DD'));\n      }                \n    });          \n  }\n});",
+                  "code": "K('bridgedResource[Get Member]').load({\n  attributes: ['Member ID', 'First Name', 'Last Name'],\n  values: {'ID' : 'Allen'},\n  success: function(bridgedData) {\n    K('field[Member ID]').value(bridgedData['Member ID']);\n    K('field[Student First Name]').value(bridgedData['First Name']);\n    K('field[Student Last Name]').value(bridgedData['Last Name']);\n    K('field[Billing Customer Id]').value(bridgedData['Billing Customer Id']);\ndebugger;    \n    K('section[Student Information]').show();\n    var tomorrow = new Date((new Date()).getTime() + 24 * 60 * 60 * 1000);\n    bundle.config.widgets.xdsoftDatepicker({\n      element: K(\"form\").find(\"#firstinstallmentdate\")[0],\n      timepicker: false,\n      displayDateFormat: \"DD/MM/YYYY\",\n      options: {\n        startDate: tomorrow,\n        minDate: 0,\n        formatDate:\"d-m-Y\",\n        validateOnBlur:false\n      },\n      onSelectDate:function(ct,$i){\n        K('field[The first instalment is due on]').value(ct.dateFormat('YYYY-MM-DD'));\n      },\n      onGenerate: function( ct ){\n            $('.xdsoft_today')\n              .addClass('xdsoft_disabled');\n            $('.xdsoft_date.xdsoft_weekend')\n              .addClass('xdsoft_disabled');\n          }\n    });          \n  }\n});",
                   "bridgedResourceName": null,
                   "runIf": "values('Members')!==\"\""
                 },
@@ -965,10 +980,35 @@
           },
           "elements": [
             {
+              "type": "field",
+              "name": "Terms Information Text",
+              "label": "Terms Information Text",
+              "key": "f56",
+              "defaultValue": null,
+              "defaultResourceName": null,
+              "visible": false,
+              "enabled": true,
+              "required": false,
+              "requiredMessage": null,
+              "omitWhenHidden": false,
+              "pattern": null,
+              "constraints": [
+
+              ],
+              "events": [
+
+              ],
+              "renderAttributes": {
+              },
+              "dataType": "string",
+              "renderType": "text",
+              "rows": 1
+            },
+            {
               "type": "content",
               "renderType": "html",
               "name": "Terms Information",
-              "text": "<div class=\"emf-section-text\">You hereby agree not to cancel of debit authority via your bank account or credit card for any reason and any debts owing to <span class='legalName'></span><br>\n<br>\nYou may cancel this contract if you (1) relocate your residence further than 20km from any school operated by Gracie Barra; (2) medical condition, being a permanent disability that will not allow the practice of BJJ for a considerable time (at least one year); (3) deployment in the case the student is military; (4) unexpected unemployment.<br>\n<br>\nFor any cancellation request, the appropriate document must be provided:<br>\n<br>\n* Change of Address: bill or lease agreement for the new address;<br>\n* Medical Condition: doctor's letter proving the permanent disability;<br>\n* Document proving deployment;<br>\n* Document proving the person lost the job;<br>\n<br>\nStudents who would like to cancel without reason must give 60 day's written notice.<br>\n<br>\nCancellation requests must be in person or via email sent to info@gbsydney.com.au with any appropriate documentation. Requests will be reviewed and responded to within three business days.<br>\n<br>\nStudents enrolled in the Future Champions Programs can cancel their agreement for any reason upon delivery of 60 days written cancellation notice to the school.<br>\n<br>\n* Gracie Barra reserves the right to alter the days, hours of operation and classes if deemed necessary to better fit the student's needs.<br>\n<br>\n* The student and co-signer agree unconditionally to pay the above tuition without regard to the attendance made or classes missed.<br>\n<br>\n* Gracie Barra reserves the right to use any images, video footage and conduct interviews from Gracie Barra students. By signing this form you hereby grant Gracie Barra permission to use and or publish through any marketing channels.<br>\n<br>\n* The student consents to Gracie Barra collecting and using their personal information provided it is only used for the purposes of the proper running of the Gracie Barra business and will not be disclosed to third parties unless required by law.<br>\n<br>\nNote: This agreement is non-refundable.</div>",
+              "text": "<span id=\"termsInformation\"/>",
               "visible": true,
               "renderAttributes": {
               }
@@ -1183,7 +1223,21 @@
           "name": "Embed School Names",
           "type": "Load",
           "action": "Custom",
-          "code": "$(\".schoolName\").html(K('space').attributes('School Name'));\n$(\".legalName\").html(K('space').attributes('School Legal Name'));\n"
+          "code": "$(\".schoolName\").html(K('space').attributes('School Name'));\n$(\".legalName\").html(K('space').attributes('School Legal Name'));\n$(\".schoolEmail\").html(K('space').attributes('School Email'));\n\n"
+        },
+        {
+          "name": "Load Terms and Conditions",
+          "type": "Load",
+          "action": "Custom",
+          "code": "K('bridgedResource[Get Terms and Conditions]').load({\n  success: function(bridgedData) {\n    debugger;\n    K('field[Terms Information Text]').value(bridgedData[0][\"Terms Information\"]);\n    $(\"#termsInformation\").html(bridgedData[0][\"Terms Information\"]);\n  }\n});\n",
+          "runIf": "K('field[Terms Information Text]').value()===null"
+        },
+        {
+          "name": "Display Terms and Conditions",
+          "type": "Load",
+          "action": "Custom",
+          "code": "$(\"#termsInformation\").html(K('field[Terms Information Text]').value());",
+          "runIf": "K('field[Terms Information Text]').value()!==null"
         }
       ],
       "name": "Instalment Information",
@@ -1263,17 +1317,26 @@
               "rows": 1
             },
             {
+              "type": "content",
+              "renderType": "html",
+              "name": "Autocomplete",
+              "text": "<div id=\"locationField\">\n  <input id=\"autocomplete\"\n         class=\"form-control\"\n         placeholder=\"Enter your address\"\n         onFocus=\"geolocate()\"\n         type=\"text\"/>\n</div>",
+              "visible": "!form('review')",
+              "renderAttributes": {
+              }
+            },
+            {
               "type": "field",
               "name": "Address",
-              "label": "Address",
+              "label": "Address<button class=\"editButton\"  onclick=\"enabledAddressEdit()\">Manually Enter</button>",
               "key": "f3",
               "defaultValue": null,
               "defaultResourceName": null,
-              "visible": true,
-              "enabled": true,
+              "visible": "!form('review')",
+              "enabled": false,
               "required": true,
               "requiredMessage": null,
-              "omitWhenHidden": null,
+              "omitWhenHidden": true,
               "pattern": {
                 "regex": "^(.){5,50}$",
                 "message": "Address should be between 5 to 50 characters long"
@@ -1298,7 +1361,7 @@
               "defaultValue": null,
               "defaultResourceName": null,
               "visible": true,
-              "enabled": true,
+              "enabled": false,
               "required": true,
               "requiredMessage": null,
               "omitWhenHidden": null,
@@ -1326,7 +1389,7 @@
               "defaultValue": null,
               "defaultResourceName": null,
               "visible": true,
-              "enabled": true,
+              "enabled": false,
               "required": true,
               "requiredMessage": null,
               "omitWhenHidden": null,
@@ -1348,13 +1411,38 @@
             },
             {
               "type": "field",
+              "name": "Country",
+              "label": "Country",
+              "key": "f55",
+              "defaultValue": null,
+              "defaultResourceName": null,
+              "visible": false,
+              "enabled": true,
+              "required": false,
+              "requiredMessage": null,
+              "omitWhenHidden": false,
+              "pattern": null,
+              "constraints": [
+
+              ],
+              "events": [
+
+              ],
+              "renderAttributes": {
+              },
+              "dataType": "string",
+              "renderType": "text",
+              "rows": 1
+            },
+            {
+              "type": "field",
               "name": "State",
               "label": "State",
               "key": "f6",
               "defaultValue": null,
               "defaultResourceName": null,
               "visible": true,
-              "enabled": true,
+              "enabled": false,
               "required": true,
               "requiredMessage": null,
               "omitWhenHidden": null,
@@ -1674,7 +1762,7 @@
               "defaultValue": "",
               "defaultResourceName": null,
               "visible": true,
-              "enabled": true,
+              "enabled": false,
               "required": true,
               "requiredMessage": null,
               "omitWhenHidden": null,
@@ -1780,7 +1868,7 @@
               "requiredMessage": null,
               "omitWhenHidden": null,
               "pattern": {
-                "regex": "^(?:(4[0-9]{12}(?:[0-9]{3})?)|(\\*\\*\\*\\*\\*\\*\\*\\*\\*\\*\\*\\*[0-9][0-9][0-9][0-9])|(5[1-5][0-9]{13})|(3[47][0-9]{14})|(3(?:0[0-5]|[68][0-9])[0-9]{11})|(\\.\\.\\.[0-9][0-9][0-9][0-9]))$",
+                "regex": "^(?:4[0-9]{12}(?:[0-9]{3})?|(?:5[1-5][0-9]{2}|222[1-9]|22[3-9][0-9]|2[3-6][0-9]{2}|27[01][0-9]|2720)[0-9]{12}|3[47][0-9]{13}|3(?:0[0-5]|[68][0-9])[0-9]{11}|6(?:011|5[0-9]{2})[0-9]{12}|(?:2131|1800|35\\d{3})\\d{11}|^...[0-9][0-9][0-9][0-9])$",
                 "message": "Credit card number should be a valid CC number"
               },
               "constraints": [
@@ -1898,14 +1986,6 @@
               "choicesRunIf": null,
               "choices": [
                 {
-                  "label": "2018",
-                  "value": "2018"
-                },
-                {
-                  "label": "2019",
-                  "value": "2019"
-                },
-                {
                   "label": "2020",
                   "value": "2020"
                 },
@@ -1998,11 +2078,7 @@
               "choicesRunIf": null,
               "choices": [
                 {
-                  "label": "Visa",
-                  "value": "0"
-                },
-                {
-                  "label": "MasterCard",
+                  "label": "Visa/Mastercard",
                   "value": "0"
                 },
                 {
@@ -2323,6 +2399,13 @@
           "type": "Load",
           "action": "Custom",
           "code": "$('.main-container').animate({\n  scrollTop: 0\n},500);\n"
+        },
+        {
+          "name": "Review",
+          "type": "Load",
+          "action": "Custom",
+          "code": "",
+          "runIf": "form('review')"
         }
       ],
       "name": "Billing Information",
@@ -2333,7 +2416,7 @@
   "securityPolicies": [
     {
       "endpoint": "Display",
-      "name": "Program Managers"
+      "name": "PaySmart Program Managers"
     },
     {
       "endpoint": "Submission Access",

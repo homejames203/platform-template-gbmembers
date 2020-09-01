@@ -1,0 +1,174 @@
+<tree schema_version="1.0">
+    <sourceName>Kinetic Request CE</sourceName>
+    <sourceGroup>Users</sourceGroup>
+    <type>Tree</type>
+    <status>Active</status>
+    <taskTree builder_version="" schema_version="1.0" version="">
+        <name>Scheduler User Membership Change</name>
+        <author></author>
+        <notes></notes>
+        <lastID>40</lastID>
+        <request>
+            <task definition_id="system_start_v1" id="start" name="Start" x="10" y="10">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters></parameters>
+                <messages></messages>
+                <dependents>
+                    <task label="" type="Complete" value="">routine_kinetic_datastore_submissions_retrieve_list_v1_35</task>
+                </dependents>
+            </task>
+            <task definition_id="system_junction_v1" id="system_junction_v1_28" name="Junction" x="726" y="197">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters></parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">system_noop_v1_29</task>
+                </dependents>
+            </task>
+            <task definition_id="system_noop_v1" id="system_noop_v1_29" name="End" x="869" y="197">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters></parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents></dependents>
+            </task>
+            <task definition_id="routine_kinetic_datastore_submissions_retrieve_list_v1" id="routine_kinetic_datastore_submissions_retrieve_list_v1_35" name="Find TechBars" x="173" y="68">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>true</defers>
+                <deferrable>true</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Form Slug" label="Form Slug" menu="" required="false" tooltip="The slug of the Form to find submissions in.">scheduler</parameter>
+                    <parameter id="Index To Search" label="Index To Search" menu="" required="false" tooltip="The Index definition to search (i.e. values[Name],values[Status])">values[Status],values[Type]</parameter>
+                    <parameter id="Core State" label="Core State" menu="" required="false" tooltip="Searches for submissions that have a core state that matches this parameter. If no value is provided, the results will contain submissions in all core states."></parameter>
+                    <parameter id="Limit" label="Limit" menu="" required="false" tooltip="Limit the number of results returned. If not provided, the server will limit the results to 25 submissions. Maximum limit 1000"></parameter>
+                    <parameter id="Query" label="Query" menu="" required="false" tooltip="Query to use to fetch submissions. (i.e values[First Name]=&quot;Fred&quot;)">values[Status]="Active" AND values[Type] IN ("TechBar","Tech Bar")</parameter>
+                    <parameter id="Next Page Token" label="Next Page Token" menu="" required="false" tooltip="The value to use as the offset for the page of submissions to return. The submission that matches this value will not be included in the results."></parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="New Techbar Team" type="Complete" value="# If adding teams, is the added team a tech bar team?&#10;techbar_teams = []&#10;JSON.parse(@results['Find TechBars']['Submissions List JSON']).each{|techbar|&#10;  techbar_teams.push(&quot;Scheduler::#{techbar['values']['Name']}&quot;)&#10;}&#10;&#10;any_techbar_team = false&#10;&#10;@user_membership['Teams Added'].each{|team|&#10;  any_techbar_team = true if techbar_teams.include? (team)&#10;}&#10;&#10;any_techbar_team">routine_kinetic_team_membership_create_v1_36</task>
+                    <task label="Remove Tech Bar Team" type="Complete" value="# If removed from a team, is the removed team a tech bar team?&#10;techbar_teams = []&#10;JSON.parse(@results['Find TechBars']['Submissions List JSON']).each{|techbar|&#10;  techbar_teams.push(&quot;Scheduler::#{techbar['values']['Name']}&quot;)&#10;}&#10;any_techbar_team = false&#10;@user_membership['Teams Removed'].each{|team|&#10;  any_techbar_team = true if techbar_teams.include? (team)&#10;}&#10;any_techbar_team">routine_kinetic_user_retrieve_v1_38</task>
+                </dependents>
+            </task>
+            <task definition_id="routine_kinetic_team_membership_create_v1" id="routine_kinetic_team_membership_create_v1_36" name="Add Membership 1" x="407" y="65">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>true</defers>
+                <deferrable>true</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Team Name" label="Team Name" menu="" required="true" tooltip="The name the team to add the user to">Role::Tech Bar Observer</parameter>
+                    <parameter id="Username" label="Username" menu="" required="true" tooltip="">&lt;%= @user['Username']%&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">routine_kinetic_team_membership_create_v1_37</task>
+                </dependents>
+            </task>
+            <task definition_id="routine_kinetic_team_membership_create_v1" id="routine_kinetic_team_membership_create_v1_37" name="Add Membership 2" x="572" y="65">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>true</defers>
+                <deferrable>true</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Team Name" label="Team Name" menu="" required="true" tooltip="The name the team to add the user to">Role::Employee</parameter>
+                    <parameter id="Username" label="Username" menu="" required="true" tooltip="">&lt;%= @user['Username']%&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">system_junction_v1_28</task>
+                </dependents>
+            </task>
+            <task definition_id="routine_kinetic_user_retrieve_v1" id="routine_kinetic_user_retrieve_v1_38" name="Get User" x="176" y="195">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>true</defers>
+                <deferrable>true</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Username" label="Username" menu="" required="true" tooltip="The User's username">&lt;%= @user['Username']%&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="No other Tech Bar Teams" type="Complete" value="# If removing a tech bar team, are there no more tech bar teams in the user's group list?&#10;&#10;techbar_teams = []&#10;JSON.parse(@results['Find TechBars']['Submissions List JSON']).each{|techbar|&#10;  techbar_teams.push(&quot;Scheduler::#{techbar['values']['Name']}&quot;)&#10;}&#10;&#10;no_other_techbar_team = true&#10;&#10;JSON.parse(@results['Get User']['Memberships JSON']).each{|team|&#10;  no_other_techbar_team = false if techbar_teams.include? (team['team']['name'])&#10;}&#10;no_other_techbar_team">routine_kinetic_team_membership_delete_v1_39</task>
+                </dependents>
+            </task>
+            <task definition_id="routine_kinetic_team_membership_delete_v1" id="routine_kinetic_team_membership_delete_v1_39" name="Remove Membership 1" x="410" y="185">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>true</defers>
+                <deferrable>true</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Team Name" label="Team Name" menu="" required="true" tooltip="The name the team to remove the user from">Role::Tech Bar Observer</parameter>
+                    <parameter id="Username" label="Username" menu="" required="true" tooltip="">&lt;%= @user['Username']%&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">routine_kinetic_team_membership_delete_v1_40</task>
+                </dependents>
+            </task>
+            <task definition_id="routine_kinetic_team_membership_delete_v1" id="routine_kinetic_team_membership_delete_v1_40" name="Remove Membership 2" x="572" y="186">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>true</defers>
+                <deferrable>true</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Team Name" label="Team Name" menu="" required="true" tooltip="The name the team to remove the user from">Role::Employee</parameter>
+                    <parameter id="Username" label="Username" menu="" required="true" tooltip="">&lt;%= @user['Username']%&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">system_junction_v1_28</task>
+                </dependents>
+            </task>
+        </request>
+    </taskTree>
+</tree>

@@ -129,7 +129,7 @@ end
                 </parameters>
                 <messages></messages>
                 <dependents>
-                    <task label="" type="Complete" value="">utilities_echo_v1_31</task>
+                    <task label="" type="Complete" value="">kinetic_request_ce_submission_get_answers_v2_33</task>
                 </dependents>
             </task>
             <task definition_id="system_loop_head_v1" id="system_loop_head_v1_19" name="Loop over images" x="548" y="34">
@@ -149,7 +149,7 @@ end
                     <task label="" type="Complete" value="">utilities_echo_v1_24</task>
                 </dependents>
             </task>
-            <task definition_id="system_loop_tail_v1" id="system_loop_tail_v1_20" name="Loop images tail" x="621" y="234">
+            <task definition_id="system_loop_tail_v1" id="system_loop_tail_v1_20" name="Loop images tail" x="688" y="178">
                 <version>1</version>
                 <configured>true</configured>
                 <defers>false</defers>
@@ -160,9 +160,7 @@ end
                     <parameter dependsOnId="type" dependsOnValue="Some" id="number" label="Number:" menu="" required="false" tooltip="If some, how many?"></parameter>
                 </parameters>
                 <messages></messages>
-                <dependents>
-                    <task label="" type="Complete" value="">kinetic_request_ce_submission_update_v1_29</task>
-                </dependents>
+                <dependents></dependents>
             </task>
             <task definition_id="utilities_echo_v1" id="utilities_echo_v1_23" name="Image filename" x="697" y="-131">
                 <version>1</version>
@@ -238,14 +236,12 @@ extra=extra.gsub('"',"'").gsub('&amp;quot',"'").strip
 @@bodyVal
 %&gt;</parameter>
                 </parameters>
-                <messages>
-                    <message type="Complete"></message>
-                </messages>
+                <messages></messages>
                 <dependents>
                     <task label="" type="Complete" value="">system_loop_tail_v1_20</task>
                 </dependents>
             </task>
-            <task definition_id="kinetic_request_ce_submission_update_v1" id="kinetic_request_ce_submission_update_v1_29" name="Update Body Value" x="450" y="298">
+            <task definition_id="kinetic_request_ce_submission_update_v1" id="kinetic_request_ce_submission_update_v1_29" name="Update Body Value" x="487" y="261">
                 <version>1</version>
                 <configured>true</configured>
                 <defers>false</defers>
@@ -256,7 +252,7 @@ extra=extra.gsub('"',"'").gsub('&amp;quot',"'").strip
                     <parameter dependsOnId="" dependsOnValue="" id="space_slug" label="Space Slug" menu="" required="false" tooltip="The Space the submission is being retrieved from (defaults to info value if not provided)."></parameter>
                     <parameter dependsOnId="" dependsOnValue="" id="submission_id" label="Submission Id" menu="" required="true" tooltip="The id of the submission being updated.">&lt;%= @submission['Id']%&gt;</parameter>
                     <parameter dependsOnId="" dependsOnValue="" id="state" label="State" menu="" required="false" tooltip="The value used to set the submission state."></parameter>
-                    <parameter dependsOnId="" dependsOnValue="" id="values" label="Values" menu="" required="false" tooltip="A JSON map of field names to values that should be set.">{"Body": "&lt;%=@@bodyVal%&gt;"} </parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="values" label="Values" menu="" required="false" tooltip="A JSON map of field names to values that should be set.">&lt;%= @results['Load Body Value']['Answer Set'] %&gt;</parameter>
                     <parameter dependsOnId="" dependsOnValue="" id="current_page_name" label="Current Page Name" menu="" required="false" tooltip="Set the current page name."></parameter>
                     <parameter dependsOnId="" dependsOnValue="" id="current_page_navigation" label="Current Page Navigation" menu="" required="false" tooltip="Set the current page navigation."></parameter>
                     <parameter dependsOnId="" dependsOnValue="" id="origin_id" label="Origin ID" menu="" required="false" tooltip="Set the origin ID."></parameter>
@@ -287,7 +283,7 @@ extra=extra.gsub('"',"'").gsub('&amp;quot',"'").strip
                     <task label="" type="Complete" value="">kinetic_request_ce_notification_variables_build_v1_34</task>
                 </dependents>
             </task>
-            <task definition_id="utilities_echo_v1" id="utilities_echo_v1_31" name="Work Directory" x="226" y="128">
+            <task definition_id="utilities_echo_v1" id="utilities_echo_v1_31" name="Work Directory" x="142" y="137">
                 <version>1</version>
                 <configured>true</configured>
                 <defers>false</defers>
@@ -321,7 +317,7 @@ File.delete(filename)
                     <task label="" type="Complete" value="">utilities_echo_v1_28</task>
                 </dependents>
             </task>
-            <task definition_id="kinetic_request_ce_submission_get_answers_v2" id="kinetic_request_ce_submission_get_answers_v2_33" name="Load Body Value" x="373" y="121">
+            <task definition_id="kinetic_request_ce_submission_get_answers_v2" id="kinetic_request_ce_submission_get_answers_v2_33" name="Load Body Value" x="423" y="116">
                 <version>2</version>
                 <configured>true</configured>
                 <defers>false</defers>
@@ -338,7 +334,7 @@ File.delete(filename)
                 </parameters>
                 <messages></messages>
                 <dependents>
-                    <task label="" type="Complete" value="">utilities_echo_v1_45</task>
+                    <task label="" type="Complete" value="">kinetic_request_ce_submission_update_v1_29</task>
                 </dependents>
             </task>
             <task definition_id="kinetic_request_ce_notification_variables_build_v1" id="kinetic_request_ce_notification_variables_build_v1_34" name="Build Variables" x="244" y="424">
@@ -370,9 +366,12 @@ File.delete(filename)
                 <visible>true</visible>
                 <parameters>
                     <parameter dependsOnId="" dependsOnValue="" id="input" label="Input" menu="" required="true" tooltip="">&lt;%=
-@results['Load Body']['Body'].gsub!("member\('ID'\)", @results['Retrieve member']['ID'])
-@results['Load Body']['Body'].gsub!("member\('First Name'\)", JSON.parse(@results['Retrieve member']['Values JSON'])["First Name"])
-@results['Load Body']['Body'].gsub!("member\('Last Name'\)", JSON.parse(@results['Retrieve member']['Values JSON'])["Last Name"])
+@results['Load Body']['Body'].gsub!("member(&amp;#039;ID&amp;#039;)", @results['Retrieve member']['ID'])
+@results['Load Body']['Body'].gsub!("member('ID')", @results['Retrieve member']['ID'])
+@results['Load Body']['Body'].gsub!("member(&amp;#039;First Name&amp;#039;)", JSON.parse(@results['Retrieve member']['Values JSON'])["First Name"])
+@results['Load Body']['Body'].gsub!("member('First Name')", JSON.parse(@results['Retrieve member']['Values JSON'])["First Name"])
+@results['Load Body']['Body'].gsub!("member(&amp;#039;Last Name&amp;#039;)", JSON.parse(@results['Retrieve member']['Values JSON'])["Last Name"])
+@results['Load Body']['Body'].gsub!("member('Last Name')", JSON.parse(@results['Retrieve member']['Values JSON'])["Last Name"])
 
 @results['Load Body']['Body']
 %&gt;</parameter>
@@ -402,6 +401,18 @@ replace_values.keys.each{|key|
   end
 }
 content=content.gsub(/\$\{space\}/, @space['Slug'])
+
+endIdx=0
+while !content.index("&lt;a href",endIdx).nil?
+  idx=content.index("&lt;a href", endIdx)
+  endIdx = content.index('"', idx + '&lt;a href="'.length);
+  url = content.slice(idx + '&lt;a href="'.length, endIdx-(idx+ '&lt;a href="'.length));
+  encodeVal = Base64.encode64(url).gsub("\n","");
+  newUrl = "https://gbbilling.com.au:8443/billingservice/goToUrl/#{@space['Slug']}/__campaign_id__/__member_id__/#{encodeVal}"
+  
+  content = content.sub(url, newUrl);  
+end
+
 content
 %&gt;</parameter>
                 </parameters>
@@ -448,9 +459,7 @@ content
                     <parameter dependsOnId="" dependsOnValue="" id="campaignId" label="Campaign Id" menu="" required="false" tooltip="Campaign Id">&lt;%=@submission['Id']%&gt;</parameter>
                     <parameter dependsOnId="" dependsOnValue="" id="space" label="Space slug" menu="" required="false" tooltip="Space slug">&lt;%=@space['Slug']%&gt;</parameter>
                 </parameters>
-                <messages>
-                    <message type="Complete"></message>
-                </messages>
+                <messages></messages>
                 <dependents>
                     <task label="For Member" type="Complete" value="@results['Retrieve member']['Form Name']==&quot;Member&quot;">kinetic_request_ce_submission_create_v1_42</task>
                     <task label="For Lead" type="Complete" value="@results['Retrieve member']['Form Name']==&quot;Lead&quot;">kinetic_request_ce_submission_create_v1_43</task>
@@ -544,7 +553,7 @@ values.to_json
                     <task label="" type="Complete" value="">system_loop_tail_v1_4</task>
                 </dependents>
             </task>
-            <task definition_id="utilities_echo_v1" id="utilities_echo_v1_45" name="Body Variable" x="394" y="35">
+            <task definition_id="utilities_echo_v1" id="utilities_echo_v1_45" name="Body Variable" x="421" y="-117">
                 <version>1</version>
                 <configured>true</configured>
                 <defers>false</defers>

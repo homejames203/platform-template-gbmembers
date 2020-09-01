@@ -5,9 +5,9 @@
     <status>Active</status>
     <taskTree builder_version="" schema_version="1.0" version="">
         <name>Submitted</name>
-        <author></author>
+        <author>unus.gaffoor@kineticdata.com</author>
         <notes></notes>
-        <lastID>12</lastID>
+        <lastID>13</lastID>
         <request>
             <task definition_id="system_start_v1" id="start" name="Start" x="11" y="11">
                 <version>1</version>
@@ -28,21 +28,18 @@
                 <deferrable>false</deferrable>
                 <visible>false</visible>
                 <parameters>
-                    <parameter id="error_handling" label="Error Handling" menu="Error Message,Raise Error" required="true" tooltip="Determine what to return if an error is encountered.">Error Message</parameter>
-                    <parameter id="space_slug" label="Space Slug" menu="" required="false" tooltip="The Space the submission exists in (defaults to info value if not provided)."></parameter>
-                    <parameter id="submission_id" label="Submission Id" menu="" required="true" tooltip="The id of the submission for which the activity is being created for.">&lt;%= @submission['Id']%&gt;</parameter>
-                    <parameter id="label" label="Label" menu="" required="false" tooltip="The label for the submission activity.">Member Payment Change Requested</parameter>
-                    <parameter id="description" label="Description" menu="" required="false" tooltip="The description of the submission activity."></parameter>
-                    <parameter id="type" label="Type" menu="" required="false" tooltip="Specifies the a submission activity 'Type', which should indicate what type of data is included.">Success</parameter>
-                    <parameter id="data" label="Data" menu="" required="false" tooltip="Additional data that can be used by resources consuming the submission activity record (for example a Request bundle may render submission details based upon JSON content in the activity data).">{"Message":"Payment Type Changed for &lt;%= @values['Student First Name']%&gt; &lt;%= @values['Student Last Name']%&gt; has been received"}</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="error_handling" label="Error Handling" menu="Error Message,Raise Error" required="true" tooltip="Determine what to return if an error is encountered.">Error Message</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="space_slug" label="Space Slug" menu="" required="false" tooltip="The Space the submission exists in (defaults to info value if not provided)."></parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="submission_id" label="Submission Id" menu="" required="true" tooltip="The id of the submission for which the activity is being created for.">&lt;%= @submission['Id']%&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="label" label="Label" menu="" required="false" tooltip="The label for the submission activity.">Member Payment Change Requested</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="description" label="Description" menu="" required="false" tooltip="The description of the submission activity."></parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="type" label="Type" menu="" required="false" tooltip="Specifies the a submission activity 'Type', which should indicate what type of data is included.">Success</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="data" label="Data" menu="" required="false" tooltip="Additional data that can be used by resources consuming the submission activity record (for example a Request bundle may render submission details based upon JSON content in the activity data).">{"Message":"Payment Type Changed for &lt;%= @values['Student First Name']%&gt; &lt;%= @values['Student Last Name']%&gt; has been received"}</parameter>
                 </parameters>
-                <messages>
-                    <message type="Create"></message>
-                    <message type="Update"></message>
-                    <message type="Complete"></message>
-                </messages>
+                <messages></messages>
                 <dependents>
                     <task label="" type="Complete" value="">kinetic_request_ce_submission_create_v1_9</task>
+                    <task label="" type="Complete" value="">kinetic_request_ce_submission_update_v1_13</task>
                 </dependents>
             </task>
             <task definition_id="kinetic_request_ce_submission_create_v1" id="kinetic_request_ce_submission_create_v1_9" name="Create Member Request Activity" x="436" y="436">
@@ -52,11 +49,11 @@
                 <deferrable>false</deferrable>
                 <visible>true</visible>
                 <parameters>
-                    <parameter id="error_handling" label="Error Handling" menu="Error Message,Raise Error" required="true" tooltip="Determine what to return if an error is encountered.">Error Message</parameter>
-                    <parameter id="space_slug" label="Space Slug" menu="" required="false" tooltip="The Space the submission is being retrieved from (defaults to info value if not provided)."></parameter>
-                    <parameter id="kapp_slug" label="Kapp Slug" menu="" required="true" tooltip="The slug of the Kapp the submission is for.">gbmembers</parameter>
-                    <parameter id="form_slug" label="Form Slug" menu="" required="true" tooltip="The slug of the form the submission is for.">member-activities</parameter>
-                    <parameter id="values" label="Values" menu="" required="false" tooltip="JSON map of submission field values.">&lt;%=
+                    <parameter dependsOnId="" dependsOnValue="" id="error_handling" label="Error Handling" menu="Error Message,Raise Error" required="true" tooltip="Determine what to return if an error is encountered.">Error Message</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="space_slug" label="Space Slug" menu="" required="false" tooltip="The Space the submission is being retrieved from (defaults to info value if not provided)."></parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="kapp_slug" label="Kapp Slug" menu="" required="true" tooltip="The slug of the Kapp the submission is for.">gbmembers</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="form_slug" label="Form Slug" menu="" required="true" tooltip="The slug of the form the submission is for.">member-activities</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="values" label="Values" menu="" required="false" tooltip="JSON map of submission field values.">&lt;%=
 content = {}
 content["Form"] = @form['Name']
 content["Date"] = @submission['Submitted At']
@@ -70,16 +67,12 @@ values["Content"] = content.to_json
 
 values.to_json
 %&gt;</parameter>
-                    <parameter id="current_page_name" label="Current Page Name" menu="" required="false" tooltip="Set the current page name."></parameter>
-                    <parameter id="current_page_navigation" label="Current Page Navigation" menu="" required="false" tooltip="Set the current page navigation."></parameter>
-                    <parameter id="origin_id" label="Origin ID" menu="" required="false" tooltip="Set the origin ID."></parameter>
-                    <parameter id="parent_id" label="Parent ID" menu="" required="false" tooltip="Set the parent ID."></parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="current_page_name" label="Current Page Name" menu="" required="false" tooltip="Set the current page name."></parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="current_page_navigation" label="Current Page Navigation" menu="" required="false" tooltip="Set the current page navigation."></parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="origin_id" label="Origin ID" menu="" required="false" tooltip="Set the origin ID."></parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="parent_id" label="Parent ID" menu="" required="false" tooltip="Set the parent ID."></parameter>
                 </parameters>
-                <messages>
-                    <message type="Create"></message>
-                    <message type="Update"></message>
-                    <message type="Complete"></message>
-                </messages>
+                <messages></messages>
                 <dependents></dependents>
             </task>
             <task definition_id="gbmembers_billing_service_v1" id="gbmembers_billing_service_v1_11" name="Edit Payment Type" x="176" y="143">
@@ -89,10 +82,10 @@ values.to_json
                 <deferrable>false</deferrable>
                 <visible>true</visible>
                 <parameters>
-                    <parameter id="service_value" label="Billing Service Value" menu="" required="true" tooltip="GBMembers Billing Service call value (registerUser,billingInfo,)">savePaymentMethod</parameter>
-                    <parameter id="space" label="Space slug" menu="" required="true" tooltip="Space slug for School">&lt;%= @space['Slug']%&gt;</parameter>
-                    <parameter id="billing_company" label="Billing Company" menu="" required="true" tooltip="Billing Company that the service will operate against.(eg, PaySmart)">PaySmart</parameter>
-                    <parameter id="json_args" label="JSON arguments" menu="" required="true" tooltip="A JSON structure containing all argument passed to the Billing Service">{
+                    <parameter dependsOnId="" dependsOnValue="" id="service_value" label="Billing Service Value" menu="" required="true" tooltip="GBMembers Billing Service call value (registerUser,billingInfo,)">savePaymentMethod</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="space" label="Space slug" menu="" required="true" tooltip="Space slug for School">&lt;%= @space['Slug']%&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="billing_company" label="Billing Company" menu="" required="true" tooltip="Billing Company that the service will operate against.(eg, PaySmart)">PaySmart</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="json_args" label="JSON arguments" menu="" required="true" tooltip="A JSON structure containing all argument passed to the Billing Service">{
   "customerId": "&lt;%= @values['Billing Customer Id']%&gt;",
   "billingService": "PaySmart",
   "space": "&lt;%= @space['Slug']%&gt;",
@@ -100,8 +93,7 @@ values.to_json
   "paymentMethod": "&lt;%= @values['Payment Method']%&gt;",
   "creditCardName": "&lt;%= @values['Name On Card']%&gt;",
   "creditCardNumber": "&lt;%= @values['Credit Card Number']%&gt;",
-  "creditCardExpiryMonth": "&lt;%= @values['Credit Card Expiry Month']%&gt;",
-  "creditCardExpiryYear": "&lt;%= @values['Credit Card Expiry Year']%&gt;",
+  "creditCardExpiryDate": "&lt;%= @values['Credit Card Expiry Month']%&gt;/&lt;%=@values['Credit Card Expiry Year']%&gt;",
   "creditCardType": "&lt;%= @values['Credit Card Type']%&gt;",
   "bankAccountName": "&lt;%= @values['Account Name']%&gt;",
   "bankAccountNumber": "&lt;%= @values['Account Number']%&gt;",
@@ -109,8 +101,6 @@ values.to_json
 }</parameter>
                 </parameters>
                 <messages>
-                    <message type="Create"></message>
-                    <message type="Update"></message>
                     <message type="Complete"></message>
                 </messages>
                 <dependents>
@@ -125,18 +115,42 @@ values.to_json
                 <deferrable>false</deferrable>
                 <visible>false</visible>
                 <parameters>
-                    <parameter id="error_handling" label="Error Handling" menu="Error Message,Raise Error" required="true" tooltip="Determine what to return if an error is encountered.">Error Message</parameter>
-                    <parameter id="space_slug" label="Space Slug" menu="" required="false" tooltip="The Space the submission exists in (defaults to info value if not provided)."></parameter>
-                    <parameter id="submission_id" label="Submission Id" menu="" required="true" tooltip="The id of the submission for which the activity is being created for.">&lt;%= @submission['Id']%&gt;</parameter>
-                    <parameter id="label" label="Label" menu="" required="false" tooltip="The label for the submission activity.">Edit Payment Type Error</parameter>
-                    <parameter id="description" label="Description" menu="" required="false" tooltip="The description of the submission activity.">Attempt to Edit Payment Type &lt;%= @values['Student First Name']%&gt; &lt;%= @values['Student Last Name']%&gt; has failed.&lt;br&gt;
+                    <parameter dependsOnId="" dependsOnValue="" id="error_handling" label="Error Handling" menu="Error Message,Raise Error" required="true" tooltip="Determine what to return if an error is encountered.">Error Message</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="space_slug" label="Space Slug" menu="" required="false" tooltip="The Space the submission exists in (defaults to info value if not provided)."></parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="submission_id" label="Submission Id" menu="" required="true" tooltip="The id of the submission for which the activity is being created for.">&lt;%= @submission['Id']%&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="label" label="Label" menu="" required="false" tooltip="The label for the submission activity.">Edit Payment Type Error</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="description" label="Description" menu="" required="false" tooltip="The description of the submission activity.">Attempt to Edit Payment Type &lt;%= @values['Student First Name']%&gt; &lt;%= @values['Student Last Name']%&gt; has failed.&lt;br&gt;
 Error Message: &lt;%=JSON.parse(@results['Edit Payment Type']['Result JSON'])['errorMessage']%&gt;</parameter>
-                    <parameter id="type" label="Type" menu="" required="false" tooltip="Specifies the a submission activity 'Type', which should indicate what type of data is included.">Error</parameter>
-                    <parameter id="data" label="Data" menu="" required="false" tooltip="Additional data that can be used by resources consuming the submission activity record (for example a Request bundle may render submission details based upon JSON content in the activity data).">&lt;%=@results['Edit Payment Type']['Result JSON']%&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="type" label="Type" menu="" required="false" tooltip="Specifies the a submission activity 'Type', which should indicate what type of data is included.">Error</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="data" label="Data" menu="" required="false" tooltip="Additional data that can be used by resources consuming the submission activity record (for example a Request bundle may render submission details based upon JSON content in the activity data).">&lt;%=@results['Edit Payment Type']['Result JSON']%&gt;</parameter>
+                </parameters>
+                <messages></messages>
+                <dependents>
+                    <task label="" type="Complete" value="">kinetic_request_ce_submission_update_v1_13</task>
+                </dependents>
+            </task>
+            <task definition_id="kinetic_request_ce_submission_update_v1" id="kinetic_request_ce_submission_update_v1_13" name="Clear Payment Details" x="498" y="298">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>true</visible>
+                <parameters>
+                    <parameter dependsOnId="" dependsOnValue="" id="error_handling" label="Error Handling" menu="Error Message,Raise Error" required="true" tooltip="Determine what to return if an error is encountered.">Error Message</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="space_slug" label="Space Slug" menu="" required="false" tooltip="The Space the submission is being retrieved from (defaults to info value if not provided)."></parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="submission_id" label="Submission Id" menu="" required="true" tooltip="The id of the submission being updated.">&lt;%=  @submission['Id'] %&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="state" label="State" menu="" required="false" tooltip="The value used to set the submission state."></parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="values" label="Values" menu="" required="false" tooltip="A JSON map of field names to values that should be set.">{
+  "Credit Card Number":"&lt;%= (@values['Credit Card Number'].nil? ? '' : '...'+@values['Credit Card Number'][(@values['Credit Card Number'].length-4)..@values['Credit Card Number'].length])%&gt;", 
+  "Account Number":"&lt;%= (@values['Account Number'].nil? ? '' : '...'+@values['Account Number'][(@values['Account Number'].length-4)..@values['Account Number'].length])%&gt;" 
+}
+</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="current_page_name" label="Current Page Name" menu="" required="false" tooltip="Set the current page name."></parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="current_page_navigation" label="Current Page Navigation" menu="" required="false" tooltip="Set the current page navigation."></parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="origin_id" label="Origin ID" menu="" required="false" tooltip="Set the origin ID."></parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="parent_id" label="Parent ID" menu="" required="false" tooltip="Set the parent ID."></parameter>
                 </parameters>
                 <messages>
-                    <message type="Create"></message>
-                    <message type="Update"></message>
                     <message type="Complete"></message>
                 </messages>
                 <dependents></dependents>

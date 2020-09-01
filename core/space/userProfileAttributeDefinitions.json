@@ -1,6 +1,11 @@
 [
   {
     "allowsMultiple": false,
+    "description": "Allows a user to choose the default Kapp they see when they login.",
+    "name": "Default Kapp Display"
+  },
+  {
+    "allowsMultiple": false,
     "description": "",
     "name": "First Name"
   },

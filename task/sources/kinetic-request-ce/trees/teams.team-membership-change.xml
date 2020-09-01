@@ -7,9 +7,9 @@
         <name>Team Membership Change</name>
         <author></author>
         <notes></notes>
-        <lastID>16</lastID>
+        <lastID>26</lastID>
         <request>
-            <task definition_id="system_start_v1" id="start" name="Start" x="10" y="10">
+            <task definition_id="system_start_v1" id="start" name="Start" x="-11" y="-39">
                 <version>1</version>
                 <configured>true</configured>
                 <defers>false</defers>
@@ -18,52 +18,10 @@
                 <parameters></parameters>
                 <messages></messages>
                 <dependents>
-                    <task label="Users Added" type="Complete" value="!@team['Name'] .start_with?('Role::') &amp;&amp; @team_membership['Users Added'].size &gt; 0">system_loop_head_v1_2</task>
-                    <task label="Users Removed" type="Complete" value="!@team['Name'] .start_with?('Role::') &amp;&amp; @team_membership['Users Removed'].size &gt; 0">system_loop_head_v1_4</task>
-                    <task label="Team is Role" type="Complete" value="@team['Name'] .start_with?('Role::')">system_noop_v1_14</task>
+                    <task label="Has Discussion Id" type="Complete" value="!@team_attributes['Discussion Id'].to_s.empty?">system_noop_v1_19</task>
                 </dependents>
             </task>
-            <task definition_id="system_loop_head_v1" id="system_loop_head_v1_2" name="Users Added Loop Head" x="136" y="82">
-                <version>1</version>
-                <configured>true</configured>
-                <defers>false</defers>
-                <deferrable>false</deferrable>
-                <visible>false</visible>
-                <parameters>
-                    <parameter id="data_source" label="Data Source:" menu="" required="true" tooltip="The source that contains the data to use to create each task in the loop.">&lt;users&gt;&lt;%= @team_membership['Users Added'].collect {|user| "&lt;user&gt;#{user}&lt;/user&gt;"}.join%&gt;&lt;/users&gt;</parameter>
-                    <parameter id="loop_path" label="Loop Path:" menu="" required="true" tooltip="The XPath statement to indicate what data records to process.">/users/user</parameter>
-                    <parameter id="var_name" label="Variable Name:" menu="" required="false" tooltip="The local variable name used to represent the data used in loop tasks."></parameter>
-                </parameters>
-                <messages>
-                    <message type="Create"></message>
-                    <message type="Update"></message>
-                    <message type="Complete"></message>
-                </messages>
-                <dependents>
-                    <task label="" type="Complete" value="">system_loop_tail_v1_3</task>
-                    <task label="Discussion Exists" type="Complete" value="@team_attributes['Discussion Id'] != nil">routine_kinetic_discussion_issue_invite_v2_16</task>
-                </dependents>
-            </task>
-            <task definition_id="system_loop_tail_v1" id="system_loop_tail_v1_3" name="Users Added Loop Tail" x="137" y="216">
-                <version>1</version>
-                <configured>true</configured>
-                <defers>false</defers>
-                <deferrable>false</deferrable>
-                <visible>false</visible>
-                <parameters>
-                    <parameter id="type" label="Type:" menu="All,Some,Any" required="true" tooltip="How many loop processes must be completed before continuing?">All</parameter>
-                    <parameter dependsOnId="type" dependsOnValue="Some" id="number" label="Number:" menu="" required="false" tooltip="If some, how many?"></parameter>
-                </parameters>
-                <messages>
-                    <message type="Create"></message>
-                    <message type="Update"></message>
-                    <message type="Complete"></message>
-                </messages>
-                <dependents>
-                    <task label="" type="Complete" value="">system_junction_v1_12</task>
-                </dependents>
-            </task>
-            <task definition_id="system_loop_head_v1" id="system_loop_head_v1_4" name="Users Removed Loop Head" x="508" y="12">
+            <task definition_id="system_loop_head_v1" id="system_loop_head_v1_4" name="Users Removed Loop Head" x="475" y="69">
                 <version>1</version>
                 <configured>true</configured>
                 <defers>false</defers>
@@ -81,7 +39,7 @@
                 </messages>
                 <dependents>
                     <task label="" type="Complete" value="">system_loop_tail_v1_5</task>
-                    <task label="Discussion Exists" type="Complete" value="@team_attributes['Discussion Id'] != nil">routine_kinetic_discussion_issue_uninvite_v2_15</task>
+                    <task label="" type="Complete" value="">routine_kinetic_participant_delete_v1_24</task>
                 </dependents>
             </task>
             <task definition_id="system_loop_tail_v1" id="system_loop_tail_v1_5" name="Users Removed Loop Tail" x="494" y="204">
@@ -103,7 +61,7 @@
                     <task label="" type="Complete" value="">system_junction_v1_12</task>
                 </dependents>
             </task>
-            <task definition_id="system_junction_v1" id="system_junction_v1_12" name="Completion Junction" x="292" y="365">
+            <task definition_id="system_junction_v1" id="system_junction_v1_12" name="Completion Junction" x="306" y="373">
                 <version>1</version>
                 <configured>true</configured>
                 <defers>false</defers>
@@ -116,24 +74,10 @@
                     <message type="Complete"></message>
                 </messages>
                 <dependents>
-                    <task label="" type="Complete" value="">system_noop_v1_13</task>
+                    <task label="" type="Complete" value="">routine_kinetic_finish_v1_26</task>
                 </dependents>
             </task>
-            <task definition_id="system_noop_v1" id="system_noop_v1_13" name="Done!" x="296" y="451">
-                <version>1</version>
-                <configured>true</configured>
-                <defers>false</defers>
-                <deferrable>false</deferrable>
-                <visible>false</visible>
-                <parameters></parameters>
-                <messages>
-                    <message type="Create"></message>
-                    <message type="Update"></message>
-                    <message type="Complete"></message>
-                </messages>
-                <dependents></dependents>
-            </task>
-            <task definition_id="system_noop_v1" id="system_noop_v1_14" name="Tree Incorrectly Called for Role" x="22" y="343">
+            <task definition_id="system_noop_v1" id="system_noop_v1_14" name="Tree Incorrectly Called for Role" x="-23" y="341">
                 <version>1</version>
                 <configured>true</configured>
                 <defers>false</defers>
@@ -149,16 +93,73 @@
                     <task label="" type="Complete" value="">system_junction_v1_12</task>
                 </dependents>
             </task>
-            <task definition_id="routine_kinetic_discussion_issue_uninvite_v2" id="routine_kinetic_discussion_issue_uninvite_v2_15" name="Uninvite User from Team Discussion" x="715" y="55">
+            <task definition_id="system_noop_v1" id="system_noop_v1_19" name="Has Discussion Id" x="-10" y="55">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters></parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="Team is Role" type="Complete" value="@team['Name'] .start_with?('Role::')">system_noop_v1_14</task>
+                    <task label="Users Removed" type="Complete" value="!@team['Name'] .start_with?('Role::') &amp;&amp; @team_membership['Users Removed'].size &gt; 0">system_loop_head_v1_4</task>
+                    <task label="Users Added" type="Complete" value="!@team['Name'] .start_with?('Role::') &amp;&amp; @team_membership['Users Added'].size &gt; 0">system_loop_head_v1_20</task>
+                </dependents>
+            </task>
+            <task definition_id="system_loop_head_v1" id="system_loop_head_v1_20" name="Users Added Loop Head" x="176" y="135">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="data_source" label="Data Source:" menu="" required="true" tooltip="The source that contains the data to use to create each task in the loop.">&lt;users&gt;&lt;%= @team_membership['Users Added'].collect {|user| "&lt;user&gt;#{user}&lt;/user&gt;"}.join%&gt;&lt;/users&gt;</parameter>
+                    <parameter id="loop_path" label="Loop Path:" menu="" required="true" tooltip="The XPath statement to indicate what data records to process.">/users/user</parameter>
+                    <parameter id="var_name" label="Variable Name:" menu="" required="false" tooltip="The local variable name used to represent the data used in loop tasks."></parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">system_loop_tail_v1_21</task>
+                    <task label="" type="Complete" value="">routine_kinetic_participant_create_v1_25</task>
+                </dependents>
+            </task>
+            <task definition_id="system_loop_tail_v1" id="system_loop_tail_v1_21" name="Users Added Loop Tail" x="165" y="243">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="type" label="Type:" menu="All,Some,Any" required="true" tooltip="How many loop processes must be completed before continuing?">All</parameter>
+                    <parameter dependsOnId="type" dependsOnValue="Some" id="number" label="Number:" menu="" required="false" tooltip="If some, how many?"></parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">system_junction_v1_12</task>
+                </dependents>
+            </task>
+            <task definition_id="routine_kinetic_participant_delete_v1" id="routine_kinetic_participant_delete_v1_24" name="Uninvite User from Team Discussiona" x="715" y="121">
                 <version>1</version>
                 <configured>true</configured>
                 <defers>true</defers>
                 <deferrable>true</deferrable>
                 <visible>false</visible>
                 <parameters>
-                    <parameter id="Username" label="Username" menu="" required="true" tooltip="Username of the User to uninvite">&lt;%=@results['Users Removed Loop Head']['Value']%&gt;</parameter>
-                    <parameter id="Discussion Id" label="Discussion Id" menu="" required="true" tooltip="Id of the Discussion to invite the given user to">&lt;%= @team_attributes['Discussion Id']%&gt;</parameter>
-                    <parameter id="Space Slug" label="Space Slug" menu="" required="false" tooltip="Slug of the space the discussion exists in">&lt;%= @space['Slug']%&gt;</parameter>
+                    <parameter id="Discussion Id" label="Discussion Id" menu="" required="true" tooltip="The id of the discussion">&lt;%= @team_attributes['Discussion Id']%&gt;</parameter>
+                    <parameter id="Username" label="Username" menu="" required="true" tooltip="Username of the participant user">&lt;%=@results['Users Removed Loop Head']['Value']%&gt;</parameter>
                 </parameters>
                 <messages>
                     <message type="Create"></message>
@@ -169,17 +170,16 @@
                     <task label="" type="Complete" value="">system_loop_tail_v1_5</task>
                 </dependents>
             </task>
-            <task definition_id="routine_kinetic_discussion_issue_invite_v2" id="routine_kinetic_discussion_issue_invite_v2_16" name="Invite User to Team Discussion" x="359" y="106">
+            <task definition_id="routine_kinetic_participant_create_v1" id="routine_kinetic_participant_create_v1_25" name="Invite New Members" x="329" y="174">
                 <version>1</version>
                 <configured>true</configured>
                 <defers>true</defers>
                 <deferrable>true</deferrable>
                 <visible>false</visible>
                 <parameters>
-                    <parameter id="Username" label="Username" menu="" required="true" tooltip="Username of the User to Invite">&lt;%=@results['Users Added Loop Head']['Value']%&gt;</parameter>
-                    <parameter id="Discussion Id" label="Discussion Id" menu="" required="true" tooltip="Id of the Discussion to invite the given user to">&lt;%= @team_attributes['Discussion Id']%&gt;</parameter>
-                    <parameter id="Suppress Email" label="Suppress Email" menu="" required="false" tooltip="When true, will create the invite to associate the user to the discussion, but will not send an email.">true</parameter>
-                    <parameter id="Space Slug" label="Space Slug" menu="" required="false" tooltip="The Slug of the Space this response belongs to">&lt;%= @space['Slug']%&gt;</parameter>
+                    <parameter id="Discussion Id" label="Discussion Id" menu="" required="true" tooltip="The id of the discussion">&lt;%= @team_attributes['Discussion Id']%&gt;</parameter>
+                    <parameter id="Username" label="Username" menu="" required="true" tooltip="Username of an existing User">&lt;%=@results['Users Added Loop Head']['Value']%&gt;</parameter>
+                    <parameter id="Muted" label="Muted" menu="" required="false" tooltip="(true | false) When muted, notifications for this discussion are not sent to the user"></parameter>
                 </parameters>
                 <messages>
                     <message type="Create"></message>
@@ -187,8 +187,24 @@
                     <message type="Complete"></message>
                 </messages>
                 <dependents>
-                    <task label="" type="Complete" value="">system_loop_tail_v1_3</task>
+                    <task label="" type="Complete" value="">system_loop_tail_v1_21</task>
                 </dependents>
+            </task>
+            <task definition_id="routine_kinetic_finish_v1" id="routine_kinetic_finish_v1_26" name="Finish" x="306" y="488">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>true</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Run Id" label="Run Id" menu="" required="false" tooltip="The Id of the completed run">&lt;%=@run['Id']%&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents></dependents>
             </task>
         </request>
     </taskTree>

@@ -21,6 +21,11 @@
   },
   {
     "allowsMultiple": false,
+    "description": "A value for Calendar time slots, such as 15, 10, 5 etc",
+    "name": "Calendar Time Slots"
+  },
+  {
+    "allowsMultiple": false,
     "description": "Slug of this spaces Catalog Kapp (typically catalog)",
     "name": "Catalog Kapp Slug"
   },
@@ -33,6 +38,11 @@
     "allowsMultiple": false,
     "description": null,
     "name": "Company Logo"
+  },
+  {
+    "allowsMultiple": false,
+    "description": "Allows Space Administrators to set a default Kapp that will display for Users in their Space. This can be overridden by a User Profile Attribute.",
+    "name": "Default Kapp Display"
   },
   {
     "allowsMultiple": false,
@@ -188,6 +198,11 @@
     "allowsMultiple": false,
     "description": "Name of the source for this space in the workflow engine",
     "name": "Task Source Name"
+  },
+  {
+    "allowsMultiple": false,
+    "description": "Slug of this spaces Tech Bar Kapp (typically tech-bar)",
+    "name": "Tech Bar Kapp Slug"
   },
   {
     "allowsMultiple": false,

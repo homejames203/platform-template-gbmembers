@@ -11,7 +11,7 @@
 
   ],
   "customHeadContent": null,
-  "description": "System Alert notifications.",
+  "description": "",
   "indexDefinitions": [
     {
       "name": "createdAt",
@@ -321,12 +321,8 @@
       "name": "Data Admins"
     },
     {
-      "endpoint": "Modification",
-      "name": "Admins"
-    },
-    {
       "endpoint": "Submission Access",
-      "name": "Authenticated Users"
+      "name": "Data Admins"
     },
     {
       "endpoint": "Submission Modification",
@@ -335,5 +331,5 @@
   ],
   "slug": "alerts",
   "status": "Active",
-  "submissionLabelExpression": "${values('Title')}"
+  "submissionLabelExpression": ""
 }

@@ -9,6 +9,7 @@
     "Form Developers"
   ],
   "trees": [
-    "routine_kd_notification_send_using_template_v1"
+    "routine_kd_notification_send_using_template_v1",
+    "routine_kinetic_email_template_notification_send_v1"
   ]
 }

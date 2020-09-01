@@ -1,0 +1,273 @@
+<tree schema_version="1.0">
+    <sourceName>Kinetic Request CE</sourceName>
+    <sourceGroup>Submissions > tech-bar > walk-in</sourceGroup>
+    <type>Tree</type>
+    <status>Active</status>
+    <taskTree builder_version="" schema_version="1.0" version="">
+        <name>Submitted</name>
+        <author></author>
+        <notes></notes>
+        <lastID>28</lastID>
+        <request>
+            <task definition_id="system_start_v1" id="start" name="Start" x="10" y="10">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters></parameters>
+                <messages></messages>
+                <dependents>
+                    <task label="" type="Complete" value="">routine_kinetic_datastore_submissions_retrieve_list_v1_20</task>
+                </dependents>
+            </task>
+            <task definition_id="system_noop_v1" id="system_noop_v1_5" name="End" x="12" y="536">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters></parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents></dependents>
+            </task>
+            <task definition_id="routine_kinetic_datastore_submissions_retrieve_list_v1" id="routine_kinetic_datastore_submissions_retrieve_list_v1_20" name="Retrieve Scheduler" x="134" y="55">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>true</defers>
+                <deferrable>true</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Form Slug" label="Form Slug" menu="" required="false" tooltip="The slug of the Form to find submissions in.">scheduler</parameter>
+                    <parameter id="Index To Search" label="Index To Search" menu="" required="false" tooltip="The Index definition to search (i.e. values[Name],values[Status])">values[Id]</parameter>
+                    <parameter id="Core State" label="Core State" menu="" required="false" tooltip="Searches for submissions that have a core state that matches this parameter. If no value is provided, the results will contain submissions in all core states."></parameter>
+                    <parameter id="Limit" label="Limit" menu="" required="false" tooltip="Limit the number of results returned. If not provided, the server will limit the results to 25 submissions. Maximum limit 1000"></parameter>
+                    <parameter id="Query" label="Query" menu="" required="false" tooltip="Query to use to fetch submissions. (i.e values[First Name]=&quot;Fred&quot;)">values[Id]="&lt;%= @values['Scheduler Id']%&gt;"</parameter>
+                    <parameter id="Next Page Token" label="Next Page Token" menu="" required="false" tooltip="The value to use as the offset for the page of submissions to return. The submission that matches this value will not be included in the results."></parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">routine_kinetic_datastore_submissions_retrieve_list_v1_21</task>
+                </dependents>
+            </task>
+            <task definition_id="routine_kinetic_datastore_submissions_retrieve_list_v1" id="routine_kinetic_datastore_submissions_retrieve_list_v1_21" name="Get Event Type Config" x="132" y="155">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>true</defers>
+                <deferrable>true</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Form Slug" label="Form Slug" menu="" required="false" tooltip="The slug of the Form to find submissions in.">scheduler-config</parameter>
+                    <parameter id="Index To Search" label="Index To Search" menu="" required="false" tooltip="The Index definition to search (i.e. values[Name],values[Status])">values[Scheduler Id],values[Event Type]</parameter>
+                    <parameter id="Core State" label="Core State" menu="" required="false" tooltip="Searches for submissions that have a core state that matches this parameter. If no value is provided, the results will contain submissions in all core states."></parameter>
+                    <parameter id="Limit" label="Limit" menu="" required="false" tooltip="Limit the number of results returned. If not provided, the server will limit the results to 25 submissions. Maximum limit 1000"></parameter>
+                    <parameter id="Query" label="Query" menu="" required="false" tooltip="Query to use to fetch submissions. (i.e values[First Name]=&quot;Fred&quot;)">values[Scheduler Id] = "&lt;%= @values['Scheduler Id']%&gt;" AND values[Event Type] = "&lt;%= @values['Event Type']%&gt;"</parameter>
+                    <parameter id="Next Page Token" label="Next Page Token" menu="" required="false" tooltip="The value to use as the offset for the page of submissions to return. The submission that matches this value will not be included in the results."></parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">routine_kinetic_queue_task_create_v1_22</task>
+                </dependents>
+            </task>
+            <task definition_id="routine_kinetic_queue_task_create_v1" id="routine_kinetic_queue_task_create_v1_22" name="Create Task Tech Bar" x="133" y="263">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>true</defers>
+                <deferrable>true</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Kapp Slug" label="Kapp Slug" menu="" required="true" tooltip="Slug of the Queue Kapp">queue</parameter>
+                    <parameter id="Task Form Slug" label="Task Form Slug" menu="" required="true" tooltip="Slug of the form the task is created for">tech-bar-work-order</parameter>
+                    <parameter id="Summary" label="Summary" menu="" required="true" tooltip="A summary of what is to be worked on ">&lt;%=
+user = @values['Requested For Display Name']
+if @values['Requested For Display Name'].nil?
+  user = "#{@values['Last Name']}, #{@values['First Name']}"
+end
+
+"#{user}: #{@values['Summary']}"%&gt;</parameter>
+                    <parameter id="Details" label="Details" menu="" required="true" tooltip="A description of what is to be worked on ">User:     &lt;%= @values['Requested For Display Name']%&gt;
+Type:     &lt;%= @values['Event Type']%&gt;
+Date:     &lt;%= @values['Date']%&gt;
+Time:     &lt;%= @values['Time']%&gt;
+Summary:  &lt;%= @values['Summary']%&gt;
+Details:  &lt;%= @values['Details']%&gt;</parameter>
+                    <parameter id="Days Due" label="Days Due" menu="" required="true" tooltip="Number of days from now the task is to be completed by">&lt;%=Time.now().utc.iso8601%&gt;</parameter>
+                    <parameter id="Assignee Team" label="Assignee Team" menu="" required="true" tooltip="Name of the team to assign work to (ex. &quot;Test::Test::Test&quot;)">Scheduler::&lt;%=JSON.parse(@results['Retrieve Scheduler']['Submissions List JSON'])[0]['values']['Name']%&gt;</parameter>
+                    <parameter id="Assignee Id" label="Assignee Id" menu="" required="false" tooltip="Id of the person the task will be assigned to"></parameter>
+                    <parameter id="Originating System" label="Originating System" menu="" required="true" tooltip="Source of the parent record (e.g. Kinetic Core, Salesforce ..etc)">Kinetic Core</parameter>
+                    <parameter id="Originating Id" label="Originating Id" menu="" required="true" tooltip="Id of the originating systems record">&lt;%= @submission['Id']%&gt;</parameter>
+                    <parameter id="System Input" label="System Input" menu="" required="false" tooltip="Structured data that can be leveraged by the queue task form">&lt;%=
+user = @values['Requested For Display Name']
+if @values['Requested For Display Name'].nil?
+  user = "#{@values['Last Name']}, #{@values['First Name']}"
+end
+
+{
+  "Customer" =&gt; user,
+  "Request Summary" =&gt; @values['Summary'],
+  "Request Details" =&gt; @values['Details'],
+  "Observing Teams" =&gt; "[\"Role::Tech Bar Observers\"]",
+  "Requested For" =&gt; @values['Requested For'],
+  "Type" =&gt; @values['Event Type'],
+  "Scheduled At" =&gt; Time.now().utc.iso8601,
+  "Walk In" =&gt; "Walk In",
+  "Due Date" =&gt; Time.now().utc.iso8601
+}.to_json
+%&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">routine_kinetic_submission_retrieve_v1_23</task>
+                </dependents>
+            </task>
+            <task definition_id="routine_kinetic_submission_retrieve_v1" id="routine_kinetic_submission_retrieve_v1_23" name="Get Queue Submission" x="132" y="373">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>true</defers>
+                <deferrable>true</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Id" label="Id" menu="" required="true" tooltip="The Id of the submission to retrieve">&lt;%=@results['Create Task Tech Bar']['Task Submission Id']%&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">routine_kinetic_submission_update_v1_25</task>
+                </dependents>
+            </task>
+            <task definition_id="routine_kinetic_submission_update_v1" id="routine_kinetic_submission_update_v1_25" name="Close" x="132" y="473">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>true</defers>
+                <deferrable>true</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Id" label="Id" menu="" required="true" tooltip="The id of the submission to update">&lt;%= @submission['Id']%&gt;</parameter>
+                    <parameter id="Updated - Core State" label="Updated - Core State" menu="" required="false" tooltip="The submissions core state">Closed</parameter>
+                    <parameter id="Updated - Current Page Name" label="Updated - Current Page Name" menu="" required="false" tooltip="The page to set the submission to"></parameter>
+                    <parameter id="Updated - Current Page Navigation" label="Updated - Current Page Navigation" menu="" required="false" tooltip="The direction of the next page (next or previous)"></parameter>
+                    <parameter id="Updated - Origin Id" label="Updated - Origin Id" menu="" required="false" tooltip="The Id of the submissions origin"></parameter>
+                    <parameter id="Updated - Parent Id" label="Updated - Parent Id" menu="" required="false" tooltip="The Id of the submissions parent"></parameter>
+                    <parameter id="Updated - Values JSON" label="Updated - Values JSON" menu="" required="false" tooltip="A JSON representation of the submissions values">&lt;%=
+status = "Complete"
+
+return_values = JSON.parse( @results['Create Task Tech Bar']['Fields JSON'] || "{}" )
+
+if return_values.has_key?('Status') &amp;&amp; !return_values['Status'].nil?
+ status = return_values['Status'] || nil;
+end
+
+# Calculate Event Duration Actual
+queue_fields = JSON.parse(@results['Create Task Tech Bar']['Fields JSON'])
+queue_closed_at = @results['Get Queue Submission']['Closed At']
+queue_work_started = queue_fields['Work Started At']
+duration_in_minutes = nil
+if !queue_closed_at.nil? &amp;&amp; !queue_closed_at.empty? &amp;&amp; !queue_work_started.nil?
+  duration_in_minutes = ((Time.parse(queue_closed_at) - Time.parse(queue_work_started))/60).round
+end
+
+# Calculate Wait Time
+wait_in_minutes = nil
+if !@submission['Created At'].nil? &amp;&amp; !@submission['Created At'].empty? &amp;&amp; !queue_work_started.nil?
+  wait_in_minutes = ((Time.parse(queue_work_started) - Time.parse(@submission['Created At']))/60).round
+end
+
+# Populate Event Duration
+time_interval = JSON.parse(@results['Retrieve Scheduler']['Submissions List JSON'])[0]['values']['Time Interval'].to_i
+duration_multiplier = JSON.parse(@results['Get Event Type Config']['Submissions List JSON'])[0]['values']['Duration Multiplier'].to_i
+
+values = {
+  "Status" =&gt; status,
+  "Event Duration" =&gt; time_interval * duration_multiplier,
+  "Event Duration Actual" =&gt; duration_in_minutes,
+  "Start Work Time" =&gt; queue_fields['Work Started At'],
+  "Wait Time" =&gt; wait_in_minutes
+}.to_json
+%&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">system_noop_v1_5</task>
+                    <task label="" type="Complete" value="">routine_kinetic_submissions_retrieve_list_v1_27</task>
+                </dependents>
+            </task>
+            <task definition_id="routine_kinetic_submissions_retrieve_list_v1" id="routine_kinetic_submissions_retrieve_list_v1_27" name="Check for Metrics" x="286" y="463">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>true</defers>
+                <deferrable>true</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Kapp Slug" label="Kapp Slug" menu="" required="true" tooltip="The slug of the Kapp to find submissions in.">tech-bar</parameter>
+                    <parameter id="Form Slug" label="Form Slug" menu="" required="false" tooltip="The slug of the Form to find submissions in. If none provided, can only use Kapp Fields in search query">tech-bar-metrics</parameter>
+                    <parameter id="Form Type" label="Form Type" menu="" required="false" tooltip="The Type of Form to find submissions in."></parameter>
+                    <parameter id="Core State" label="Core State" menu="" required="false" tooltip="Searches for submissions that have a core state that matches this parameter. If no value is provided, the results will contain submissions in all core states."></parameter>
+                    <parameter id="Limit" label="Limit" menu="" required="false" tooltip="Limit the number of results returned. If not provided, the server will limit the results to 25 submissions. Maximum limit 1000"></parameter>
+                    <parameter id="Query" label="Query" menu="" required="false" tooltip="Query to use to fetch submissions. (i.e values[First Name]=&quot;Fred&quot;)">values[Period]="&lt;%= @values['Date']%&gt;" AND values[Scheduler Id] = "&lt;%= @values['Scheduler Id']%&gt;" AND values[Refresh Data] = "No"</parameter>
+                    <parameter id="Timeline" label="Timeline" menu="" required="false" tooltip="Date property to search by. The default value is createdAt."></parameter>
+                    <parameter id="Direction" label="Direction" menu="" required="false" tooltip="Result Set sorting direction. The default value is descending."></parameter>
+                    <parameter id="Start Date/Time" label="Start Date/Time" menu="" required="false" tooltip="Start date/time of the timeline. This value should be used to both refine and limit the search results. Format should be yyyy-MM-dd'T'HH:mm:ss'Z'"></parameter>
+                    <parameter id="End Date/Time" label="End Date/Time" menu="" required="false" tooltip="End date/time of the timeline. This value should be used to both refine and limit the search results. Formatshould be yyyy-MM-dd'T'HH:mm:ss'Z'"></parameter>
+                    <parameter id="Next Page Token" label="Next Page Token" menu="" required="false" tooltip="The value to use as the offset for the page of submissions to return. The submission that matches this value will not be included in the results."></parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="Has Metrics" type="Complete" value="@results['Check for Metrics']['Count'].to_i &gt; 0">routine_kinetic_submission_update_v1_28</task>
+                </dependents>
+            </task>
+            <task definition_id="routine_kinetic_submission_update_v1" id="routine_kinetic_submission_update_v1_28" name="Trigger Metrics Update" x="453" y="451">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>true</defers>
+                <deferrable>true</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Id" label="Id" menu="" required="true" tooltip="The id of the submission to update">&lt;%=JSON.parse( @results['Check for Metrics']['Submissions List JSON'] )[0]['id']%&gt;</parameter>
+                    <parameter id="Updated - Core State" label="Updated - Core State" menu="" required="false" tooltip="The submissions core state"></parameter>
+                    <parameter id="Updated - Current Page Name" label="Updated - Current Page Name" menu="" required="false" tooltip="The page to set the submission to"></parameter>
+                    <parameter id="Updated - Current Page Navigation" label="Updated - Current Page Navigation" menu="" required="false" tooltip="The direction of the next page (next or previous)"></parameter>
+                    <parameter id="Updated - Origin Id" label="Updated - Origin Id" menu="" required="false" tooltip="The Id of the submissions origin"></parameter>
+                    <parameter id="Updated - Parent Id" label="Updated - Parent Id" menu="" required="false" tooltip="The Id of the submissions parent"></parameter>
+                    <parameter id="Updated - Values JSON" label="Updated - Values JSON" menu="" required="false" tooltip="A JSON representation of the submissions values">&lt;%=
+{
+  "Refresh Data" =&gt; "Yes"
+}.to_json
+%&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents></dependents>
+            </task>
+        </request>
+    </taskTree>
+</tree>

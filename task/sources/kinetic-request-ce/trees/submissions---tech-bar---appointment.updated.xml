@@ -1,0 +1,654 @@
+<tree schema_version="1.0">
+    <sourceName>Kinetic Request CE</sourceName>
+    <sourceGroup>Submissions > tech-bar > appointment</sourceGroup>
+    <type>Tree</type>
+    <status>Active</status>
+    <taskTree builder_version="" schema_version="1.0" version="">
+        <name>Updated</name>
+        <author></author>
+        <notes></notes>
+        <lastID>63</lastID>
+        <request>
+            <task definition_id="system_start_v1" id="start" name="Start" x="10" y="10">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters></parameters>
+                <messages></messages>
+                <dependents>
+                    <task label="Not Date or Time and Not Newly Cancelled" type="Complete" value="(!((@values['Event Date'] != @values_previous['Event Date'] || @values['Event Time'] != @values_previous['Event Time']) &amp;&amp; !@values['Event Date'].nil? &amp;&amp; !@values['Event Time'].nil?) &amp;&amp; @values['Scheduled Event Id'] != &quot;Cancelled&quot;) || (@values['Status'] == &quot;Cancelled&quot; &amp;&amp; @values_previous['Status'] == &quot;Cancelled&quot;)">system_noop_v1_27</task>
+                    <task label="" type="Complete" value="">routine_kinetic_datastore_submissions_retrieve_list_v1_49</task>
+                    <task label="Observers Changed" type="Complete" value="@values['Status'] != &quot;Cancelled&quot; &amp;&amp; (@values['Observing Teams'] != @values_previous['Observing Teams'] || @values['Observing Individuals'] != @values_previous['Observing Individuals'])">routine_kinetic_datastore_submission_update_v1_63</task>
+                </dependents>
+            </task>
+            <task definition_id="system_noop_v1" id="system_noop_v1_5" name="End" x="1337" y="16">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters></parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents></dependents>
+            </task>
+            <task definition_id="utility_json_to_xml_v1" id="utility_json_to_xml_v1_15" name="Children to XML" x="517" y="210">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>true</visible>
+                <parameters>
+                    <parameter id="json" label="JSON" menu="" required="true" tooltip="The JSON String to be converted to XML">&lt;%=@results['Find Appt Children']['Children JSON']%&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">system_loop_head_v1_16</task>
+                </dependents>
+            </task>
+            <task definition_id="system_loop_head_v1" id="system_loop_head_v1_16" name="Loop Begin" x="650" y="215">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="data_source" label="Data Source:" menu="" required="true" tooltip="The source that contains the data to use to create each task in the loop.">&lt;%=@results['Children to XML']['XML']%&gt;</parameter>
+                    <parameter id="loop_path" label="Loop Path:" menu="" required="true" tooltip="The XPath statement to indicate what data records to process.">/node/node/node[@name="id"]</parameter>
+                    <parameter id="var_name" label="Variable Name:" menu="" required="false" tooltip="The local variable name used to represent the data used in loop tasks."></parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">system_loop_tail_v1_17</task>
+                    <task label="" type="Complete" value="">routine_kinetic_submission_retrieve_v1_57</task>
+                </dependents>
+            </task>
+            <task definition_id="system_loop_tail_v1" id="system_loop_tail_v1_17" name="Loop End" x="1199" y="217">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="type" label="Type:" menu="All,Some,Any" required="true" tooltip="How many loop processes must be completed before continuing?">All</parameter>
+                    <parameter dependsOnId="type" dependsOnValue="Some" id="number" label="Number:" menu="" required="false" tooltip="If some, how many?"></parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">system_junction_v1_28</task>
+                </dependents>
+            </task>
+            <task definition_id="utilities_echo_v1" id="utilities_echo_v1_18" name="To be updated" x="649" y="471">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>true</visible>
+                <parameters>
+                    <parameter id="input" label="Input" menu="" required="true" tooltip="">&lt;%=
+action = "No Action"
+
+values = JSON.parse( @results['Get Child Submission']['Values JSON'] )
+
+scheduled_event_values = nil
+if @results.has_key? "Get Scheduled Event Details"
+  scheduled_event_values = JSON.parse( @results['Get Scheduled Event Details']['Values JSON'] )
+end
+
+if ((@results['Get Child Submission']['Core State'] == "Draft") &amp;&amp; (["Open","Future"].include? (values['Status'])) &amp;&amp; (!values['Scheduled At'].to_s.empty?) &amp;&amp; (!scheduled_event_values.nil?) &amp;&amp; (values['Scheduled At'] != scheduled_event_values['Timestamp']) )
+  action = "Update"
+end
+
+if ((@results['Get Child Submission']['Core State'] == "Draft") &amp;&amp; (["Open","Future"].include? (values['Status'])) &amp;&amp; (!values['Scheduled At'].to_s.empty?) &amp;&amp; (@values['Scheduled Event Id'] == "Cancelled"))
+  action = "Cancel"
+end
+
+action
+%&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="No action" type="Complete" value="@results['To be updated']['output'].to_s != &quot;No Action&quot;">system_junction_v1_22</task>
+                    <task label="Cancel" type="Complete" value="@results['To be updated']['output'].to_s == &quot;Cancel&quot;">routine_kinetic_submission_update_v1_59</task>
+                    <task label="Update" type="Complete" value="@results['To be updated']['output'].to_s == &quot;Update&quot;">utility_date_in_timezone_v2_62</task>
+                </dependents>
+            </task>
+            <task definition_id="system_junction_v1" id="system_junction_v1_22" name="Junction" x="1199" y="483">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters></parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">system_loop_tail_v1_17</task>
+                </dependents>
+            </task>
+            <task definition_id="system_join_v1" id="system_join_v1_25" name="Join" x="220" y="221">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="type" label="Type:" menu="All,Any,Some" required="true" tooltip="How many dependents must be completed before continuing?">Any</parameter>
+                    <parameter dependsOnId="type" dependsOnValue="Some" id="number" label="Number:" menu="" required="false" tooltip="If some, how many?"></parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">routine_kinetic_submission_retrieve_v1_56</task>
+                </dependents>
+            </task>
+            <task definition_id="system_noop_v1" id="system_noop_v1_27" name="No Action" x="616" y="16">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters></parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">system_junction_v1_28</task>
+                </dependents>
+            </task>
+            <task definition_id="system_junction_v1" id="system_junction_v1_28" name="Junction 2" x="1188" y="16">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters></parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">system_noop_v1_5</task>
+                </dependents>
+            </task>
+            <task definition_id="utilities_echo_v1" id="utilities_echo_v1_39" name="Calc Reminder time" x="13" y="540">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>true</visible>
+                <parameters>
+                    <parameter id="input" label="Input" menu="" required="true" tooltip="">&lt;%=
+scheduled_event_values = JSON.parse(@results['Get Scheduled Event Details']['Values JSON'])
+appt_time = Time.parse(scheduled_event_values['Timestamp'])
+
+reminder_time = appt_time - (60 * 60)
+
+curr_time = Time.now.utc
+
+(reminder_time - curr_time).to_i
+%&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="&amp;lt; 1 hr" type="Complete" value="@results['Calc Reminder time']['output'].to_i &lt; 0">system_noop_v1_41</task>
+                    <task label="&amp;gt;= 1 hr" type="Complete" value="@results['Calc Reminder time']['output'].to_i &gt;= 0">system_wait_v1_40</task>
+                </dependents>
+            </task>
+            <task definition_id="system_wait_v1" id="system_wait_v1_40" name="Reminder wait" x="177" y="539">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>true</defers>
+                <deferrable>true</deferrable>
+                <visible>true</visible>
+                <parameters>
+                    <parameter id="Time to wait" label="Wait time:" menu="" required="true" tooltip="Time you want to wait for deferred task">&lt;%=@results['Calc Reminder time']['output']%&gt;</parameter>
+                    <parameter id="Time unit" label="Time unit:" menu="Second,Minute,Hour,Day,Week" required="true" tooltip="Unit of measurement for time (Seconds, Minutes, Hours, Days, Weeks)">Second</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">routine_kinetic_submission_retrieve_v1_54</task>
+                </dependents>
+            </task>
+            <task definition_id="system_noop_v1" id="system_noop_v1_41" name="No reminder" x="11" y="659">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters></parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents></dependents>
+            </task>
+            <task definition_id="system_noop_v1" id="system_noop_v1_44" name="No reminder (Resched or Closed)" x="342" y="649">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters></parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents></dependents>
+            </task>
+            <task definition_id="routine_kinetic_datastore_submissions_retrieve_list_v1" id="routine_kinetic_datastore_submissions_retrieve_list_v1_49" name="Retrieve Scheduler" x="14" y="220">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>true</defers>
+                <deferrable>true</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Form Slug" label="Form Slug" menu="" required="false" tooltip="The slug of the Form to find submissions in.">scheduler</parameter>
+                    <parameter id="Index To Search" label="Index To Search" menu="" required="false" tooltip="The Index definition to search (i.e. values[Name],values[Status])">values[Id]</parameter>
+                    <parameter id="Core State" label="Core State" menu="" required="false" tooltip="Searches for submissions that have a core state that matches this parameter. If no value is provided, the results will contain submissions in all core states."></parameter>
+                    <parameter id="Limit" label="Limit" menu="" required="false" tooltip="Limit the number of results returned. If not provided, the server will limit the results to 25 submissions. Maximum limit 1000"></parameter>
+                    <parameter id="Query" label="Query" menu="" required="false" tooltip="Query to use to fetch submissions. (i.e values[First Name]=&quot;Fred&quot;)">values[Id]="&lt;%= @values['Scheduler Id']%&gt;"</parameter>
+                    <parameter id="Next Page Token" label="Next Page Token" menu="" required="false" tooltip="The value to use as the offset for the page of submissions to return. The submission that matches this value will not be included in the results."></parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="Newly Cancelled" type="Complete" value="@values['Status'] == &quot;Cancelled&quot; &amp;&amp; @values_previous['Status'] != &quot;Cancelled&quot;">system_join_v1_25</task>
+                    <task label="Newly Cancelled" type="Complete" value="@values['Status'] == &quot;Cancelled&quot; &amp;&amp; @values_previous['Status'] != &quot;Cancelled&quot;">routine_kinetic_email_template_notification_send_v1_50</task>
+                    <task label="Date or Time Change" type="Complete" value="(@values['Event Date'] != @values_previous['Event Date'] || @values['Event Time'] != @values_previous['Event Time']) &amp;&amp; !@values['Event Date'].nil? &amp;&amp; !@values['Event Time'].nil? &amp;&amp; @values['Status'] != &quot;Cancelled&quot;">routine_kinetic_datastore_submission_retrieve_v1_52</task>
+                </dependents>
+            </task>
+            <task definition_id="routine_kinetic_email_template_notification_send_v1" id="routine_kinetic_email_template_notification_send_v1_50" name="Send Cancellation Message" x="219" y="110">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>true</defers>
+                <deferrable>true</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Recipient List" label="Recipient List" menu="" required="true" tooltip="Comma separated list of recipients (Usernames, SMTP Addresses, and/or Team Names)">&lt;%= @values['Requested For']%&gt;</parameter>
+                    <parameter id="Notification Template Name" label="Notification Template Name" menu="" required="true" tooltip="Name of the notification template to use when sending this email">Tech Bar Appointment Cancelled</parameter>
+                    <parameter id="JSON Variables" label="JSON Variables" menu="" required="false" tooltip="JSON input of miscellaneous values.  These values are used to replace placeholder content in notification messages.">&lt;%=
+location = ""
+scheduler_values = JSON.parse( @results['Retrieve Scheduler']['Submissions List JSON'] )[0]['values']
+if !( scheduler_values['Location'] ).nil?
+  location = scheduler_values['Location'].gsub("\n"," ")
+end
+
+{
+  "Tech Bar Name" =&gt; scheduler_values['Name'],
+  "Tech Bar Location" =&gt; location
+}.to_json
+%&gt;</parameter>
+                    <parameter id="Kapp Slug Initiating Notification" label="Kapp Slug Initiating Notification" menu="" required="true" tooltip="The slug of the Kapp sending the notification (ex: services, queue, etc.)">&lt;%= @kapp['Slug']%&gt;</parameter>
+                    <parameter id="Related Submission Id" label="Related Submission Id" menu="" required="false" tooltip="Id of the submission to get values for, required if using those or attachments in the message">&lt;%= @submission['Id']%&gt;</parameter>
+                    <parameter id="Form Slug Initiating Notification" label="Form Slug Initiating Notification" menu="" required="false" tooltip="The slug of the Form sending the notification (ex: work-order, cleaning, etc.)">&lt;%= @form['Slug']%&gt;</parameter>
+                    <parameter id="Is Datastore" label="Is Datastore" menu="" required="false" tooltip="If the Related Submission Id, or Form Slug is a datastore form.">false</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents></dependents>
+            </task>
+            <task definition_id="routine_kinetic_datastore_submission_retrieve_v1" id="routine_kinetic_datastore_submission_retrieve_v1_52" name="Get Scheduled Event Details" x="14" y="385">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>true</defers>
+                <deferrable>true</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Id" label="Id" menu="" required="true" tooltip="The Id of the submission to retrieve">&lt;%= @values['Scheduled Event Id']%&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">system_join_v1_25</task>
+                    <task label="" type="Complete" value="">utilities_echo_v1_39</task>
+                    <task label="" type="Complete" value="">routine_kinetic_email_template_notification_send_v1_53</task>
+                </dependents>
+            </task>
+            <task definition_id="routine_kinetic_email_template_notification_send_v1" id="routine_kinetic_email_template_notification_send_v1_53" name="Send Reschedule Confirmation" x="177" y="383">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>true</defers>
+                <deferrable>true</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Recipient List" label="Recipient List" menu="" required="true" tooltip="Comma separated list of recipients (Usernames, SMTP Addresses, and/or Team Names)">&lt;%= @values['Requested For']%&gt;</parameter>
+                    <parameter id="Notification Template Name" label="Notification Template Name" menu="" required="true" tooltip="Name of the notification template to use when sending this email">Tech Bar Appointment Rescheduled</parameter>
+                    <parameter id="JSON Variables" label="JSON Variables" menu="" required="false" tooltip="JSON input of miscellaneous values.  These values are used to replace placeholder content in notification messages.">&lt;%=
+start_time = Time.parse(JSON.parse(@results['Get Scheduled Event Details']['Values JSON'])['Timestamp'])
+end_time = start_time + (@values['Event Duration'].to_i * 60)
+location = ""
+uri_location = ""
+scheduler_values = JSON.parse( @results['Retrieve Scheduler']['Submissions List JSON'] )[0]['values']
+if !( scheduler_values['Location'] ).nil?
+  location = scheduler_values['Location'].gsub("\n"," ")
+  uri_location = URI.escape(scheduler_values['Location'].gsub("\n"," "))
+end
+
+{
+  "Tech Bar Name" =&gt; scheduler_values['Name'],
+  "Encoded Tech Bar Name" =&gt; URI.escape(scheduler_values['Name']),
+  "Tech Bar Location" =&gt; location,
+  "Encoded Tech Bar Location" =&gt; uri_location,
+  "Start Date Timestamp iso8601" =&gt; start_time.strftime("%Y%m%dT%H%M%SZ"),
+  "End Date Timestamp iso8601" =&gt; end_time.strftime("%Y%m%dT%H%M%SZ"),
+  "Encoded Details" =&gt; URI.escape("Summary: #{@values['Summary']}\nDetails: #{@values['Details']}"),
+  "Previous Event Date" =&gt; @values_previous['Event Date'],
+  "Previous Event Time" =&gt; @values_previous['Event Time']
+}.to_json
+%&gt;</parameter>
+                    <parameter id="Kapp Slug Initiating Notification" label="Kapp Slug Initiating Notification" menu="" required="true" tooltip="The slug of the Kapp sending the notification (ex: services, queue, etc.)">&lt;%= @kapp['Slug']%&gt;</parameter>
+                    <parameter id="Related Submission Id" label="Related Submission Id" menu="" required="false" tooltip="Id of the submission to get values for, required if using those or attachments in the message">&lt;%= @submission['Id']%&gt;</parameter>
+                    <parameter id="Form Slug Initiating Notification" label="Form Slug Initiating Notification" menu="" required="false" tooltip="The slug of the Form sending the notification (ex: work-order, cleaning, etc.)">&lt;%= @form['Slug']%&gt;</parameter>
+                    <parameter id="Is Datastore" label="Is Datastore" menu="" required="false" tooltip="If the Related Submission Id, or Form Slug is a datastore form.">false</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents></dependents>
+            </task>
+            <task definition_id="routine_kinetic_submission_retrieve_v1" id="routine_kinetic_submission_retrieve_v1_54" name="Retrieve Appt" x="345" y="537">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>true</defers>
+                <deferrable>true</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Id" label="Id" menu="" required="true" tooltip="The Id of the submission to retrieve">&lt;%= @submission['Id']%&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="Resch or Closed" type="Complete" value="appt_values = JSON.parse(@results['Retrieve Appt']['Values JSON'])&#10;&#10;#if (appt_values['Event Date'] != @values['Event Date']) || (appt_values['Event Time'] != @values['Event Time']) || (@results['Retrieve Appt']['Core State'] == &quot;Closed&quot;)&#10;#  &quot;true&quot;&#10;#else&#10;#  &quot;false&quot;&#10;#end&#10;&#10;(appt_values['Event Date'] != @values['Event Date']) || (appt_values['Event Time'] != @values['Event Time']) || (@results['Retrieve Appt']['Core State'] == &quot;Closed&quot;)">system_noop_v1_44</task>
+                    <task label="Not Resched and Open" type="Complete" value="appt_values = JSON.parse(@results['Retrieve Appt']['Values JSON'])&#10;&#10;#if (appt_values['Event Date'] == @values['Event Date'] &amp;&amp; appt_values['Event Time'] == @values['Event Time']) &amp;&amp; (@results['Retrieve Appt']['Core State'] != &quot;Closed&quot;)&#10;#  &quot;true&quot;&#10;#else&#10;#  &quot;false&quot;&#10;#end&#10;&#10;(appt_values['Event Date'] == @values['Event Date'] &amp;&amp; appt_values['Event Time'] == @values['Event Time']) &amp;&amp; (@results['Retrieve Appt']['Core State'] != &quot;Closed&quot;)">routine_kinetic_email_template_notification_send_v1_55</task>
+                </dependents>
+            </task>
+            <task definition_id="routine_kinetic_email_template_notification_send_v1" id="routine_kinetic_email_template_notification_send_v1_55" name="Send Reminder Email" x="517" y="529">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>true</defers>
+                <deferrable>true</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Recipient List" label="Recipient List" menu="" required="true" tooltip="Comma separated list of recipients (Usernames, SMTP Addresses, and/or Team Names)">&lt;%= @values['Requested For']%&gt;</parameter>
+                    <parameter id="Notification Template Name" label="Notification Template Name" menu="" required="true" tooltip="Name of the notification template to use when sending this email">Tech Bar Appointment Reminder</parameter>
+                    <parameter id="JSON Variables" label="JSON Variables" menu="" required="false" tooltip="JSON input of miscellaneous values.  These values are used to replace placeholder content in notification messages.">&lt;%=
+
+start_time = Time.parse(JSON.parse(@results['Get Scheduled Event Details']['Values JSON'])['Timestamp'])
+end_time = start_time + (@values['Event Duration'].to_i * 60)
+location = ""
+uri_location = ""
+scheduler_values = JSON.parse( @results['Retrieve Scheduler']['Submissions List JSON'] )[0]['values']
+if !(scheduler_values['Location']).nil?
+  location = scheduler_values['Location'].gsub("\n"," ")
+  uri_location = URI.escape(scheduler_values['Location'].gsub("\n"," "))
+end
+
+{
+  "Tech Bar Name" =&gt; scheduler_values['Name'],
+  "Encoded Tech Bar Name" =&gt; URI.escape(scheduler_values['Name']),
+  "Tech Bar Location" =&gt; location,
+  "Encoded Tech Bar Location" =&gt; uri_location,
+  "Start Date Timestamp iso8601" =&gt; start_time.strftime("%Y%m%dT%H%M%SZ"),
+  "End Date Timestamp iso8601" =&gt; end_time.strftime("%Y%m%dT%H%M%SZ"),
+  "Encoded Details" =&gt; URI.escape("Summary: #{@values['Summary']}\nDetails: #{@values['Details']}")
+}.to_json
+%&gt;</parameter>
+                    <parameter id="Kapp Slug Initiating Notification" label="Kapp Slug Initiating Notification" menu="" required="true" tooltip="The slug of the Kapp sending the notification (ex: services, queue, etc.)">&lt;%= @kapp['Slug']%&gt;</parameter>
+                    <parameter id="Related Submission Id" label="Related Submission Id" menu="" required="false" tooltip="Id of the submission to get values for, required if using those or attachments in the message">&lt;%= @submission['Id']%&gt;</parameter>
+                    <parameter id="Form Slug Initiating Notification" label="Form Slug Initiating Notification" menu="" required="false" tooltip="The slug of the Form sending the notification (ex: work-order, cleaning, etc.)">&lt;%= @form['Slug']%&gt;</parameter>
+                    <parameter id="Is Datastore" label="Is Datastore" menu="" required="false" tooltip="If the Related Submission Id, or Form Slug is a datastore form.">false</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents></dependents>
+            </task>
+            <task definition_id="routine_kinetic_submission_retrieve_v1" id="routine_kinetic_submission_retrieve_v1_56" name="Find Appt Children" x="374" y="207">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>true</defers>
+                <deferrable>true</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Id" label="Id" menu="" required="true" tooltip="The Id of the submission to retrieve">&lt;%= @submission['Id']%&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">utility_json_to_xml_v1_15</task>
+                </dependents>
+            </task>
+            <task definition_id="routine_kinetic_submission_retrieve_v1" id="routine_kinetic_submission_retrieve_v1_57" name="Get Child Submission" x="648" y="327">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>true</defers>
+                <deferrable>true</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Id" label="Id" menu="" required="true" tooltip="The Id of the submission to retrieve">&lt;%=
+child_data = JSON( @results['Find Appt Children']['Children JSON'] )[@results['Loop Begin']['Index']]
+
+child_data['id']
+%&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">utilities_echo_v1_18</task>
+                </dependents>
+            </task>
+            <task definition_id="routine_kinetic_submission_update_v1" id="routine_kinetic_submission_update_v1_58" name="Update Child" x="1047" y="293">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>true</defers>
+                <deferrable>true</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Id" label="Id" menu="" required="true" tooltip="The id of the submission to update">&lt;%=
+child_data = JSON( @results['Find Appt Children']['Children JSON'] )[@results['Loop Begin']['Index']]
+
+child_data['id']
+%&gt;</parameter>
+                    <parameter id="Updated - Core State" label="Updated - Core State" menu="" required="false" tooltip="The submissions core state"></parameter>
+                    <parameter id="Updated - Current Page Name" label="Updated - Current Page Name" menu="" required="false" tooltip="The page to set the submission to"></parameter>
+                    <parameter id="Updated - Current Page Navigation" label="Updated - Current Page Navigation" menu="" required="false" tooltip="The direction of the next page (next or previous)"></parameter>
+                    <parameter id="Updated - Origin Id" label="Updated - Origin Id" menu="" required="false" tooltip="The Id of the submissions origin"></parameter>
+                    <parameter id="Updated - Parent Id" label="Updated - Parent Id" menu="" required="false" tooltip="The Id of the submissions parent"></parameter>
+                    <parameter id="Updated - Values JSON" label="Updated - Values JSON" menu="" required="false" tooltip="A JSON representation of the submissions values">&lt;%=
+details = "User:     #{@values['Requested For Display Name']}
+Type:     #{@values['Event Type']}
+Date:     #{@values['Event Date']}
+Time:     #{@values['Event Time']}
+Summary:  #{@values['Summary']}
+Details:  #{@values['Details']}"
+
+status = "Open"
+
+current_date = Date.parse(@results['Get Date in Scheduler Timezone']['Date'])
+event_date = Date.parse(@values['Event Date'])
+
+if event_date &gt; current_date
+  status = "Future"
+end
+
+scheduled_event_values = JSON.parse( @results['Get Scheduled Event Details']['Values JSON'] )
+
+values = {
+  "Scheduled At" =&gt; Time.parse(scheduled_event_values['Timestamp']).iso8601,
+  "Due Date" =&gt; Time.parse(scheduled_event_values['Timestamp']).iso8601,
+  "Event Date" =&gt; @values['Event Date'],
+  "Event Time" =&gt; @values['Event Time'],
+  "Status" =&gt; status,
+  "Details" =&gt; details
+}
+
+values['Pending Reason'] = "Future Appointment" if status == "Future"
+
+values.to_json
+%&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">system_junction_v1_22</task>
+                </dependents>
+            </task>
+            <task definition_id="routine_kinetic_submission_update_v1" id="routine_kinetic_submission_update_v1_59" name="Cancel Child" x="937" y="390">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>true</defers>
+                <deferrable>true</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Id" label="Id" menu="" required="true" tooltip="The id of the submission to update">&lt;%=
+child_data = JSON( @results['Find Appt Children']['Children JSON'] )[@results['Loop Begin']['Index']]
+
+child_data['id']
+%&gt;</parameter>
+                    <parameter id="Updated - Core State" label="Updated - Core State" menu="" required="false" tooltip="The submissions core state">Submitted</parameter>
+                    <parameter id="Updated - Current Page Name" label="Updated - Current Page Name" menu="" required="false" tooltip="The page to set the submission to"></parameter>
+                    <parameter id="Updated - Current Page Navigation" label="Updated - Current Page Navigation" menu="" required="false" tooltip="The direction of the next page (next or previous)"></parameter>
+                    <parameter id="Updated - Origin Id" label="Updated - Origin Id" menu="" required="false" tooltip="The Id of the submissions origin"></parameter>
+                    <parameter id="Updated - Parent Id" label="Updated - Parent Id" menu="" required="false" tooltip="The Id of the submissions parent"></parameter>
+                    <parameter id="Updated - Values JSON" label="Updated - Values JSON" menu="" required="false" tooltip="A JSON representation of the submissions values">&lt;%=
+{
+  "Cancellation Reason" =&gt; "Cancelled by Requester",
+  "Status" =&gt; "Cancelled"
+}.to_json
+%&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">system_junction_v1_22</task>
+                </dependents>
+            </task>
+            <task definition_id="utility_date_in_timezone_v2" id="utility_date_in_timezone_v2_62" name="Get Date in Scheduler Timezone" x="858" y="287">
+                <version>2</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>true</visible>
+                <parameters>
+                    <parameter id="timezone" label="Timezone" menu="" required="true" tooltip="The timezone being explored.">&lt;%=
+timezone = "UTC"
+
+scheduler_values = JSON.parse( @results['Retrieve Scheduler']['Submissions List JSON'] )[0]['values']
+
+if !scheduler_values['Timezone'].nil?
+  timezone = scheduler_values['Timezone']
+end
+
+timezone
+%&gt;</parameter>
+                    <parameter id="timestamp" label="Timestamp" menu="" required="false" tooltip="Current time will be used if a timestamp is not entered. Format: YYYY-MM-DD'T'HH:MM:SS'Z' (iso8601)"></parameter>
+                    <parameter id="direction" label="Direction" menu="To Local,To UTC" required="true" tooltip="Convert from UTC to local time, or a local time to a UTC.">To Local</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">routine_kinetic_submission_update_v1_58</task>
+                </dependents>
+            </task>
+            <task definition_id="routine_kinetic_datastore_submission_update_v1" id="routine_kinetic_datastore_submission_update_v1_63" name="Update Scheduled Event Observers" x="615" y="87">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>true</defers>
+                <deferrable>true</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Id" label="Id" menu="" required="true" tooltip="The id of the submission to update">&lt;%= @values['Scheduled Event Id']%&gt;</parameter>
+                    <parameter id="Updated - Core State" label="Updated - Core State" menu="" required="false" tooltip="The submissions core state"></parameter>
+                    <parameter id="Updated - Current Page Name" label="Updated - Current Page Name" menu="" required="false" tooltip="The page to set the submission to"></parameter>
+                    <parameter id="Updated - Current Page Navigation" label="Updated - Current Page Navigation" menu="" required="false" tooltip="The direction of the next page (next or previous)"></parameter>
+                    <parameter id="Updated - Values JSON" label="Updated - Values JSON" menu="" required="false" tooltip="A JSON representation of the submissions values">&lt;%=
+{
+  "Observing Teams" =&gt; @values['Observing Teams'],
+  "Observing Individuals" =&gt; @values['Observing Individuals']
+}.to_json
+%&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">system_junction_v1_28</task>
+                </dependents>
+            </task>
+        </request>
+    </taskTree>
+</tree>

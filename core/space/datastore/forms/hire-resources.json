@@ -6,7 +6,7 @@
 
   ],
   "customHeadContent": null,
-  "description": "People that can be requested for Hire by schools.\nThis list is intended for headquarter management, and can be requested from a school",
+  "description": "People that can be requested for Hire by schools.\nThis list is intended for headquarter management, and can be requested from a school.",
   "indexDefinitions": [
     {
       "name": "createdAt",

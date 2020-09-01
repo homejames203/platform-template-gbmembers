@@ -22,7 +22,13 @@
     {
       "name": "Billing Company",
       "values": [
-        "PaySmart"
+        "No Billing"
+      ]
+    },
+    {
+      "name": "Calendar Time Slots",
+      "values": [
+        "5"
       ]
     },
     {
@@ -41,6 +47,12 @@
       "name": "Company Logo",
       "values": [
         "/app/datastore/submissions/617f9165-c2cb-11e8-aff8-15815e938e2a/files/Image%20File/0/Logo-GB-Sydney1.png"
+      ]
+    },
+    {
+      "name": "Default Kapp Display",
+      "values": [
+        "gbmembers"
       ]
     },
     {
@@ -229,7 +241,7 @@
   "defaultLocale": "en-AU",
   "defaultTimezone": "Australia/Brisbane",
   "displayType": "Single Page App",
-  "displayValue": "spa.jsp?location=https://s3-ap-southeast-2.amazonaws.com/gbmembers-v2",
+  "displayValue": "spa.jsp?location=https://s3-ap-southeast-2.amazonaws.com/gbmembers",
   "enabledLocales": [
     "en-AU"
   ],
@@ -251,8 +263,20 @@
       "name": "Authenticated Users"
     },
     {
+      "endpoint": "Team Membership Modification",
+      "name": "Authenticated Users"
+    },
+    {
       "endpoint": "Users Access",
       "name": "Authenticated Users"
+    },
+    {
+      "endpoint": "User Creation",
+      "name": "Program Managers"
+    },
+    {
+      "endpoint": "User Modification",
+      "name": "Program Managers"
     }
   ],
   "sessionInactiveLimitInSeconds": 2592000,

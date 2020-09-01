@@ -5,6 +5,11 @@
     "name": "Bundle Package"
   },
   {
+    "allowsMultiple": true,
+    "description": "If the Kapp has custom workflow that should be executed when a form is Created, Updated, Deleted...etc)",
+    "name": "Custom Form Workflow"
+  },
+  {
     "allowsMultiple": false,
     "description": "Description of the Kapp",
     "name": "Description"

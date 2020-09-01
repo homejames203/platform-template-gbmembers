@@ -26,7 +26,6 @@
     "kinetic_request_ce_submission_get_answers_v2",
     "kinetic_request_ce_submission_retrieve_associated_attributes_v1",
     "kinetic_request_ce_submission_retrieve_children_v1",
-    "kinetic_request_ce_submission_retrieve_v1",
     "kinetic_request_ce_submission_retrieve_v2",
     "kinetic_request_ce_submission_search_v1",
     "kinetic_request_ce_submission_update_observers_v1",

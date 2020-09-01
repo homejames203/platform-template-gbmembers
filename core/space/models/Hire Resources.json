@@ -63,7 +63,7 @@
           "structureField": "${fields('values[Notification Emails]')}"
         }
       ],
-      "bridgeSlug": "hq",
+      "bridgeSlug": "kinetic-core",
       "name": "Hire Resources",
       "qualifications": [
         {

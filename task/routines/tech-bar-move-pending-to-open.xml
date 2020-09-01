@@ -1,0 +1,220 @@
+<tree schema_version="1.0">
+    <sourceName>-</sourceName>
+    <sourceGroup>-</sourceGroup>
+    <definitionId>routine_tech_bar_move_pending_to_open_v1</definitionId>
+    <type>Global Routine</type>
+    <status>Active</status>
+    <taskTree builder_version="" schema_version="1.0" version="">
+        <name>Tech Bar Move Pending to Open</name>
+        <author></author>
+        <notes></notes>
+        <lastID>13</lastID>
+        <taskDefinition id="routine_tech_bar_move_pending_to_open_v1" name="Tech Bar Move Pending to Open" schema_version="1.0" version="1">
+            <visible>false</visible>
+            <deferrable>true</deferrable>
+            <parameters>
+                <parameter id="Queue Kapp Slug" label="Queue Kapp Slug" required="true" tooltip="The slug of the Queue Kapp">queue</parameter>
+                <parameter id="Tech Bar Team" label="Tech Bar Team" required="true" tooltip=""></parameter>
+                <parameter id="Tech Bar Date" label="Tech Bar Date" required="true" tooltip=""></parameter>
+                <parameter id="Starting Count" label="Starting Count" required="true" tooltip="">0</parameter>
+                <parameter id="Limit" label="Limit" required="true" tooltip="">100</parameter>
+                <parameter id="Page Token" label="Page Token" required="false" tooltip="The value to use as the offset for the page of submissions to return. The submission that matches this value will not be included in the results."></parameter>
+            </parameters>
+            <handler name="system_tree_call" version="1"></handler>
+            <results format="xml">
+                <result name="Total Count" tooltip=""></result>
+            </results>
+        </taskDefinition>
+        <request>
+            <task definition_id="system_start_v1" id="start" name="Start" x="10" y="10">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters></parameters>
+                <messages></messages>
+                <dependents>
+                    <task label="" type="Complete" value="">routine_kinetic_submissions_retrieve_list_v1_11</task>
+                </dependents>
+            </task>
+            <task definition_id="system_loop_head_v1" id="system_loop_head_v1_3" name="Loop Begin" x="418" y="131">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="data_source" label="Data Source:" menu="" required="true" tooltip="The source that contains the data to use to create each task in the loop.">&lt;%=@results['Work Orders to XML']['XML']%&gt;</parameter>
+                    <parameter id="loop_path" label="Loop Path:" menu="" required="true" tooltip="The XPath statement to indicate what data records to process.">/node/node</parameter>
+                    <parameter id="var_name" label="Variable Name:" menu="" required="false" tooltip="The local variable name used to represent the data used in loop tasks."></parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">system_loop_tail_v1_4</task>
+                    <task label="" type="Complete" value="">routine_kinetic_submission_update_v1_13</task>
+                </dependents>
+            </task>
+            <task definition_id="system_loop_tail_v1" id="system_loop_tail_v1_4" name="Loop End" x="415" y="319">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="type" label="Type:" menu="All,Some,Any" required="true" tooltip="How many loop processes must be completed before continuing?">All</parameter>
+                    <parameter dependsOnId="type" dependsOnValue="Some" id="number" label="Number:" menu="" required="false" tooltip="If some, how many?"></parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">system_junction_v1_7</task>
+                </dependents>
+            </task>
+            <task definition_id="routine_tech_bar_move_pending_to_open_v1" id="routine_tech_bar_move_pending_to_open_v1_6" name="Call self - Get next records" x="133.3000030517578" y="285.4166717529297">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>true</defers>
+                <deferrable>true</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Queue Kapp Slug" label="Queue Kapp Slug" menu="" required="true" tooltip="The slug of the Queue Kapp">queue</parameter>
+                    <parameter id="Tech Bar Team" label="Tech Bar Team" menu="" required="true" tooltip="">&lt;%=@inputs['Tech Bar Team']%&gt;</parameter>
+                    <parameter id="Tech Bar Date" label="Tech Bar Date" menu="" required="true" tooltip="">&lt;%=@inputs['Tech Bar Date']%&gt;</parameter>
+                    <parameter id="Starting Count" label="Starting Count" menu="" required="true" tooltip="">&lt;%=@inputs['Starting Count'].to_i + @results['Get Work Orders']['Count'].to_i%&gt;</parameter>
+                    <parameter id="Limit" label="Limit" menu="" required="true" tooltip="">&lt;%=@inputs['Limit']%&gt;</parameter>
+                    <parameter id="Page Token" label="Page Token" menu="" required="false" tooltip="The value to use as the offset for the page of submissions to return. The submission that matches this value will not be included in the results.">&lt;%=@results['Get Work Orders']['Next Page Token']%&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">system_junction_v1_7</task>
+                </dependents>
+            </task>
+            <task definition_id="system_junction_v1" id="system_junction_v1_7" name="Junction" x="177" y="430">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters></parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">system_tree_return_v1_8</task>
+                </dependents>
+            </task>
+            <task definition_id="system_tree_return_v1" id="system_tree_return_v1_8" name="Return" x="177" y="508">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Total Count" label="Total Count" menu="" required="false" tooltip="">&lt;%=
+count=@inputs['Starting Count'].to_i
+if @results.has_key? ("Call self - Get next records")
+  @results['Call self - Get next records']['Total Count'].to_i
+else
+  count+=@results['Get Work Orders']['Count'].to_i
+end
+%&gt;
+</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents></dependents>
+            </task>
+            <task definition_id="routine_kinetic_submissions_retrieve_list_v1" id="routine_kinetic_submissions_retrieve_list_v1_11" name="Get Work Orders" x="133" y="121">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>true</defers>
+                <deferrable>true</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Kapp Slug" label="Kapp Slug" menu="" required="true" tooltip="The slug of the Kapp to find submissions in.">&lt;%=@inputs['Queue Kapp Slug']%&gt;</parameter>
+                    <parameter id="Form Slug" label="Form Slug" menu="" required="false" tooltip="The slug of the Form to find submissions in. If none provided, can only use Kapp Fields in search query">tech-bar-work-order</parameter>
+                    <parameter id="Form Type" label="Form Type" menu="" required="false" tooltip="The Type of Form to find submissions in."></parameter>
+                    <parameter id="Core State" label="Core State" menu="" required="false" tooltip="Searches for submissions that have a core state that matches this parameter. If no value is provided, the results will contain submissions in all core states."></parameter>
+                    <parameter id="Limit" label="Limit" menu="" required="false" tooltip="Limit the number of results returned. If not provided, the server will limit the results to 25 submissions. Maximum limit 1000">&lt;%=@inputs['Limit']%&gt;</parameter>
+                    <parameter id="Query" label="Query" menu="" required="false" tooltip="Query to use to fetch submissions. (i.e values[First Name]=&quot;Fred&quot;)">values[Status]="Future" AND values[Event Date]="&lt;%=@inputs['Tech Bar Date']%&gt;" AND values[Assigned Team]="&lt;%=@inputs['Tech Bar Team']%&gt;"</parameter>
+                    <parameter id="Timeline" label="Timeline" menu="" required="false" tooltip="Date property to search by. The default value is createdAt.">createdAt</parameter>
+                    <parameter id="Direction" label="Direction" menu="" required="false" tooltip="Result Set sorting direction. The default value is descending.">ASC</parameter>
+                    <parameter id="Start Date/Time" label="Start Date/Time" menu="" required="false" tooltip="Start date/time of the timeline. This value should be used to both refine and limit the search results. Format should be yyyy-MM-dd'T'HH:mm:ss'Z'"></parameter>
+                    <parameter id="End Date/Time" label="End Date/Time" menu="" required="false" tooltip="End date/time of the timeline. This value should be used to both refine and limit the search results. Formatshould be yyyy-MM-dd'T'HH:mm:ss'Z'"></parameter>
+                    <parameter id="Next Page Token" label="Next Page Token" menu="" required="false" tooltip="The value to use as the offset for the page of submissions to return. The submission that matches this value will not be included in the results.">&lt;%=@inputs['Page Token']%&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="More records" type="Complete" value="!@results['Get Work Orders']['Next Page Token'].nil?">routine_tech_bar_move_pending_to_open_v1_6</task>
+                    <task label="" type="Complete" value="">utility_json_to_xml_v1_12</task>
+                </dependents>
+            </task>
+            <task definition_id="utility_json_to_xml_v1" id="utility_json_to_xml_v1_12" name="Work Orders to XML" x="275" y="120">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>true</visible>
+                <parameters>
+                    <parameter id="json" label="JSON" menu="" required="true" tooltip="The JSON String to be converted to XML">&lt;%=@results['Get Work Orders']['Submissions List JSON']%&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">system_loop_head_v1_3</task>
+                </dependents>
+            </task>
+            <task definition_id="routine_kinetic_submission_update_v1" id="routine_kinetic_submission_update_v1_13" name="Update submission" x="550" y="216">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>true</defers>
+                <deferrable>true</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter id="Id" label="Id" menu="" required="true" tooltip="The id of the submission to update">&lt;%=
+this_record = JSON.parse( @results['Get Work Orders']['Submissions List JSON'] )[@results['Loop Begin']['Index']]
+this_record['id']
+%&gt;</parameter>
+                    <parameter id="Updated - Core State" label="Updated - Core State" menu="" required="false" tooltip="The submissions core state"></parameter>
+                    <parameter id="Updated - Current Page Name" label="Updated - Current Page Name" menu="" required="false" tooltip="The page to set the submission to"></parameter>
+                    <parameter id="Updated - Current Page Navigation" label="Updated - Current Page Navigation" menu="" required="false" tooltip="The direction of the next page (next or previous)"></parameter>
+                    <parameter id="Updated - Origin Id" label="Updated - Origin Id" menu="" required="false" tooltip="The Id of the submissions origin"></parameter>
+                    <parameter id="Updated - Parent Id" label="Updated - Parent Id" menu="" required="false" tooltip="The Id of the submissions parent"></parameter>
+                    <parameter id="Updated - Values JSON" label="Updated - Values JSON" menu="" required="false" tooltip="A JSON representation of the submissions values">&lt;%={"Status" =&gt; "Open"}.to_json%&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">system_loop_tail_v1_4</task>
+                </dependents>
+            </task>
+        </request>
+    </taskTree>
+</tree>

@@ -63,8 +63,8 @@
     }
   ],
   "customHeadContent": "",
-  "description": "Request to freeze a Membership",
-  "name": "Membership Freeze",
+  "description": "Paysmart Request to freeze a Membership",
+  "name": "Paysmart Membership Freeze",
   "notes": null,
   "pages": [
     {
@@ -460,11 +460,47 @@
               "renderType": "date"
             },
             {
+              "type": "field",
+              "name": "Resume Date Option",
+              "label": "Resume Date Option",
+              "key": "f52",
+              "defaultValue": null,
+              "defaultResourceName": null,
+              "visible": true,
+              "enabled": true,
+              "required": true,
+              "requiredMessage": null,
+              "omitWhenHidden": null,
+              "pattern": null,
+              "constraints": [
+
+              ],
+              "events": [
+
+              ],
+              "renderAttributes": {
+              },
+              "dataType": "string",
+              "renderType": "radio",
+              "choicesResourceName": null,
+              "choicesRunIf": null,
+              "choices": [
+                {
+                  "label": "Until Further Notice",
+                  "value": "Until Further Notice"
+                },
+                {
+                  "label": "Resume Date",
+                  "value": "Resume Date"
+                }
+              ]
+            },
+            {
               "type": "content",
               "renderType": "html",
               "name": "Date Payments Resume HTML",
               "text": "<div class=\"form-group required\" linkedField=\"Date Payments Resume\">  \n  <label class=\"field-label\" for=\"datepaymentsresume\">Date Payments Resume</label>\n  <div id=\"datepaymentsresume\"></div>\n</div>",
-              "visible": "!form('review')",
+              "visible": "!form('review') && values('Resume Date Option')===\"Resume Date\"",
               "renderAttributes": {
               }
             },
@@ -477,7 +513,7 @@
               "defaultResourceName": null,
               "visible": "form('review')",
               "enabled": true,
-              "required": true,
+              "required": "values('Resume Date Option')===\"Resume Date\"",
               "requiredMessage": null,
               "omitWhenHidden": false,
               "pattern": null,
@@ -743,7 +779,7 @@
   "securityPolicies": [
     {
       "endpoint": "Display",
-      "name": "Program Managers"
+      "name": "PaySmart Program Managers"
     },
     {
       "endpoint": "Submission Access",
