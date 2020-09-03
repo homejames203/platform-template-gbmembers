@@ -473,13 +473,9 @@ if (vars["data"]["requesting_user"])
     "enabled" => true,
     "spaceAdmin" => true,
     "memberships" => [
-      { "team" => { "name" => "Administrators" } },
-      { "team" => { "name" => "Default" } },
-      { "team" => { "name" => "Role::Form Developer" } },
-      { "team" => { "name" => "Role::Task Developer" } },
+      { "team" => { "name" => "Billing" } },
       { "team" => { "name" => "Role::Data Admin" } },
-      { "team" => { "name" => "Role::Employee" } },
-      { "team" => { "name" => "Role::Submission Support" } },
+      { "team" => { "name" => "Role::Program Managers" } },
     ],
     "profileAttributesMap" => { "Guided Tour" => ["Welcome Tour", "Services", "Queue"] },
   })
