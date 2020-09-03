@@ -223,7 +223,7 @@
         },
         {
           "name": "Get Billing Members",
-          "query": "\t kappSlug=gbmembers&formSlug=member&q=values[Billing User]=\"YES\""
+          "query": "kappSlug=gbmembers&formSlug=member&q=values[Billing User]=\"YES\" AND values[Status]=\"Active\""
         },
         {
           "name": "Get Frozen Members",
