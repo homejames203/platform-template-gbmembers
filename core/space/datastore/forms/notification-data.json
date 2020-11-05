@@ -133,6 +133,14 @@
         "values[Type]"
       ],
       "unique": false
+    },
+    {
+      "name": "values[Type],values[Name]",
+      "parts": [
+        "values[Type]",
+        "values[Name]"
+      ],
+      "unique": false
     }
   ],
   "name": "Notification Data",
@@ -252,7 +260,7 @@
           "defaultResourceName": null,
           "visible": true,
           "enabled": true,
-          "required": true,
+          "required": "values('Type') !== \"Snippet\"",
           "requiredMessage": null,
           "omitWhenHidden": null,
           "pattern": null,
