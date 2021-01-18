@@ -7,7 +7,7 @@
         <name>Submitted</name>
         <author></author>
         <notes></notes>
-        <lastID>37</lastID>
+        <lastID>40</lastID>
         <request>
             <task definition_id="system_start_v1" id="start" name="Start" x="11" y="11">
                 <version>1</version>
@@ -114,8 +114,8 @@
   "Billing Payment Type":"&lt;%=JSON.parse(@results['Get Billing User']['Result JSON'])['data']['paymentMethod']%&gt;",
   "Billing Payment Period":"&lt;%=JSON.parse(@results['Get Billing User']['Result JSON'])['data']['paymentPeriod']%&gt;",
   "Payment Schedule": "{period: '&lt;%= @values['Payment Frequency']%&gt;', amount: &lt;%=JSON.parse(@results['Get Billing User']['Result JSON'])['data']['paymentAmountInCents']%&gt;}",
-  "Billing Family Members": "&lt;%= @values['membersJSON'].gsub('"','\"')%&gt;",
-  "Family Fee Details": "&lt;%= @values['feesJSON'].gsub('"','\"')%&gt;",
+  "Billing Family Members": "&lt;%= !@values['membersJSON'].nil? ? @values['membersJSON'].gsub('"','\"') : ""%&gt;",
+  "Family Fee Details": "&lt;%= !@values['feesJSON'].nil? ? @values['feesJSON'].gsub('"','\"') : ""%&gt;",
   "Membership Cost": "&lt;%= @values['Payment']%&gt;"
 }
 </parameter>
@@ -127,10 +127,10 @@
                 <messages></messages>
                 <dependents>
                     <task label="" type="Complete" value="">kinetic_request_ce_submission_activity_create_v1_7</task>
-                    <task label="" type="Complete" value="">utility_json_to_xml_v1_9</task>
+                    <task label="" type="Complete" value="">utilities_echo_v1_38</task>
                 </dependents>
             </task>
-            <task definition_id="kinetic_request_ce_submission_activity_create_v1" id="kinetic_request_ce_submission_activity_create_v1_7" name="Display Billing Registration" x="752" y="460">
+            <task definition_id="kinetic_request_ce_submission_activity_create_v1" id="kinetic_request_ce_submission_activity_create_v1_7" name="Display Billing Registration" x="941" y="463">
                 <version>1</version>
                 <configured>true</configured>
                 <defers>false</defers>
@@ -169,7 +169,7 @@ Error Message: &lt;%=JSON.parse(@results['Register Billing User']['Result JSON']
                     <task label="" type="Complete" value="">kinetic_request_ce_submission_update_v1_16</task>
                 </dependents>
             </task>
-            <task definition_id="utility_json_to_xml_v1" id="utility_json_to_xml_v1_9" name="Json to xml" x="651" y="355">
+            <task definition_id="utility_json_to_xml_v1" id="utility_json_to_xml_v1_9" name="Json to xml" x="858" y="229">
                 <version>1</version>
                 <configured>true</configured>
                 <defers>false</defers>
@@ -180,11 +180,10 @@ Error Message: &lt;%=JSON.parse(@results['Register Billing User']['Result JSON']
                 </parameters>
                 <messages></messages>
                 <dependents>
-                    <task label="" type="Complete" value="">kinetic_request_ce_submission_update_v1_16</task>
                     <task label="" type="Complete" value="">system_loop_head_v1_10</task>
                 </dependents>
             </task>
-            <task definition_id="system_loop_head_v1" id="system_loop_head_v1_10" name="Loop over ids" x="862" y="348">
+            <task definition_id="system_loop_head_v1" id="system_loop_head_v1_10" name="Loop over ids" x="1030" y="334">
                 <version>1</version>
                 <configured>true</configured>
                 <defers>false</defers>
@@ -201,7 +200,7 @@ Error Message: &lt;%=JSON.parse(@results['Register Billing User']['Result JSON']
                     <task label="" type="Complete" value="">utilities_echo_v1_12</task>
                 </dependents>
             </task>
-            <task definition_id="system_loop_tail_v1" id="system_loop_tail_v1_11" name="Loop tail" x="882" y="585">
+            <task definition_id="system_loop_tail_v1" id="system_loop_tail_v1_11" name="Loop tail" x="1119" y="593">
                 <version>1</version>
                 <configured>true</configured>
                 <defers>false</defers>
@@ -214,7 +213,7 @@ Error Message: &lt;%=JSON.parse(@results['Register Billing User']['Result JSON']
                 <messages></messages>
                 <dependents></dependents>
             </task>
-            <task definition_id="utilities_echo_v1" id="utilities_echo_v1_12" name="Member ID" x="1066" y="191">
+            <task definition_id="utilities_echo_v1" id="utilities_echo_v1_12" name="Member ID" x="1213" y="171">
                 <version>1</version>
                 <configured>true</configured>
                 <defers>false</defers>
@@ -229,7 +228,7 @@ Error Message: &lt;%=JSON.parse(@results['Register Billing User']['Result JSON']
                     <task label="Non Billing Member" type="Complete" value="@results['Member ID']['output']!=@values['Members']">kinetic_request_ce_submission_update_v1_14</task>
                 </dependents>
             </task>
-            <task definition_id="utilities_echo_v1" id="utilities_echo_v1_13" name="Ignore Billing Member" x="1298" y="349">
+            <task definition_id="utilities_echo_v1" id="utilities_echo_v1_13" name="Ignore Billing Member" x="1405" y="344">
                 <version>1</version>
                 <configured>true</configured>
                 <defers>false</defers>
@@ -243,7 +242,7 @@ Error Message: &lt;%=JSON.parse(@results['Register Billing User']['Result JSON']
                     <task label="" type="Complete" value="">system_noop_v1_15</task>
                 </dependents>
             </task>
-            <task definition_id="kinetic_request_ce_submission_update_v1" id="kinetic_request_ce_submission_update_v1_14" name="Set Billing Parent Member" x="1062" y="319">
+            <task definition_id="kinetic_request_ce_submission_update_v1" id="kinetic_request_ce_submission_update_v1_14" name="Set Billing Parent Member" x="1212" y="330">
                 <version>1</version>
                 <configured>true</configured>
                 <defers>false</defers>
@@ -267,7 +266,7 @@ Error Message: &lt;%=JSON.parse(@results['Register Billing User']['Result JSON']
                     <task label="" type="Complete" value="">system_noop_v1_15</task>
                 </dependents>
             </task>
-            <task definition_id="system_noop_v1" id="system_noop_v1_15" name="done iteration" x="1064" y="476">
+            <task definition_id="system_noop_v1" id="system_noop_v1_15" name="done iteration" x="1209" y="479">
                 <version>1</version>
                 <configured>true</configured>
                 <defers>false</defers>
@@ -279,7 +278,7 @@ Error Message: &lt;%=JSON.parse(@results['Register Billing User']['Result JSON']
                     <task label="" type="Complete" value="">system_loop_tail_v1_11</task>
                 </dependents>
             </task>
-            <task definition_id="kinetic_request_ce_submission_update_v1" id="kinetic_request_ce_submission_update_v1_16" name="Clear Payment Details" x="528" y="243">
+            <task definition_id="kinetic_request_ce_submission_update_v1" id="kinetic_request_ce_submission_update_v1_16" name="Clear Payment Details" x="543" y="243">
                 <version>1</version>
                 <configured>true</configured>
                 <defers>false</defers>
@@ -317,7 +316,7 @@ Error Message: &lt;%=JSON.parse(@results['Register Billing User']['Result JSON']
                 <dependents>
                     <task label="" type="Complete" value="">gbmembers_billing_service_v1_3</task>
                     <task label="" type="Create" value="">kinetic_request_ce_submission_activity_create_v1_25</task>
-                    <task label="" type="Complete" value="">kinetic_request_ce_submission_create_v1_37</task>
+                    <task label="" type="Create" value="">kinetic_request_ce_submission_create_v1_37</task>
                 </dependents>
             </task>
             <task definition_id="system_wait_v1" id="system_wait_v1_18" name="Wait 1 day" x="166" y="562.7262">
@@ -543,8 +542,8 @@ Error Message: &lt;%=JSON.parse(@results['Register Billing User']['Result JSON']
   "Billing Payment Type":"&lt;%=JSON.parse(@results['Get Billing User 2']['Result JSON'])['data']['paymentMethod']%&gt;",
   "Billing Payment Period":"&lt;%=JSON.parse(@results['Get Billing User 2']['Result JSON'])['data']['paymentPeriod']%&gt;",
   "Payment Schedule": "{period: '&lt;%= @values['Payment Frequency']%&gt;', amount: &lt;%=JSON.parse(@results['Get Billing User 2']['Result JSON'])['data']['paymentAmountInCents']%&gt;}",
-  "Billing Family Members": "&lt;%= @values['membersJSON'].gsub('"','\"')%&gt;",
-  "Family Fee Details": "&lt;%= @values['feesJSON'].gsub('"','\"')%&gt;",
+  "Billing Family Members": "&lt;%= !@values['membersJSON'].nil? ? @values['membersJSON'].gsub('"','\"') : ""%&gt;",
+  "Family Fee Details": "&lt;%= !@values['feesJSON'].nil? ? @values['feesJSON'].gsub('"','\"') : ""%&gt;",
   "Membership Cost": "&lt;%= @values['Payment']%&gt;"
 }
 </parameter>
@@ -556,10 +555,10 @@ Error Message: &lt;%=JSON.parse(@results['Register Billing User']['Result JSON']
                 <messages></messages>
                 <dependents>
                     <task label="" type="Complete" value="">kinetic_request_ce_submission_activity_create_v1_31</task>
-                    <task label="" type="Complete" value="">utility_json_to_xml_v1_9</task>
+                    <task label="" type="Complete" value="">utilities_echo_v1_38</task>
                 </dependents>
             </task>
-            <task definition_id="kinetic_request_ce_submission_activity_create_v1" id="kinetic_request_ce_submission_activity_create_v1_31" name="Display Billing Registration 2" x="763" y="660">
+            <task definition_id="kinetic_request_ce_submission_activity_create_v1" id="kinetic_request_ce_submission_activity_create_v1_31" name="Display Billing Registration 2" x="942" y="661">
                 <version>1</version>
                 <configured>true</configured>
                 <defers>false</defers>
@@ -596,8 +595,8 @@ Error Message: &lt;%=JSON.parse(@results['Register Billing User']['Result JSON']
   "Billing Payment Type":"&lt;%=JSON.parse(@results['Get Billing User 3']['Result JSON'])['data']['paymentMethod']%&gt;",
   "Billing Payment Period":"&lt;%=JSON.parse(@results['Get Billing User 3']['Result JSON'])['data']['paymentPeriod']%&gt;",
   "Payment Schedule": "{period: '&lt;%= @values['Payment Frequency']%&gt;', amount: &lt;%=JSON.parse(@results['Get Billing User 3']['Result JSON'])['data']['paymentAmountInCents']%&gt;}",
-  "Billing Family Members": "&lt;%= @values['membersJSON'].gsub('"','\"')%&gt;",
-  "Family Fee Details": "&lt;%= @values['feesJSON'].gsub('"','\"')%&gt;",
+  "Billing Family Members": "&lt;%= !@values['membersJSON'].nil? ? @values['membersJSON'].gsub('"','\"') : ""%&gt;",
+  "Family Fee Details": "&lt;%= !@values['feesJSON'].nil? ? @values['feesJSON'].gsub('"','\"') : ""%&gt;",
   "Membership Cost": "&lt;%= @values['Payment']%&gt;"
 }
 </parameter>
@@ -609,10 +608,10 @@ Error Message: &lt;%=JSON.parse(@results['Register Billing User']['Result JSON']
                 <messages></messages>
                 <dependents>
                     <task label="" type="Complete" value="">kinetic_request_ce_submission_activity_create_v1_33</task>
-                    <task label="" type="Complete" value="">utility_json_to_xml_v1_9</task>
+                    <task label="" type="Complete" value="">utilities_echo_v1_38</task>
                 </dependents>
             </task>
-            <task definition_id="kinetic_request_ce_submission_activity_create_v1" id="kinetic_request_ce_submission_activity_create_v1_33" name="Display Billing Registration 3" x="768" y="838">
+            <task definition_id="kinetic_request_ce_submission_activity_create_v1" id="kinetic_request_ce_submission_activity_create_v1_33" name="Display Billing Registration 3" x="946" y="852">
                 <version>1</version>
                 <configured>true</configured>
                 <defers>false</defers>
@@ -649,8 +648,8 @@ Error Message: &lt;%=JSON.parse(@results['Register Billing User']['Result JSON']
   "Billing Payment Type":"&lt;%=JSON.parse(@results['Get Billing User 4']['Result JSON'])['data']['paymentMethod']%&gt;",
   "Billing Payment Period":"&lt;%=JSON.parse(@results['Get Billing User 4']['Result JSON'])['data']['paymentPeriod']%&gt;",
   "Payment Schedule": "{period: '&lt;%= @values['Payment Frequency']%&gt;', amount: &lt;%=JSON.parse(@results['Get Billing User 4']['Result JSON'])['data']['paymentAmountInCents']%&gt;}",
-  "Billing Family Members": "&lt;%= @values['membersJSON'].gsub('"','\"')%&gt;",
-  "Family Fee Details": "&lt;%= @values['feesJSON'].gsub('"','\"')%&gt;",
+  "Billing Family Members": "&lt;%= !@values['membersJSON'].nil? ? @values['membersJSON'].gsub('"','\"') : ""%&gt;",
+  "Family Fee Details": "&lt;%= !@values['feesJSON'].nil? ? @values['feesJSON'].gsub('"','\"') : ""%&gt;",
   "Membership Cost": "&lt;%= @values['Payment']%&gt;"
 }
 </parameter>
@@ -662,10 +661,10 @@ Error Message: &lt;%=JSON.parse(@results['Register Billing User']['Result JSON']
                 <messages></messages>
                 <dependents>
                     <task label="" type="Complete" value="">kinetic_request_ce_submission_activity_create_v1_36</task>
-                    <task label="" type="Complete" value="">utility_json_to_xml_v1_9</task>
+                    <task label="" type="Complete" value="">utilities_echo_v1_38</task>
                 </dependents>
             </task>
-            <task definition_id="kinetic_request_ce_submission_activity_create_v1" id="kinetic_request_ce_submission_activity_create_v1_36" name="Display Billing Registration 4" x="818" y="1062">
+            <task definition_id="kinetic_request_ce_submission_activity_create_v1" id="kinetic_request_ce_submission_activity_create_v1_36" name="Display Billing Registration 4" x="947" y="1069">
                 <version>1</version>
                 <configured>true</configured>
                 <defers>false</defers>
@@ -714,6 +713,63 @@ values.to_json
                     <parameter dependsOnId="" dependsOnValue="" id="parent_id" label="Parent ID" menu="" required="false" tooltip="Set the parent ID."></parameter>
                 </parameters>
                 <messages></messages>
+                <dependents>
+                    <task label="" type="Complete" value="">kinetic_request_ce_user_retrieve_v2_39</task>
+                </dependents>
+            </task>
+            <task definition_id="utilities_echo_v1" id="utilities_echo_v1_38" name="Updated" x="763" y="359">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>true</visible>
+                <parameters>
+                    <parameter dependsOnId="" dependsOnValue="" id="input" label="Input" menu="" required="true" tooltip="">Updated</parameter>
+                </parameters>
+                <messages></messages>
+                <dependents>
+                    <task label="" type="Complete" value="">kinetic_request_ce_submission_update_v1_16</task>
+                    <task label="Has Family Members" type="Complete" value="!@values['membersJSON'].nil?">utility_json_to_xml_v1_9</task>
+                </dependents>
+            </task>
+            <task definition_id="kinetic_request_ce_user_retrieve_v2" id="kinetic_request_ce_user_retrieve_v2_39" name="Get Submitter" x="745" y="87">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>true</visible>
+                <parameters>
+                    <parameter dependsOnId="" dependsOnValue="" id="error_handling" label="Error Handling" menu="Error Message,Raise Error" required="true" tooltip="Determine what to return if an error is encountered.">Error Message</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="space_slug" label="Space Slug" menu="" required="false" tooltip="The Space the submission is being retrieved from (defaults to info value if not provided)."></parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="username" label="Username" menu="" required="true" tooltip="The unique username for the user.">&lt;%=  @submission['Submitted By'] %&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="No Program Manager" type="Complete" value="!@results['Get Submitter']['Memberships'].include? &quot;Role::Program Managers&quot;">routine_kinetic_email_template_notification_send_v1_40</task>
+                </dependents>
+            </task>
+            <task definition_id="routine_kinetic_email_template_notification_send_v1" id="routine_kinetic_email_template_notification_send_v1_40" name="Email School" x="1087" y="90">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>true</defers>
+                <deferrable>true</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter dependsOnId="" dependsOnValue="" id="Recipient List" label="Recipient List" menu="" required="true" tooltip="Comma separated list of recipients (Usernames, SMTP Addresses, and/or Team Names)">&lt;%=  @space_attributes['School Email'] %&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="Notification Template Name" label="Notification Template Name" menu="" required="true" tooltip="Name of the notification template to use when sending this email">PaySmart Form Completed</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="JSON Variables" label="JSON Variables" menu="" required="false" tooltip="JSON input of miscellaneous values.  These values are used to replace placeholder content in notification messages."></parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="Kapp Slug Initiating Notification" label="Kapp Slug Initiating Notification" menu="" required="true" tooltip="The slug of the Kapp sending the notification (ex: services, queue, etc.)">&lt;%= @kapp['Slug']%&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="Related Submission Id" label="Related Submission Id" menu="" required="false" tooltip="Id of the submission to get values for, required if using those or attachments in the message">&lt;%= @submission['Id']%&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="Form Slug Initiating Notification" label="Form Slug Initiating Notification" menu="" required="false" tooltip="The slug of the Form sending the notification (ex: work-order, cleaning, etc.)">&lt;%= @form['Slug']%&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="Is Datastore" label="Is Datastore" menu="" required="false" tooltip="If the Related Submission Id, or Form Slug is a datastore form.">false</parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
                 <dependents></dependents>
             </task>
         </request>

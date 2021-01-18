@@ -51,7 +51,7 @@
         },
         {
           "name": "By Frequency",
-          "query": "formSlug=membership-fees&limit=1000&index=values[Frequency]&q=values[Frequency]=\"${parameters('Frequency')}\""
+          "query": "formSlug=membership-fees&limit=1000&index=values[Status],values[Frequency]&q=values[Frequency]=\"${parameters('Frequency')}\" AND values[Status]=\"Active\""
         },
         {
           "name": "By ID",

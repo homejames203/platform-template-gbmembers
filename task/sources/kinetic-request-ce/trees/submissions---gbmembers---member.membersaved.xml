@@ -7,7 +7,7 @@
         <name>MemberSaved</name>
         <author></author>
         <notes></notes>
-        <lastID>58</lastID>
+        <lastID>67</lastID>
         <request>
             <task definition_id="system_start_v1" id="start" name="Start" x="24" y="31">
                 <version>1</version>
@@ -20,6 +20,8 @@
                 <dependents>
                     <task label="Upload to S3" type="Complete" value="!@values['Photo'].nil? &amp;&amp; (@values['Photo'].include? &quot;submissions&quot;)">utilities_echo_v1_50</task>
                     <task label="" type="Complete" value="">routine_kinetic_request_ce_user_retrieve_v1_56</task>
+                    <task label="New Status" type="Complete" value="@values_previous['Status']!= @values['Status']">utilities_echo_v1_61</task>
+                    <task label="Belt Promotion" type="Complete" value=" @values_previous['Ranking Belt']!= @values['Ranking Belt']">kinetic_request_ce_datastore_submission_search_v1_66</task>
                 </dependents>
             </task>
             <task definition_id="utilities_echo_v1" id="utilities_echo_v1_50" name="Get Filename" x="437.6875" y="80.6875">
@@ -109,7 +111,7 @@
                 <messages></messages>
                 <dependents></dependents>
             </task>
-            <task definition_id="routine_kinetic_request_ce_user_retrieve_v1" id="routine_kinetic_request_ce_user_retrieve_v1_56" name="Get User" x="105.6875" y="221.6875">
+            <task definition_id="routine_kinetic_request_ce_user_retrieve_v1" id="routine_kinetic_request_ce_user_retrieve_v1_56" name="Get User" x="437.6875" y="169.6875">
                 <version>1</version>
                 <configured>true</configured>
                 <defers>true</defers>
@@ -119,17 +121,13 @@
                     <parameter dependsOnId="" dependsOnValue="" id="Space Slug" label="Space Slug" menu="" required="false" tooltip="Slug of the space in which the user exists"></parameter>
                     <parameter dependsOnId="" dependsOnValue="" id="Username" label="Username" menu="" required="true" tooltip="Username of the user to retrieve">&lt;%=  @values['Member ID'] %&gt;</parameter>
                 </parameters>
-                <messages>
-                    <message type="Create"></message>
-                    <message type="Update"></message>
-                    <message type="Complete"></message>
-                </messages>
+                <messages></messages>
                 <dependents>
-                    <task label="Inactive or Frozen" type="Complete" value=" @results['Get User']['Enabled']==&quot;true&quot; &amp;&amp; (@values['Status']==&quot;Inactive&quot; || @values['Status']==&quot;Frozen&quot;)">routine_kinetic_request_ce_user_update_v1_57</task>
-                    <task label="Active" type="Complete" value=" @results['Get User']['Enabled'].nil? &amp;&amp; @values['Status']==&quot;Active&quot;">routine_kinetic_request_ce_user_update_v1_58</task>
+                    <task label="Inactive or Frozen" type="Complete" value=" @results['Get User']['Enabled'] &amp;&amp; (@values['Status']==&quot;Inactive&quot; || @values['Status']==&quot;Frozen&quot;)">routine_kinetic_request_ce_user_update_v1_57</task>
+                    <task label="Active" type="Complete" value=" @results['Get User']['Exists']==&quot;true&quot; &amp;&amp; !@results['Get User']['Enabled'] &amp;&amp; @values['Status']==&quot;Active&quot;">routine_kinetic_request_ce_user_update_v1_58</task>
                 </dependents>
             </task>
-            <task definition_id="routine_kinetic_request_ce_user_update_v1" id="routine_kinetic_request_ce_user_update_v1_57" name="Disable User" x="477.6875" y="226.6875">
+            <task definition_id="routine_kinetic_request_ce_user_update_v1" id="routine_kinetic_request_ce_user_update_v1_57" name="Disable User" x="765.6875" y="164.6875">
                 <version>1</version>
                 <configured>true</configured>
                 <defers>true</defers>
@@ -146,14 +144,10 @@
                     <parameter dependsOnId="" dependsOnValue="" id="Attributes" label="Attributes" menu="" required="false" tooltip="JSON object of the attributes to update"></parameter>
                     <parameter dependsOnId="" dependsOnValue="" id="Profile Attributes" label="Profile Attributes" menu="" required="false" tooltip="JSON object of the profile attributes to update"></parameter>
                 </parameters>
-                <messages>
-                    <message type="Create"></message>
-                    <message type="Update"></message>
-                    <message type="Complete"></message>
-                </messages>
+                <messages></messages>
                 <dependents></dependents>
             </task>
-            <task definition_id="routine_kinetic_request_ce_user_update_v1" id="routine_kinetic_request_ce_user_update_v1_58" name="Enable User" x="109.6875" y="439.6875">
+            <task definition_id="routine_kinetic_request_ce_user_update_v1" id="routine_kinetic_request_ce_user_update_v1_58" name="Enable User" x="436.6875" y="285.6875">
                 <version>1</version>
                 <configured>true</configured>
                 <defers>true</defers>
@@ -170,9 +164,83 @@
                     <parameter dependsOnId="" dependsOnValue="" id="Attributes" label="Attributes" menu="" required="false" tooltip="JSON object of the attributes to update"></parameter>
                     <parameter dependsOnId="" dependsOnValue="" id="Profile Attributes" label="Profile Attributes" menu="" required="false" tooltip="JSON object of the profile attributes to update"></parameter>
                 </parameters>
+                <messages></messages>
+                <dependents></dependents>
+            </task>
+            <task definition_id="kinetic_request_ce_submission_update_v1" id="kinetic_request_ce_submission_update_v1_60" name="Update Status History" x="59.6875" y="649.6875">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>true</visible>
+                <parameters>
+                    <parameter dependsOnId="" dependsOnValue="" id="error_handling" label="Error Handling" menu="Error Message,Raise Error" required="true" tooltip="Determine what to return if an error is encountered.">Error Message</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="space_slug" label="Space Slug" menu="" required="false" tooltip="The Space the submission is being retrieved from (defaults to info value if not provided)."></parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="submission_id" label="Submission Id" menu="" required="true" tooltip="The id of the submission being updated.">&lt;%=  @submission['Id'] %&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="state" label="State" menu="" required="false" tooltip="The value used to set the submission state."></parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="values" label="Values" menu="" required="false" tooltip="A JSON map of field names to values that should be set.">{
+  "Status History":&lt;%= @results['Build History']['output'] %&gt;
+}</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="current_page_name" label="Current Page Name" menu="" required="false" tooltip="Set the current page name."></parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="current_page_navigation" label="Current Page Navigation" menu="" required="false" tooltip="Set the current page navigation."></parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="origin_id" label="Origin ID" menu="" required="false" tooltip="Set the origin ID."></parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="parent_id" label="Parent ID" menu="" required="false" tooltip="Set the parent ID."></parameter>
+                </parameters>
+                <messages></messages>
+                <dependents></dependents>
+            </task>
+            <task definition_id="utilities_echo_v1" id="utilities_echo_v1_61" name="Build History" x="48.6875" y="456.6875">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>true</visible>
+                <parameters>
+                    <parameter dependsOnId="" dependsOnValue="" id="input" label="Input" menu="" required="true" tooltip="">&lt;%= 
+        history=JSON.parse(@values['Status History'].nil? ? "[]" : @values['Status History'])
+        hist={'submitter'=&gt; "Form", 'date'=&gt; "#{Time.now}", 'status'=&gt; @values['Status']}
+        history.push(hist)  
+        JSON.dump(history)%&gt;</parameter>
+                </parameters>
+                <messages></messages>
+                <dependents>
+                    <task label="" type="Complete" value="">kinetic_request_ce_submission_update_v1_60</task>
+                </dependents>
+            </task>
+            <task definition_id="kinetic_request_ce_datastore_submission_search_v1" id="kinetic_request_ce_datastore_submission_search_v1_66" name="Find Journey Triggers" x="436.1875" y="390.6875">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter dependsOnId="" dependsOnValue="" id="error_handling" label="Error Handling" menu="Error Message,Raise Error" required="true" tooltip="Determine what to return if an error is encountered.">Error Message</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="space_slug" label="Space Slug" menu="" required="false" tooltip="The Space the submission is being retrieved from (defaults to info value if not provided)."></parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="form_slug" label="Datastore Form Slug" menu="" required="false" tooltip="The slug of the Datastore Form to search for submissions in.">journey-triggers</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="index" label="Index" menu="" required="false" tooltip="The index to use for the search.">values[Status],values[Record Type],values[Member Condition],values[Member Condition Duration],values[Program],values[Belt]</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="query" label="Query" menu="" required="false" tooltip="The query that will be used to search the submissions. Ex: values[company]=Kinetic">values[Status]="Active" AND values[Record Type]="Member" AND values[Member Condition]="New Belt" AND values[Member Condition Duration]="0" AND values[Program]="&lt;%=  @values['Ranking Program'] %&gt;" AND values[Belt]="&lt;%=  @values['Ranking Belt'] %&gt;"</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="limit" label="Limit" menu="" required="false" tooltip="An integer representing the max results that the search can return."></parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="return_type" label="Return Type" menu="JSON,XML,ID List" required="true" tooltip="The format that the results should be returned in.">JSON</parameter>
+                </parameters>
                 <messages>
-                    <message type="Create"></message>
-                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">generate_journey_events_v1_67</task>
+                </dependents>
+            </task>
+            <task definition_id="generate_journey_events_v1" id="generate_journey_events_v1_67" name="Generate Journey Events" x="731.1875" y="392.6875">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>true</visible>
+                <parameters>
+                    <parameter dependsOnId="" dependsOnValue="" id="journey_triggers_json" label="Journey Triggers JSON" menu="" required="true" tooltip="Journney Trigger records as JSON">&lt;%= @results['Find Journey Triggers']['Result'] %&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="record_id" label="Record ID" menu="" required="true" tooltip="Record ID of Lead or member">&lt;%=  @submission['Id'] %&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="record_name" label="Record Name" menu="" required="true" tooltip="Record Name of Lead or member">$&lt;%=  @values['First Name']+" "+ @values['Last Name']%&gt;</parameter>
+                </parameters>
+                <messages>
                     <message type="Complete"></message>
                 </messages>
                 <dependents></dependents>

@@ -82,6 +82,14 @@
         "values[Target]"
       ],
       "unique": false
+    },
+    {
+      "name": "values[Target],values[Script Name]:UNIQUE",
+      "parts": [
+        "values[Target]",
+        "values[Script Name]"
+      ],
+      "unique": true
     }
   ],
   "name": "Call Scripts",

@@ -9,6 +9,7 @@
 
   ],
   "trees": [
+    "routine_kinetic_kapp_retrieve_v1",
     "routine_kinetic_space_retrieve_v1"
   ]
 }

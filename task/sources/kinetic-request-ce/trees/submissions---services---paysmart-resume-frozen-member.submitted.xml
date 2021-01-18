@@ -36,9 +36,7 @@
                     <parameter dependsOnId="" dependsOnValue="" id="type" label="Type" menu="" required="false" tooltip="Specifies the a submission activity 'Type', which should indicate what type of data is included.">Success</parameter>
                     <parameter dependsOnId="" dependsOnValue="" id="data" label="Data" menu="" required="false" tooltip="Additional data that can be used by resources consuming the submission activity record (for example a Request bundle may render submission details based upon JSON content in the activity data).">{"Message":"Cancellation for &lt;%= @values['Student First Name']%&gt; &lt;%= @values['Student Last Name']%&gt; has been received"}</parameter>
                 </parameters>
-                <messages>
-                    <message type="Complete"></message>
-                </messages>
+                <messages></messages>
                 <dependents>
                     <task label="" type="Complete" value="">kinetic_request_ce_submission_update_v1_10</task>
                     <task label="" type="Complete" value="">utilities_echo_v1_14</task>
@@ -96,9 +94,7 @@ values.to_json
                     <parameter dependsOnId="" dependsOnValue="" id="origin_id" label="Origin ID" menu="" required="false" tooltip="Set the origin ID."></parameter>
                     <parameter dependsOnId="" dependsOnValue="" id="parent_id" label="Parent ID" menu="" required="false" tooltip="Set the parent ID."></parameter>
                 </parameters>
-                <messages>
-                    <message type="Complete"></message>
-                </messages>
+                <messages></messages>
                 <dependents>
                     <task label="" type="Complete" value="">kinetic_request_ce_submission_create_v1_9</task>
                 </dependents>
@@ -120,9 +116,7 @@ values.to_json
   "effectiveDate": "&lt;%= Date.parse(@values['Date payment will resume'])%&gt;"
 }</parameter>
                 </parameters>
-                <messages>
-                    <message type="Complete"></message>
-                </messages>
+                <messages></messages>
                 <dependents>
                     <task label="Success" type="Complete" value="JSON.parse(@results['Resume Member']['Result JSON'])['error']==0">kinetic_request_ce_submission_activity_create_v1_7</task>
                     <task label="Error" type="Complete" value="JSON.parse(@results['Resume Member']['Result JSON'])['error']==100">kinetic_request_ce_submission_activity_create_v1_12</task>
@@ -161,9 +155,7 @@ startDt=Date.parse(@values['Date payment will resume'])
 (startDt.mjd - nowDt.mjd)+1
 %&gt;</parameter>
                 </parameters>
-                <messages>
-                    <message type="Complete"></message>
-                </messages>
+                <messages></messages>
                 <dependents>
                     <task label="" type="Complete" value="">system_wait_v1_15</task>
                 </dependents>
@@ -178,11 +170,7 @@ startDt=Date.parse(@values['Date payment will resume'])
                     <parameter dependsOnId="" dependsOnValue="" id="Time to wait" label="Wait time:" menu="" required="true" tooltip="Time you want to wait for deferred task">&lt;%= @results['Resume Date Delay']['output'] %&gt;</parameter>
                     <parameter dependsOnId="" dependsOnValue="" id="Time unit" label="Time unit:" menu="Second,Minute,Hour,Day,Week" required="true" tooltip="Unit of measurement for time (Seconds, Minutes, Hours, Days, Weeks)">Day</parameter>
                 </parameters>
-                <messages>
-                    <message type="Create"></message>
-                    <message type="Update"></message>
-                    <message type="Complete"></message>
-                </messages>
+                <messages></messages>
                 <dependents>
                     <task label="" type="Complete" value="">gbmembers_billing_service_v1_16</task>
                 </dependents>
@@ -203,9 +191,7 @@ startDt=Date.parse(@values['Date payment will resume'])
   "space": "&lt;%= @space['Slug']%&gt;"
 }</parameter>
                 </parameters>
-                <messages>
-                    <message type="Complete"></message>
-                </messages>
+                <messages></messages>
                 <dependents>
                     <task label="" type="Complete" value="">kinetic_request_ce_submission_update_v1_17</task>
                 </dependents>
@@ -230,9 +216,7 @@ startDt=Date.parse(@values['Date payment will resume'])
                     <parameter dependsOnId="" dependsOnValue="" id="origin_id" label="Origin ID" menu="" required="false" tooltip="Set the origin ID."></parameter>
                     <parameter dependsOnId="" dependsOnValue="" id="parent_id" label="Parent ID" menu="" required="false" tooltip="Set the parent ID."></parameter>
                 </parameters>
-                <messages>
-                    <message type="Complete"></message>
-                </messages>
+                <messages></messages>
                 <dependents>
                     <task label="" type="Complete" value="">kinetic_request_ce_submission_activity_create_v1_18</task>
                 </dependents>
@@ -250,7 +234,7 @@ startDt=Date.parse(@values['Date payment will resume'])
                     <parameter dependsOnId="" dependsOnValue="" id="label" label="Label" menu="" required="false" tooltip="The label for the submission activity.">Resume Date reached updating Billing Status</parameter>
                     <parameter dependsOnId="" dependsOnValue="" id="description" label="Description" menu="" required="false" tooltip="The description of the submission activity."></parameter>
                     <parameter dependsOnId="" dependsOnValue="" id="type" label="Type" menu="" required="false" tooltip="Specifies the a submission activity 'Type', which should indicate what type of data is included."></parameter>
-                    <parameter dependsOnId="" dependsOnValue="" id="data" label="Data" menu="" required="false" tooltip="Additional data that can be used by resources consuming the submission activity record (for example a Request bundle may render submission details based upon JSON content in the activity data).">{"Message":"Last Debit Date &lt;%=  @values['The last debit will be taken on'] %&gt; has been reached. Updated member with Status[&lt;%= JSON.parse(@results['Get Billing Info after Resume Date']['Result JSON'])['data']['statusDescription']%&gt;]"}</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="data" label="Data" menu="" required="false" tooltip="Additional data that can be used by resources consuming the submission activity record (for example a Request bundle may render submission details based upon JSON content in the activity data).">{"Message":"Last Debit Date &lt;%=  @values['Date payment will resume'] %&gt; has been reached. Updated member with Status[&lt;%= JSON.parse(@results['Get Billing Info after Resume Date']['Result JSON'])['data']['statusDescription']%&gt;]"}</parameter>
                 </parameters>
                 <messages>
                     <message type="Complete"></message>

@@ -1,0 +1,374 @@
+<tree schema_version="1.0">
+    <sourceName>Kinetic Request CE</sourceName>
+    <sourceGroup>Datastore Submissions > journey-event</sourceGroup>
+    <type>Tree</type>
+    <status>Active</status>
+    <taskTree builder_version="" schema_version="1.0" version="">
+        <name>Saved</name>
+        <author></author>
+        <notes></notes>
+        <lastID>18</lastID>
+        <request>
+            <task definition_id="system_start_v1" id="start" name="Start" x="10" y="10">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters></parameters>
+                <messages></messages>
+                <dependents>
+                    <task label="" type="Complete" value="">kinetic_request_ce_notification_variables_build_v1_6</task>
+                </dependents>
+            </task>
+            <task definition_id="kinetic_request_ce_submission_retrieve_v2" id="kinetic_request_ce_submission_retrieve_v2_1" name="Get Source Record" x="280" y="207">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>true</visible>
+                <parameters>
+                    <parameter dependsOnId="" dependsOnValue="" id="error_handling" label="Error Handling" menu="Error Message,Raise Error" required="true" tooltip="Determine what to return if an error is encountered.">Error Message</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="space_slug" label="Space Slug" menu="" required="false" tooltip="The Space the submission is being retrieved from (defaults to info value if not provided)."></parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="retrieve_by" label="Retrieve By" menu="Id,Query" required="true" tooltip="How to retrieve the submission. Id or Query.">Id</parameter>
+                    <parameter dependsOnId="retrieve_by" dependsOnValue="Query" id="kapp_slug" label="Kapp Slug" menu="" required="true" tooltip="Slug of the kapp to query"></parameter>
+                    <parameter dependsOnId="retrieve_by" dependsOnValue="Query" id="form_slug" label="Form Slug" menu="" required="true" tooltip="Slug of the form to query"></parameter>
+                    <parameter dependsOnId="retrieve_by" dependsOnValue="Query" id="query" label="Query" menu="" required="true" tooltip="A query that will retrieve a single submission"></parameter>
+                    <parameter dependsOnId="retrieve_by" dependsOnValue="Id" id="submission_id" label="Submission Id" menu="" required="true" tooltip="The id of the submission being retrieved.">&lt;%=  @values['Record ID'] %&gt;</parameter>
+                </parameters>
+                <messages></messages>
+                <dependents>
+                    <task label="Email" type="Complete" value=" @values['Contact Type']==&quot;Email&quot;">kinetic_request_ce_datastore_submission_search_v1_2</task>
+                    <task label="SMS" type="Complete" value=" @values['Contact Type']==&quot;SMS&quot;">kinetic_request_ce_datastore_submission_search_v1_3</task>
+                </dependents>
+            </task>
+            <task definition_id="kinetic_request_ce_datastore_submission_search_v1" id="kinetic_request_ce_datastore_submission_search_v1_2" name="Get Email Template" x="608" y="81">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter dependsOnId="" dependsOnValue="" id="error_handling" label="Error Handling" menu="Error Message,Raise Error" required="true" tooltip="Determine what to return if an error is encountered.">Error Message</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="space_slug" label="Space Slug" menu="" required="false" tooltip="The Space the submission is being retrieved from (defaults to info value if not provided)."></parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="form_slug" label="Datastore Form Slug" menu="" required="false" tooltip="The slug of the Datastore Form to search for submissions in.">email-templates</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="index" label="Index" menu="" required="false" tooltip="The index to use for the search.">values[Template Name]</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="query" label="Query" menu="" required="false" tooltip="The query that will be used to search the submissions. Ex: values[company]=Kinetic">values[Template Name]="&lt;%=  @values['Template Name'] %&gt;"</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="limit" label="Limit" menu="" required="false" tooltip="An integer representing the max results that the search can return."></parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="return_type" label="Return Type" menu="JSON,XML,ID List" required="true" tooltip="The format that the results should be returned in.">JSON</parameter>
+                </parameters>
+                <messages></messages>
+                <dependents>
+                    <task label="" type="Complete" value="">routine_kinetic_request_ce_submission_create_v1_8</task>
+                </dependents>
+            </task>
+            <task definition_id="kinetic_request_ce_datastore_submission_search_v1" id="kinetic_request_ce_datastore_submission_search_v1_3" name="Get SMS Template" x="680" y="291">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter dependsOnId="" dependsOnValue="" id="error_handling" label="Error Handling" menu="Error Message,Raise Error" required="true" tooltip="Determine what to return if an error is encountered.">Error Message</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="space_slug" label="Space Slug" menu="" required="false" tooltip="The Space the submission is being retrieved from (defaults to info value if not provided)."></parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="form_slug" label="Datastore Form Slug" menu="" required="false" tooltip="The slug of the Datastore Form to search for submissions in.">sms-templates</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="index" label="Index" menu="" required="false" tooltip="The index to use for the search.">values[Template Name]</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="query" label="Query" menu="" required="false" tooltip="The query that will be used to search the submissions. Ex: values[company]=Kinetic">values[Template Name]="&lt;%=  @values['Template Name'] %&gt;"</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="limit" label="Limit" menu="" required="false" tooltip="An integer representing the max results that the search can return."></parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="return_type" label="Return Type" menu="JSON,XML,ID List" required="true" tooltip="The format that the results should be returned in.">JSON</parameter>
+                </parameters>
+                <messages></messages>
+                <dependents>
+                    <task label="" type="Complete" value="">utilities_echo_v1_16</task>
+                </dependents>
+            </task>
+            <task definition_id="kinetic_request_ce_notification_variables_build_v1" id="kinetic_request_ce_notification_variables_build_v1_6" name="Build Variables" x="-37" y="199">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter dependsOnId="" dependsOnValue="" id="error_handling" label="Error Handling" menu="Error Message,Raise Error" required="true" tooltip="Determine what to return if an error is encountered.">Error Message</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="space_slug" label="Space Slug" menu="" required="false" tooltip="The Slug of the space to retrieve variables from."></parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="kapp_slug" label="Kapp Slug" menu="" required="false" tooltip="The Slug of the kapp to retrieve variables from.">gbmembers</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="form_slug" label="Form Slug" menu="" required="false" tooltip="The Slug of the form to retrieve variables from.">&lt;%= @values['Record Type']=="Member" ? "members" : "leads"%&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="submission_id" label="Submission Id" menu="" required="false" tooltip="The id of the submission to retrieve variables from.">&lt;%=  @values['Record ID'] %&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="username" label="CE Username" menu="" required="false" tooltip="The username of the user to retrieve variables for (CE USERS ONLY)"></parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="addt_vars" label="Additional Variables" menu="" required="false" tooltip="A JSON String of additional Variables to be used in Replacements"></parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="backups" label="Backup Variables" menu="" required="false" tooltip="A JSON String of Backup Variables to be used in Replacements if Missing"></parameter>
+                </parameters>
+                <messages></messages>
+                <dependents>
+                    <task label="Automatic" type="Complete" value="  @values['Action']==&quot;Automatic&quot; &amp;&amp;  @values['Status']==&quot;New&quot;">kinetic_request_ce_submission_retrieve_v2_1</task>
+                </dependents>
+            </task>
+            <task definition_id="routine_kinetic_request_ce_submission_create_v1" id="routine_kinetic_request_ce_submission_create_v1_8" name="Email Campaign" x="982" y="81">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>true</defers>
+                <deferrable>true</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter dependsOnId="" dependsOnValue="" id="Space Slug" label="Space Slug" menu="" required="false" tooltip="Slug of the space to create the submission in"></parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="Kapp Slug" label="Kapp Slug" menu="" required="true" tooltip="Slug of the kapp to create the submission in">gbmembers</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="Form Slug" label="Form Slug" menu="" required="true" tooltip="Slug of the form to create the submission in">email-campaigns</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="Values" label="Values" menu="" required="false" tooltip="JSON object of the form values to be pre-populated">{
+  "From": "&lt;%=  @space_attributes['School Email'] %&gt;",
+  "Recipients": "[\"&lt;%=  @values['Record ID'] %&gt;\"]",
+  "Subject": "&lt;%= JSON.parse(@results['Get Email Template']['Result'])[0]['values']["Subject"] %&gt;",
+  "Body": &lt;%= JSON.generate(JSON.parse(@results['Get Email Template']['Result'])[0]['values']["Email Content"]) %&gt;,
+  "Embedded Images": [],
+  "Sent Date": "&lt;%= DateTime.now.strftime("%d-%m-%Y %H:%M")%&gt;"
+}</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="Current Page Name" label="Current Page Name" menu="" required="false" tooltip="Name of the Page the Submission to Open to"></parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="Current Page Navigation" label="Current Page Navigation" menu="" required="false" tooltip="Sets the current page navigation"></parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="Origin Id" label="Origin Id" menu="" required="false" tooltip="Sets the Origin Id"></parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="Parent Id" label="Parent Id" menu="" required="false" tooltip="Sets the Parent Id"></parameter>
+                </parameters>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">routine_kinetic_datastore_submission_update_v1_9</task>
+                </dependents>
+            </task>
+            <task definition_id="routine_kinetic_datastore_submission_update_v1" id="routine_kinetic_datastore_submission_update_v1_9" name="Update Event" x="1407" y="229">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>true</defers>
+                <deferrable>true</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter dependsOnId="" dependsOnValue="" id="Id" label="Id" menu="" required="true" tooltip="The id of the submission to update">&lt;%=  @submission['Id'] %&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="Updated - Core State" label="Updated - Core State" menu="" required="false" tooltip="The submissions core state"></parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="Updated - Current Page Name" label="Updated - Current Page Name" menu="" required="false" tooltip="The page to set the submission to"></parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="Updated - Current Page Navigation" label="Updated - Current Page Navigation" menu="" required="false" tooltip="The direction of the next page (next or previous)"></parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="Updated - Values JSON" label="Updated - Values JSON" menu="" required="false" tooltip="A JSON representation of the submissions values">{
+  "Status": "Completed"
+}</parameter>
+                </parameters>
+                <messages></messages>
+                <dependents></dependents>
+            </task>
+            <task definition_id="gbmembers_messaging_service_v1" id="gbmembers_messaging_service_v1_10" name="Send SMS" x="479" y="473">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>true</visible>
+                <parameters>
+                    <parameter dependsOnId="" dependsOnValue="" id="service_value" label="Messaging Service Value" menu="" required="true" tooltip="GBMembers Messaging Service call value (send_sms, send_bulk_sms)">send_sms</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="space" label="Space slug" menu="" required="true" tooltip="Space slug for School">&lt;%=  @space['Slug'] %&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="messaging_company" label="Messaging Company" menu="" required="true" tooltip="Messaging Company that the service will operate against.(eg, SMS Broadcast)">SMS Broadcast</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="json_args" label="JSON arguments" menu="" required="true" tooltip="A JSON structure containing all argument passed to the Messaging Service">{
+  "space": "&lt;%=  @space['Slug'] %&gt;",
+  "toNumber": "&lt;%= JSON.parse(@results['Get Source Record']['Values JSON'])['Phone Number'] %&gt;",
+  "target": "&lt;%=  @values['Record Type'] %&gt;",
+  "submissionId": "&lt;%=  @values['Record ID'] %&gt;",
+  "text": "&lt;%= @results['Replace Variables']['output'].gsub("\n","\\n").gsub('"','\"') %&gt;"
+}</parameter>
+                </parameters>
+                <messages></messages>
+                <dependents>
+                    <task label="" type="Complete" value="">kinetic_request_ce_submission_create_v1_11</task>
+                </dependents>
+            </task>
+            <task definition_id="kinetic_request_ce_submission_create_v1" id="kinetic_request_ce_submission_create_v1_11" name="Create Member SMS Activity" x="1021" y="473">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>true</visible>
+                <parameters>
+                    <parameter dependsOnId="" dependsOnValue="" id="error_handling" label="Error Handling" menu="Error Message,Raise Error" required="true" tooltip="Determine what to return if an error is encountered.">Error Message</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="space_slug" label="Space Slug" menu="" required="false" tooltip="The Space the submission is being retrieved from (defaults to info value if not provided)."></parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="kapp_slug" label="Kapp Slug" menu="" required="true" tooltip="The slug of the Kapp the submission is for.">gbmembers</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="form_slug" label="Form Slug" menu="" required="true" tooltip="The slug of the form the submission is for.">&lt;%= JSON.parse(@results['Get Source Record']['Values JSON'])['Record Type']=="Member" ? "member-activities" : "lead-activities" %&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="values" label="Values" menu="" required="false" tooltip="JSON map of submission field values.">&lt;%=
+sms = {}
+sms["To"] = JSON.parse(@results['Get Source Record']['Values JSON'])['Phone Number']
+sms["Content"] = @results['Replace Variables']['output'] 
+sms["Sent Date"] = DateTime.now.strftime("%d-%m-%Y %H:%M")
+
+values = {}
+if @values['Record Type']=="Member"
+  values["Member ID"] = @values['Record ID'] 
+end
+if @values['Record Type']=="Lead"
+  values["Lead ID"] = @values['Record ID']
+end 
+values["Type"] = "SMS"
+values["Direction"] = "Outbound"
+values["Content"] = sms.to_json
+
+values.to_json
+%&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="current_page_name" label="Current Page Name" menu="" required="false" tooltip="Set the current page name."></parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="current_page_navigation" label="Current Page Navigation" menu="" required="false" tooltip="Set the current page navigation."></parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="origin_id" label="Origin ID" menu="" required="false" tooltip="Set the origin ID."></parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="parent_id" label="Parent ID" menu="" required="false" tooltip="Set the parent ID."></parameter>
+                </parameters>
+                <messages></messages>
+                <dependents>
+                    <task label="" type="Complete" value="">kinetic_request_ce_submission_update_v1_13</task>
+                </dependents>
+            </task>
+            <task definition_id="kinetic_request_ce_submission_update_v1" id="kinetic_request_ce_submission_update_v1_13" name="Update Person" x="1255" y="465">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>true</visible>
+                <parameters>
+                    <parameter dependsOnId="" dependsOnValue="" id="error_handling" label="Error Handling" menu="Error Message,Raise Error" required="true" tooltip="Determine what to return if an error is encountered.">Error Message</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="space_slug" label="Space Slug" menu="" required="false" tooltip="The Space the submission is being retrieved from (defaults to info value if not provided)."></parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="submission_id" label="Submission Id" menu="" required="true" tooltip="The id of the submission being updated.">&lt;%=  @values['Record ID'] %&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="state" label="State" menu="" required="false" tooltip="The value used to set the submission state."></parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="values" label="Values" menu="" required="false" tooltip="A JSON map of field names to values that should be set.">&lt;%=
+smsSentCount = 1
+count=JSON.parse(@results['Get Source Record']['Values JSON'])['SMS Sent Count']
+if !count.nil?
+  smsSentCount = count.to_i + 1
+end
+values = {}
+values["SMS Sent Count"] = smsSentCount 
+values.to_json
+%&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="current_page_name" label="Current Page Name" menu="" required="false" tooltip="Set the current page name."></parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="current_page_navigation" label="Current Page Navigation" menu="" required="false" tooltip="Set the current page navigation."></parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="origin_id" label="Origin ID" menu="" required="false" tooltip="Set the origin ID."></parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="parent_id" label="Parent ID" menu="" required="false" tooltip="Set the parent ID."></parameter>
+                </parameters>
+                <messages></messages>
+                <dependents>
+                    <task label="" type="Complete" value="">routine_kinetic_datastore_submission_update_v1_9</task>
+                </dependents>
+            </task>
+            <task definition_id="utilities_echo_v1" id="utilities_echo_v1_14" name="test" x="1189" y="401">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>true</visible>
+                <parameters>
+                    <parameter dependsOnId="" dependsOnValue="" id="input" label="Input" menu="" required="true" tooltip="">&lt;%=
+sms = {}
+sms["To"] = JSON.parse(@results['Get Source Record']['Values JSON'])['Phone Number']
+sms["Content"] = @results['Replace Variables']['output'] 
+sms["Sent Date"] = DateTime.now.strftime("%d-%m-%Y %H:%M")
+
+values = {}
+if @values['Record Type']=="Member"
+  values["Member ID"] = @values['Record ID'] 
+end
+if @values['Record Type']=="Lead"
+  values["Lead ID"] = @values['Record ID']
+end 
+values["Type"] = "SMS"
+values["Direction"] = "Outbound"
+values["Content"] = sms.to_json
+
+values.to_json
+%&gt;</parameter>
+                </parameters>
+                <messages></messages>
+                <dependents></dependents>
+            </task>
+            <task definition_id="utilities_echo_v1" id="utilities_echo_v1_15" name="Replace Variables" x="1096" y="289">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>true</visible>
+                <parameters>
+                    <parameter dependsOnId="" dependsOnValue="" id="input" label="Input" menu="" required="true" tooltip="">&lt;%=
+content=@results['Resolve Names']['output']
+replace_values=JSON.parse(@results['Build Variables']['Replacement Variables'])
+replace_values.keys.each{|key|
+  content = content.gsub(/\$\{#{key}\('(.*?)'\)\}/) do
+    if replace_values[key].has_key?($1)
+      replace_values[key][$1]
+    else
+      "${#{key}('#{$1}')}"
+    end
+  end
+}
+content=content.gsub(/\$\{space\}/, @space['Slug'])
+
+content
+%&gt;</parameter>
+                </parameters>
+                <messages></messages>
+                <dependents>
+                    <task label="" type="Complete" value="">gbmembers_messaging_service_v1_10</task>
+                </dependents>
+            </task>
+            <task definition_id="utilities_echo_v1" id="utilities_echo_v1_16" name="Resolve Names" x="890" y="289">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>true</visible>
+                <parameters>
+                    <parameter dependsOnId="" dependsOnValue="" id="input" label="Input" menu="" required="true" tooltip="">&lt;%=
+content=JSON.parse(@results['Get SMS Template']['Result'])[0]['values']['SMS Content']
+
+content.gsub!("member(&amp;#039;ID&amp;#039;)", @values['Record ID'])
+content.gsub!("member('ID')", @values['Record ID'])
+content.gsub!("member(&amp;#039;First Name&amp;#039;)", JSON.parse(@results['Get Source Record']['Values JSON'])["First Name"])
+content.gsub!("member('First Name')", JSON.parse(@results['Get Source Record']['Values JSON'])["First Name"])
+content.gsub!("member(&amp;#039;Last Name&amp;#039;)", JSON.parse(@results['Get Source Record']['Values JSON'])["Last Name"])
+content.gsub!("member('Last Name')", JSON.parse(@results['Get Source Record']['Values JSON'])["Last Name"])
+
+content.gsub!("${date}", DateTime.parse(introDate).strftime("%d %B %Y"))
+
+if @values['Record Type']=="Lead" &amp;&amp; content.index("${Intro Scheduled Date}")!=-1
+  history=JSON.parse(@results['Get Source Record']['Values JSON'])['History']
+  history=JSON.parse(history)
+  introDate=nil
+  i=history.length-1
+  while i&gt;=0
+    if history[i]["contactMethod"] == 'intro_class' 
+      introDate=history[i]["contactDate"]
+      break;
+    end
+    i=i-1
+  end
+  introDate
+  if !introDate.nil?
+    content.gsub!("${Intro Scheduled Date}", DateTime.parse(introDate).strftime("%d %B %Y %l:%M %p"))
+  end
+end 
+if @values['Record Type']=="Lead" &amp;&amp; content.index("${Intro Scheduled Time}")!=-1
+  history=JSON.parse(@results['Get Source Record']['Values JSON'])['History']
+  history=JSON.parse(history)
+  introTime=nil
+  i=history.length-1
+  while i&gt;=0
+    if history[i]["contactMethod"] == 'intro_class' 
+      introTime=history[i]["contactDate"]
+      break;
+    end
+    i=i-1
+  end
+  introTime
+  if !introTime.nil?
+    content.gsub!("${Intro Scheduled Time}", DateTime.parse(introTime).strftime("%l:%M %p"))
+  end
+end 
+content
+%&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">utilities_echo_v1_15</task>
+                </dependents>
+            </task>
+        </request>
+    </taskTree>
+</tree>

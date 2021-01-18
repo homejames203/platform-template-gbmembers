@@ -20,6 +20,18 @@
       ]
     },
     {
+      "name": "Ignore Lead Status Values",
+      "values": [
+        "Not Interested"
+      ]
+    },
+    {
+      "name": "Ignore Member Status Values",
+      "values": [
+        "Inactive"
+      ]
+    },
+    {
       "name": "Kinetic Billing Server URL",
       "values": [
         "https://gbbilling.com.au:8443/billingservice"
@@ -29,6 +41,12 @@
       "name": "Kinetic Messaging Server URL",
       "values": [
         "https://gbbilling.com.au:8443/gbmembers-messaging"
+      ]
+    },
+    {
+      "name": "Lead Source Values",
+      "values": [
+        "Brochure,Facebook,Facebook Ad,Family,Google+,Google Ad,Instagram,Instagram Ad,Internal Referral,Leaflet,Linkedin,Magazine,Newspaper,Phone Call,Poster,Signage,Television,Twitter,Website,Word of Mouth,Walk-In,Other Advertising"
       ]
     },
     {

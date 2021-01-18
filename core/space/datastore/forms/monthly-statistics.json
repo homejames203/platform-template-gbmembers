@@ -432,6 +432,6 @@
     }
   ],
   "slug": "monthly-statistics",
-  "status": "New",
+  "status": "Active",
   "submissionLabelExpression": "${values('Year')}-${values('Month')}-Active ${values('Active Member Count')}- APS ${values('Average Price Per Student')}"
 }

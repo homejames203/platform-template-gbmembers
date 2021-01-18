@@ -44,6 +44,36 @@
     },
     {
       "model": "Members",
+      "name": "Get Member by Username",
+      "order": [
+
+      ],
+      "parameters": [
+        {
+          "mapping": "${identity('username')}",
+          "name": "username"
+        }
+      ],
+      "qualification": "Get Member by Username",
+      "status": "Active"
+    },
+    {
+      "model": "Service Member Submissions",
+      "name": "Get PaySmart Member Cancellations",
+      "order": [
+
+      ],
+      "parameters": [
+        {
+          "mapping": "${values('Member GUID')}",
+          "name": "Member GUID"
+        }
+      ],
+      "qualification": "Get PaySmart Member Cancellation",
+      "status": "Active"
+    },
+    {
+      "model": "Members",
       "name": "Members",
       "order": [
 
@@ -62,7 +92,7 @@
       }
     }
   ],
-  "customHeadContent": "",
+  "customHeadContent": "<style>\n  .hidden{\n   display:none; \n  }\n  body a {\n      color: #003b72;\n  }  \n</style>\n",
   "description": "Paysmart Request to cancel a Membership",
   "name": "Paysmart Member Cancellation",
   "notes": null,
@@ -72,6 +102,69 @@
       "displayCondition": null,
       "displayPage": null,
       "elements": [
+        {
+          "type": "section",
+          "renderType": null,
+          "name": "Current Cancellation",
+          "title": null,
+          "visible": false,
+          "omitWhenHidden": true,
+          "renderAttributes": {
+          },
+          "elements": [
+            {
+              "type": "content",
+              "renderType": "html",
+              "name": "cancellations",
+              "text": "<div>\n  <table>\n    <tbody  id=\"cancellationsTableBody\">      \n    </tbody>\n  </table>\n</div>",
+              "visible": true,
+              "renderAttributes": {
+              }
+            }
+          ]
+        },
+        {
+          "type": "section",
+          "renderType": null,
+          "name": "Not to be Completed",
+          "title": null,
+          "visible": false,
+          "omitWhenHidden": true,
+          "renderAttributes": {
+          },
+          "elements": [
+            {
+              "type": "content",
+              "renderType": "html",
+              "name": "MessageOne",
+              "text": "<p>This form must be initiated by the a Gracie Barra Representative.</p>",
+              "visible": true,
+              "renderAttributes": {
+              }
+            }
+          ]
+        },
+        {
+          "type": "section",
+          "renderType": null,
+          "name": "Invalid Member",
+          "title": null,
+          "visible": false,
+          "omitWhenHidden": true,
+          "renderAttributes": {
+          },
+          "elements": [
+            {
+              "type": "content",
+              "renderType": "html",
+              "name": "Message",
+              "text": "<p>This Member Cancellation form was not intended for you to complete. Please contact your GB School to inform them of the mistake.</p>",
+              "visible": true,
+              "renderAttributes": {
+              }
+            }
+          ]
+        },
         {
           "type": "section",
           "renderType": null,
@@ -159,6 +252,31 @@
               "required": false,
               "requiredMessage": null,
               "omitWhenHidden": null,
+              "pattern": null,
+              "constraints": [
+
+              ],
+              "events": [
+
+              ],
+              "renderAttributes": {
+              },
+              "dataType": "string",
+              "renderType": "text",
+              "rows": 1
+            },
+            {
+              "type": "field",
+              "name": "Member GUID",
+              "label": "Member GUID",
+              "key": "f49",
+              "defaultValue": "${resources('Get Member by Username:id')}",
+              "defaultResourceName": "Get Member by Username",
+              "visible": false,
+              "enabled": true,
+              "required": false,
+              "requiredMessage": null,
+              "omitWhenHidden": false,
               "pattern": null,
               "constraints": [
 
@@ -279,11 +397,11 @@
               "key": "f48",
               "defaultValue": null,
               "defaultResourceName": null,
-              "visible": true,
+              "visible": false,
               "enabled": true,
               "required": false,
               "requiredMessage": null,
-              "omitWhenHidden": null,
+              "omitWhenHidden": false,
               "pattern": null,
               "constraints": [
 
@@ -636,6 +754,16 @@
         },
         {
           "type": "button",
+          "label": "Save for Member to Complete",
+          "name": "Save for Member to Complete",
+          "visible": true,
+          "enabled": "values('The last debit will be taken on')!==null && values('Can train up until')!==null",
+          "renderType": "save",
+          "renderAttributes": {
+          }
+        },
+        {
+          "type": "button",
           "label": "Submit",
           "name": "Submit Button",
           "visible": true,
@@ -657,7 +785,8 @@
           "name": "Load Members Select",
           "type": "Load",
           "action": "Custom",
-          "code": "bundle.config.widgets.selectMenu({\n  element: K(\"form\").find(\"#selectMemberMenu\")[0],\n\toptions: K('field[Members]').options(),\n  onChange: function(option) {\n\t  K('field[Members]').value(option.value);\n    setTimeout(function(){\n\t    $(K(\"form\").find(\"#selectMemberMenu .css-1492t68\")).html(option.label);\n    },100);\n\t},\n  value: K('field[Members]').value(),\n});\n"
+          "code": "K('bridgedResource[Get PaySmart Member Cancellations]').load({\n  attributes: ['id'],\n  values: {},\n  success: function(bridgedData) {\n    debugger;\n    if (bridgedData.length===0 && !form('review')) {\n\t\t\tif (!K(\"identity\").teams.includes(\"Role::Program Managers\")) {\n        K('section[Select Member]').hide();\n        K('section[Not to be Completed]').show();\n        K('button[Save for Member to Complete]').hide();\n        K('button[Submit Button]').hide();        \n      } else {      \n        K('bridgedResource[Members]').load({\n          attributes: ['First Name', 'Last Name','id'],\n          values: {},\n          success: function(bridgedData) {\n            var options=[];\n            $.each( bridgedData, function( key, value ) {\n              console.log(value['id']+\"-\"+value['First Name']+\" \"+value['Last Name']);\n              options[options.length]={'label':value['First Name']+\" \"+value['Last Name'], 'value':value['id']};\n            });\n            var label=null;\n         debugger;   \n            K('field[Members]').options(options);\n            if (!K(\"identity\").teams.includes(\"Role::Program Managers\")) {\n              K('field[Members]').value(K('field[Member GUID]').value());\n              $(K('field[Members]').options()).each(function(index) {\n               if (K('field[Members]').options()[index].value===K('field[Member GUID]').value()) {\n                label=K('field[Members]').options()[index].label;\n                }\n              });      \n            }\n\n            bundle.config.widgets.selectMenu({\n              element: K(\"form\").find(\"#selectMemberMenu\")[0],\n              options: K('field[Members]').options(),\n              onChange: function(option) {\n                K('field[Members]').value(option.value);\n                setTimeout(function(){\n                  $(K(\"form\").find(\"#selectMemberMenu .css-1492t68\")).html(option.label);\n                },100);\n              },\n              value: K('field[Members]').value(),\n            });\n          }\n        });\n      }\n    } else {\n      debugger;\n      if (!form('review')) {\n        var html=\"\";\n        bridgedData.forEach(elem => {\n          if (elem['Payment Method']===\"\") {\n            html=html+\"<tr><td><p>Click <a href='/#/kapps/services/categories/billing-registration/member-cancellation/\"+elem.id+\"'>here</a> to complete your Member Cancellation form.</td></tr>\";\n          } else {\n            html=html+\"<tr><td><p>Click <a href='/#/kapps/services/requests/request/\"+elem.id+\"/review'>here</a> to view your Member Cancellation form.</td></tr>\";\n          }\n        });\n        $(\"#cancellationsTableBody\").append(html);\n        K('section[Current Cancellation]').show();\n        K('section[Select Member]').hide();\n        K('button[Save for Member to Complete]').hide();\n        K('button[Submit Button]').hide();\n      } else {        \n      }\n    }\n  }\n});\n",
+          "runIf": "values('Member ID')===null"
         },
         {
           "name": "Handle Errors",
@@ -677,6 +806,13 @@
           "type": "Load",
           "action": "Custom",
           "code": "if (K('field[Members]').value()===null) {\n\tloadingDetails=true;\n  K('section[Member Select Space]').show();   \n}else {\n\tloadingDetails=false;\n  K('section[Member Select Space]').hide();   \n}"
+        },
+        {
+          "name": "Member User Load",
+          "type": "Load",
+          "action": "Custom",
+          "code": "debugger;\nif (!K(\"identity\").teams.includes(\"Role::Program Managers\")) {\n  if (K('field[Member ID]').value().toLowerCase()!==K(\"identity\").username) {\n    K('section[Select Member]').hide();\n    K('section[Invalid Member]').show();\n    K('section[Student Information]').hide();  \n    K('section[Cancellation Information]').hide();\n    K('section[List of Documents]').hide();\n    K('section[Terms]').hide();\n\t\tK('button[Save for Member to Complete]').hide();\n    K('button[Submit Button]').hide();\n  } else {\n    K('section[Select Member]').hide();\n    K('section[Student Information]').show();  \n    if (K('field[Members]').value()!==\"\") {\n      K('field[The last debit will be taken on]').disable();\n      K('field[Can train up until]').disable();\n      \n      K('content[The last debit will be taken on HTML]').hide();\n      K('field[The last debit will be taken on]').disable();\n      K('field[The last debit will be taken on]').show();\n      K('field[Can train up until]').disable();\n      K('button[Save for Member to Complete]').hide();\n    }\n  }\n} else {\n    K('section[Select Member]').hide();\n    K('section[Student Information]').show();  \n  \n    $.ajax({\n      type: \"post\",\n        url: K('space').attributes(\"Kinetic Billing Server URL\")+\"/billingInfo\",\n        data: JSON.stringify({ \n          customerId: K('field[Billing Customer Id]').value(),\n          space: K('space').slug(),\n          billingService: K('space').attributes(\"Billing Company\"),\n        }),\n        headers: {\n          'Accept': 'application/json, text/plain, */*',\n          'Content-Type': 'application/json;charset=UTF-8'\n      \t}\n      })\n      .done(function( data ) {\n        if (data.data===null) {\n  \t      K('field[The last debit will be taken on]').value(\"\");\n          K('field[Billing Period]').value(\"\");\n        } else {\n          bundle.config.widgets.xdsoftDatepickerRemove({\n              element: K(\"form\").find(\"#lastdebitdate\")[0]\n          });          \n          period=7;\n          if (data.data['paymentPeriod']===\"Fortnightly\"){\n            period=14;\n          }\n          allowDates=[];\n          for (i=0;i<20;i++){\n            if (moment(data.data['nextBillingDate'], \"DD-MM-YYYY\").add(period*i,\"days\").isAfter(moment())) {\n  \t\t\t\t\t\t  allowDates[allowDates.length]=moment(data.data['nextBillingDate'], \"DD-MM-YYYY\").add(period*i,\"days\").format(\"DD-MM-YYYY\");\n            }\n  \t\t\t\t}\n          debugger;\n          bundle.config.widgets.xdsoftDatepicker({\n              element: K(\"form\").find(\"#lastdebitdate\")[0],\n              timepicker: false,\n              displayDateFormat: \"d/m/Y\",\n            \tvalue:  K('field[The last debit will be taken on]').value(),\n              value_format: \"YYYY-MM-DD\",\n              options: {\n                allowDates: allowDates,\n                formatDate:\"d-m-Y\",\n                validateOnBlur:false\n              },\n              onSelectDate:function(ct,$i){\n                K('field[The last debit will be taken on]').value(ct.dateFormat('YYYY-MM-DD'));\n              }                \n          });          \n         }\n      });\n  \n}",
+          "runIf": "values('Member ID')!==null && !form('review')"
         }
       ],
       "name": "Instalment Information",
@@ -687,15 +823,15 @@
   "securityPolicies": [
     {
       "endpoint": "Display",
-      "name": "PaySmart Program Managers"
+      "name": "PaySmart Authenticated Users"
     },
     {
       "endpoint": "Submission Access",
-      "name": "Program Managers"
+      "name": "PaySmart Authenticated Users"
     },
     {
       "endpoint": "Submission Modification",
-      "name": "Program Managers"
+      "name": "PaySmart Authenticated Users"
     }
   ],
   "slug": "member-cancellation",

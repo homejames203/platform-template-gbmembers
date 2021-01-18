@@ -464,7 +464,7 @@
   "securityPolicies": [
     {
       "endpoint": "Display",
-      "name": "PaySmart Program Managers"
+      "name": "Paysmart Program Managers"
     },
     {
       "endpoint": "Submission Access",

@@ -65,6 +65,14 @@
       "unique": false
     },
     {
+      "name": "values[Category],values[Template Name]:UNIQUE",
+      "parts": [
+        "values[Category]",
+        "values[Template Name]"
+      ],
+      "unique": true
+    },
+    {
       "name": "values[Email Content]",
       "parts": [
         "values[Email Content]"
@@ -75,6 +83,13 @@
       "name": "values[Email JSON]",
       "parts": [
         "values[Email JSON]"
+      ],
+      "unique": false
+    },
+    {
+      "name": "values[Subject]",
+      "parts": [
+        "values[Subject]"
       ],
       "unique": false
     },
@@ -124,6 +139,31 @@
           "name": "Category",
           "label": "Category",
           "key": "f4",
+          "defaultValue": null,
+          "defaultResourceName": null,
+          "visible": true,
+          "enabled": true,
+          "required": false,
+          "requiredMessage": null,
+          "omitWhenHidden": null,
+          "pattern": null,
+          "constraints": [
+
+          ],
+          "events": [
+
+          ],
+          "renderAttributes": {
+          },
+          "dataType": "string",
+          "renderType": "text",
+          "rows": 1
+        },
+        {
+          "type": "field",
+          "name": "Subject",
+          "label": "Subject",
+          "key": "f5",
           "defaultValue": null,
           "defaultResourceName": null,
           "visible": true,
@@ -244,7 +284,7 @@
     },
     {
       "endpoint": "Submission Access",
-      "name": "Data Admins"
+      "name": "Authenticated Users"
     },
     {
       "endpoint": "Submission Modification",

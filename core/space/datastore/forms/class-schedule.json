@@ -464,6 +464,6 @@
     }
   ],
   "slug": "class-schedule",
-  "status": "New",
-  "submissionLabelExpression": "${values('Program')} - ${values('Start')} - ${values('End')}"
+  "status": "Active",
+  "submissionLabelExpression": "${values('Program')}-${values('Title')} - ${values('Start')} - ${values('End')}"
 }

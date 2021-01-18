@@ -21,6 +21,16 @@
   },
   {
     "allowsMultiple": false,
+    "description": "Status values that represented Closed, Not Interested type leads that should not be Automated against",
+    "name": "Ignore Lead Status Values"
+  },
+  {
+    "allowsMultiple": false,
+    "description": "Status values that represented Closed, Not Interested type leads that should not be Automated against",
+    "name": "Ignore Member Status Values"
+  },
+  {
+    "allowsMultiple": false,
     "description": "Billing WS URL for Members billing",
     "name": "Kinetic Billing Server URL"
   },
@@ -28,6 +38,11 @@
     "allowsMultiple": false,
     "description": "Messaging server URL to send and receive SMS to and from members",
     "name": "Kinetic Messaging Server URL"
+  },
+  {
+    "allowsMultiple": false,
+    "description": "Values to track the source of a Lead.",
+    "name": "Lead Source Values"
   },
   {
     "allowsMultiple": false,

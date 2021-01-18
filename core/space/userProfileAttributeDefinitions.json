@@ -21,6 +21,16 @@
   },
   {
     "allowsMultiple": false,
+    "description": "",
+    "name": "Lead Lists"
+  },
+  {
+    "allowsMultiple": false,
+    "description": "",
+    "name": "Member Lists"
+  },
+  {
+    "allowsMultiple": false,
     "description": null,
     "name": "Phone Number"
   },

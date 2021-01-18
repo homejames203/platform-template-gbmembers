@@ -7,7 +7,7 @@
         <name>Submitted</name>
         <author></author>
         <notes></notes>
-        <lastID>76</lastID>
+        <lastID>77</lastID>
         <request>
             <task definition_id="system_start_v1" id="start" name="Start" x="77" y="-53">
                 <version>1</version>
@@ -36,12 +36,10 @@
                     <parameter dependsOnId="" dependsOnValue="" id="type" label="Type" menu="" required="false" tooltip="Specifies the a submission activity 'Type', which should indicate what type of data is included."></parameter>
                     <parameter dependsOnId="" dependsOnValue="" id="data" label="Data" menu="" required="false" tooltip="Additional data that can be used by resources consuming the submission activity record (for example a Request bundle may render submission details based upon JSON content in the activity data)."></parameter>
                 </parameters>
-                <messages>
-                    <message type="Complete"></message>
-                </messages>
+                <messages></messages>
                 <dependents>
                     <task label="" type="Complete" value="">kinetic_request_ce_submission_create_v1_69</task>
-                    <task label="" type="Complete" value="">utility_json_to_xml_v1_70</task>
+                    <task label="" type="Complete" value="">kinetic_request_ce_submission_update_v1_77</task>
                 </dependents>
             </task>
             <task definition_id="kinetic_request_ce_submission_create_v1" id="kinetic_request_ce_submission_create_v1_69" name="Create Member Request Activity" x="77" y="347">
@@ -74,12 +72,10 @@ values.to_json
                     <parameter dependsOnId="" dependsOnValue="" id="origin_id" label="Origin ID" menu="" required="false" tooltip="Set the origin ID."></parameter>
                     <parameter dependsOnId="" dependsOnValue="" id="parent_id" label="Parent ID" menu="" required="false" tooltip="Set the parent ID."></parameter>
                 </parameters>
-                <messages>
-                    <message type="Complete"></message>
-                </messages>
+                <messages></messages>
                 <dependents></dependents>
             </task>
-            <task definition_id="utility_json_to_xml_v1" id="utility_json_to_xml_v1_70" name="Json to xml" x="339" y="144">
+            <task definition_id="utility_json_to_xml_v1" id="utility_json_to_xml_v1_70" name="Json to xml" x="394" y="146">
                 <version>1</version>
                 <configured>true</configured>
                 <defers>false</defers>
@@ -88,9 +84,7 @@ values.to_json
                 <parameters>
                     <parameter dependsOnId="" dependsOnValue="" id="json" label="JSON" menu="" required="true" tooltip="The JSON String to be converted to XML">&lt;%= @values['membersJSON']%&gt;</parameter>
                 </parameters>
-                <messages>
-                    <message type="Complete"></message>
-                </messages>
+                <messages></messages>
                 <dependents>
                     <task label="" type="Complete" value="">system_loop_head_v1_71</task>
                 </dependents>
@@ -106,9 +100,7 @@ values.to_json
                     <parameter dependsOnId="" dependsOnValue="" id="loop_path" label="Loop Path:" menu="" required="true" tooltip="The XPath or JSONPath statement to indicate what data records to process.">//node/node</parameter>
                     <parameter dependsOnId="" dependsOnValue="" id="var_name" label="Variable Name:" menu="" required="false" tooltip="The local variable name used to represent the data used in loop tasks.">member_id</parameter>
                 </parameters>
-                <messages>
-                    <message type="Complete"></message>
-                </messages>
+                <messages></messages>
                 <dependents>
                     <task label="" type="Complete" value="">utilities_echo_v1_72</task>
                     <task label="" type="Complete" value="">system_loop_tail_v1_76</task>
@@ -123,9 +115,7 @@ values.to_json
                 <parameters>
                     <parameter dependsOnId="" dependsOnValue="" id="input" label="Input" menu="" required="true" tooltip="">&lt;%=@results['Loop over ids']['Value']%&gt;</parameter>
                 </parameters>
-                <messages>
-                    <message type="Complete"></message>
-                </messages>
+                <messages></messages>
                 <dependents>
                     <task label="Non Billing Member" type="Complete" value="@results['Member ID']['output']!=@values['Members']">kinetic_request_ce_submission_update_v1_73</task>
                     <task label="Billing Member" type="Complete" value="@results['Member ID']['output']==@values['Members']">utilities_echo_v1_74</task>
@@ -150,9 +140,7 @@ values.to_json
                     <parameter dependsOnId="" dependsOnValue="" id="origin_id" label="Origin ID" menu="" required="false" tooltip="Set the origin ID."></parameter>
                     <parameter dependsOnId="" dependsOnValue="" id="parent_id" label="Parent ID" menu="" required="false" tooltip="Set the parent ID."></parameter>
                 </parameters>
-                <messages>
-                    <message type="Complete"></message>
-                </messages>
+                <messages></messages>
                 <dependents>
                     <task label="" type="Complete" value="">system_noop_v1_75</task>
                 </dependents>
@@ -166,9 +154,7 @@ values.to_json
                 <parameters>
                     <parameter dependsOnId="" dependsOnValue="" id="input" label="Input" menu="" required="true" tooltip="">Ignore Billing Member</parameter>
                 </parameters>
-                <messages>
-                    <message type="Complete"></message>
-                </messages>
+                <messages></messages>
                 <dependents>
                     <task label="" type="Complete" value="">system_noop_v1_75</task>
                 </dependents>
@@ -180,9 +166,7 @@ values.to_json
                 <deferrable>false</deferrable>
                 <visible>false</visible>
                 <parameters></parameters>
-                <messages>
-                    <message type="Complete"></message>
-                </messages>
+                <messages></messages>
                 <dependents>
                     <task label="" type="Complete" value="">system_loop_tail_v1_76</task>
                 </dependents>
@@ -197,10 +181,38 @@ values.to_json
                     <parameter dependsOnId="" dependsOnValue="" id="type" label="Type:" menu="All,Some,Any" required="true" tooltip="How many loop processes must be completed before continuing?">All</parameter>
                     <parameter dependsOnId="type" dependsOnValue="Some" id="number" label="Number:" menu="" required="false" tooltip="If some, how many?"></parameter>
                 </parameters>
+                <messages></messages>
+                <dependents></dependents>
+            </task>
+            <task definition_id="kinetic_request_ce_submission_update_v1" id="kinetic_request_ce_submission_update_v1_77" name="Update Billing Member" x="252.5" y="270.5">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>true</visible>
+                <parameters>
+                    <parameter dependsOnId="" dependsOnValue="" id="error_handling" label="Error Handling" menu="Error Message,Raise Error" required="true" tooltip="Determine what to return if an error is encountered.">Error Message</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="space_slug" label="Space Slug" menu="" required="false" tooltip="The Space the submission is being retrieved from (defaults to info value if not provided)."></parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="submission_id" label="Submission Id" menu="" required="true" tooltip="The id of the submission being updated.">&lt;%= @values['Members']%&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="state" label="State" menu="" required="false" tooltip="The value used to set the submission state."></parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="values" label="Values" menu="" required="false" tooltip="A JSON map of field names to values that should be set.">{
+  "Billing Parent Member":"&lt;%= @values['Members']%&gt;",
+  "Billing Family Members": "&lt;%= @values['membersJSON'].gsub('"','\"')%&gt;",
+  "Family Fee Details": "&lt;%= @values['feesJSON'].gsub('"','\"')%&gt;",
+  "Membership Cost": "&lt;%= @values['Payment Total']%&gt;"
+}
+</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="current_page_name" label="Current Page Name" menu="" required="false" tooltip="Set the current page name."></parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="current_page_navigation" label="Current Page Navigation" menu="" required="false" tooltip="Set the current page navigation."></parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="origin_id" label="Origin ID" menu="" required="false" tooltip="Set the origin ID."></parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="parent_id" label="Parent ID" menu="" required="false" tooltip="Set the parent ID."></parameter>
+                </parameters>
                 <messages>
                     <message type="Complete"></message>
                 </messages>
-                <dependents></dependents>
+                <dependents>
+                    <task label="" type="Complete" value="">utility_json_to_xml_v1_70</task>
+                </dependents>
             </task>
         </request>
     </taskTree>

@@ -78,6 +78,9 @@ SUBMISSIONS_TO_EXPORT = [
   { "datastore" => true, "formSlug" => "stored-images" },
   { "datastore" => true, "formSlug" => "robot-definitions" },
   { "datastore" => true, "formSlug" => "terms-and-conditions" },
+  { "datastore" => true, "formSlug" => "journey-triggers" },
+  { "datastore" => true, "formSlug" => "sms-templates" },
+  { "datastore" => true, "formSlug" => "call-scripts" },
 ]
 
 REMOVE_DATA_PROPERTIES = [

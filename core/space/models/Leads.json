@@ -29,6 +29,9 @@
       "name": "Postcode"
     },
     {
+      "name": "Source Reference 4"
+    },
+    {
       "name": "State"
     },
     {
@@ -89,6 +92,10 @@
         {
           "name": "id",
           "structureField": "${fields('id')}"
+        },
+        {
+          "name": "Source Reference 4",
+          "structureField": "${fields('values[Source Reference 4]')}"
         }
       ],
       "bridgeSlug": "kinetic-core",
@@ -96,7 +103,7 @@
       "qualifications": [
         {
           "name": "All",
-          "query": "kappSlug=leads&formSlug=lead&q=values[Status]=\"Open\" "
+          "query": "kappSlug=leads&formSlug=lead&q=values[Lead State]=\"Open\" "
         },
         {
           "name": "Active Leads",

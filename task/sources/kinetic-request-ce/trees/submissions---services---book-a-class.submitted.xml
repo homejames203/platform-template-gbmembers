@@ -33,6 +33,7 @@
                     <parameter dependsOnId="" dependsOnValue="" id="Values" label="Values" menu="" required="false" tooltip="JSON object of the form values to be pre-populated">{
   "Status": "Booked",
   "Program": "&lt;%=  @values['Program'] %&gt;",
+  "Title": "&lt;%=  @values['Title'] %&gt;",
   "Class Date": "&lt;%=  @values['Date Selected'] %&gt;",
   "Class Time": "&lt;%=  @values['Start'] %&gt;",
   "Member ID": "&lt;%=  @values['Member ID'] %&gt;",
@@ -42,7 +43,11 @@
                     <parameter dependsOnId="" dependsOnValue="" id="Current Page Name" label="Current Page Name" menu="" required="false" tooltip="Name of the Page the Submission to Open to"></parameter>
                     <parameter dependsOnId="" dependsOnValue="" id="Current Page Navigation" label="Current Page Navigation" menu="" required="false" tooltip="Sets the current page navigation"></parameter>
                 </parameters>
-                <messages></messages>
+                <messages>
+                    <message type="Create"></message>
+                    <message type="Update"></message>
+                    <message type="Complete"></message>
+                </messages>
                 <dependents>
                     <task label="" type="Complete" value="">routine_kinetic_request_ce_submission_update_v1_7</task>
                 </dependents>
@@ -60,16 +65,14 @@
                     <parameter dependsOnId="" dependsOnValue="" id="label" label="Label" menu="" required="false" tooltip="The label for the submission activity.">Booking Registered</parameter>
                     <parameter dependsOnId="" dependsOnValue="" id="description" label="Description" menu="" required="false" tooltip="The description of the submission activity."></parameter>
                     <parameter dependsOnId="" dependsOnValue="" id="type" label="Type" menu="" required="false" tooltip="Specifies the a submission activity 'Type', which should indicate what type of data is included.">Success</parameter>
-                    <parameter dependsOnId="" dependsOnValue="" id="data" label="Data" menu="" required="false" tooltip="Additional data that can be used by resources consuming the submission activity record (for example a Request bundle may render submission details based upon JSON content in the activity data).">Your booking has been registered for Date &lt;%=  Date.parse(@values['Date Selected']).strftime("%d %B %Y") %&gt;, class &lt;%=  @values['Program'] %&gt; starting at &lt;%= DateTime.new(DateTime.now.year, DateTime.now.month, DateTime.now.day, @values['Start'].split(":")[0].to_i, @values['Start'].split(":")[1].to_i, 0, DateTime.now.zone).strftime("%-l:%M %p")%&gt;&lt;br&gt;
+                    <parameter dependsOnId="" dependsOnValue="" id="data" label="Data" menu="" required="false" tooltip="Additional data that can be used by resources consuming the submission activity record (for example a Request bundle may render submission details based upon JSON content in the activity data).">Your booking has been registered for Date &lt;%=  Date.parse(@values['Date Selected']).strftime("%d %B %Y") %&gt;, class &lt;%=  @values['Title'] %&gt; - &lt;%=  @values['Program'] %&gt;  starting at &lt;%= DateTime.new(DateTime.now.year, DateTime.now.month, DateTime.now.day, @values['Start'].split(":")[0].to_i, @values['Start'].split(":")[1].to_i, 0, DateTime.now.zone).strftime("%-l:%M %p")%&gt;&lt;br&gt;
 &lt;br&gt;
 &lt;a href="/#/kapps/services/categories/class-bookings/cancel-class-booking?id=&lt;%= @results['Create Class Booking']['Submission Id'] %&gt;"&gt;Click here to Cancel your Class Booking&lt;/a&gt;&lt;br&gt;
 &lt;br&gt;
 &lt;a href="/#/kapps/services/categories/class-bookings/book-a-class"&gt;Click here to Book another Class&lt;/a&gt;&lt;br&gt;
 &lt;br&gt;</parameter>
                 </parameters>
-                <messages>
-                    <message type="Complete"></message>
-                </messages>
+                <messages></messages>
                 <dependents>
                     <task label="" type="Complete" value="">routine_kinetic_request_ce_submission_close_v1_5</task>
                     <task label="" type="Complete" value="">routine_kinetic_email_template_notification_send_v1_8</task>

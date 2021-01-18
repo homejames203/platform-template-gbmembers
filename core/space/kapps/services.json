@@ -2,6 +2,12 @@
   "afterLogoutPath": null,
   "attributes": [
     {
+      "name": "Allow Cash Payments",
+      "values": [
+        "true"
+      ]
+    },
+    {
       "name": "Approval Form Slug",
       "values": [
         "approval"

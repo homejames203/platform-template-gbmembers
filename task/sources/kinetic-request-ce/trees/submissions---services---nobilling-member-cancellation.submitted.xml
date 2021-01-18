@@ -7,7 +7,7 @@
         <name>Submitted</name>
         <author></author>
         <notes></notes>
-        <lastID>74</lastID>
+        <lastID>76</lastID>
         <request>
             <task definition_id="system_start_v1" id="start" name="Start" x="77" y="-53">
                 <version>1</version>
@@ -93,11 +93,10 @@ values.to_json
                     <parameter dependsOnId="" dependsOnValue="" id="origin_id" label="Origin ID" menu="" required="false" tooltip="Set the origin ID."></parameter>
                     <parameter dependsOnId="" dependsOnValue="" id="parent_id" label="Parent ID" menu="" required="false" tooltip="Set the parent ID."></parameter>
                 </parameters>
-                <messages>
-                    <message type="Complete"></message>
-                </messages>
+                <messages></messages>
                 <dependents>
                     <task label="" type="Complete" value="">utilities_echo_v1_71</task>
+                    <task label="" type="Complete" value="">kinetic_request_ce_datastore_submission_search_v1_75</task>
                 </dependents>
             </task>
             <task definition_id="utilities_echo_v1" id="utilities_echo_v1_71" name="Cancel Date Delay" x="141" y="246">
@@ -114,9 +113,7 @@ startDt=Date.parse(@values['The last debit will be taken on'])
 (startDt.mjd - nowDt.mjd)+1
 %&gt;</parameter>
                 </parameters>
-                <messages>
-                    <message type="Complete"></message>
-                </messages>
+                <messages></messages>
                 <dependents>
                     <task label="Wait" type="Complete" value="@results['Cancel Date Delay']['output']!=&quot;1&quot;">system_wait_v1_72</task>
                     <task label="Now" type="Complete" value="@results['Cancel Date Delay']['output']==&quot;1&quot;">kinetic_request_ce_submission_update_v1_74</task>
@@ -132,11 +129,7 @@ startDt=Date.parse(@values['The last debit will be taken on'])
                     <parameter dependsOnId="" dependsOnValue="" id="Time to wait" label="Wait time:" menu="" required="true" tooltip="Time you want to wait for deferred task">&lt;%= @results['Cancel Date Delay']['output'] %&gt;</parameter>
                     <parameter dependsOnId="" dependsOnValue="" id="Time unit" label="Time unit:" menu="Second,Minute,Hour,Day,Week" required="true" tooltip="Unit of measurement for time (Seconds, Minutes, Hours, Days, Weeks)">Day</parameter>
                 </parameters>
-                <messages>
-                    <message type="Create"></message>
-                    <message type="Update"></message>
-                    <message type="Complete"></message>
-                </messages>
+                <messages></messages>
                 <dependents>
                     <task label="" type="Complete" value="">kinetic_request_ce_submission_retrieve_v2_73</task>
                 </dependents>
@@ -156,9 +149,7 @@ startDt=Date.parse(@values['The last debit will be taken on'])
                     <parameter dependsOnId="retrieve_by" dependsOnValue="Query" id="query" label="Query" menu="" required="true" tooltip="A query that will retrieve a single submission"></parameter>
                     <parameter dependsOnId="retrieve_by" dependsOnValue="Id" id="submission_id" label="Submission Id" menu="" required="true" tooltip="The id of the submission being retrieved.">&lt;%=  @values['Members'] %&gt;</parameter>
                 </parameters>
-                <messages>
-                    <message type="Complete"></message>
-                </messages>
+                <messages></messages>
                 <dependents>
                     <task label="Active Or Frozen Or Pending Frozen" type="Complete" value="JSON.parse(@results['Get Member']['Values JSON'])[&quot;Status&quot;]==&quot;Active&quot; ||&#10;JSON.parse(@results['Get Member']['Values JSON'])[&quot;Status&quot;]==&quot;Pending Freeze&quot; || JSON.parse(@results['Get Member']['Values JSON'])[&quot;Status&quot;]==&quot;Frozen&quot;">kinetic_request_ce_submission_update_v1_74</task>
                 </dependents>
@@ -182,12 +173,48 @@ startDt=Date.parse(@values['The last debit will be taken on'])
                     <parameter dependsOnId="" dependsOnValue="" id="origin_id" label="Origin ID" menu="" required="false" tooltip="Set the origin ID."></parameter>
                     <parameter dependsOnId="" dependsOnValue="" id="parent_id" label="Parent ID" menu="" required="false" tooltip="Set the parent ID."></parameter>
                 </parameters>
+                <messages></messages>
+                <dependents>
+                    <task label="" type="Complete" value="">kinetic_request_ce_submission_create_v1_68</task>
+                </dependents>
+            </task>
+            <task definition_id="kinetic_request_ce_datastore_submission_search_v1" id="kinetic_request_ce_datastore_submission_search_v1_75" name="Find Journey Triggers" x="433" y="95">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter dependsOnId="" dependsOnValue="" id="error_handling" label="Error Handling" menu="Error Message,Raise Error" required="true" tooltip="Determine what to return if an error is encountered.">Error Message</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="space_slug" label="Space Slug" menu="" required="false" tooltip="The Space the submission is being retrieved from (defaults to info value if not provided)."></parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="form_slug" label="Datastore Form Slug" menu="" required="false" tooltip="The slug of the Datastore Form to search for submissions in.">journey-triggers</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="index" label="Index" menu="" required="false" tooltip="The index to use for the search.">values[Status],values[Record Type],values[Member Condition],values[Member Condition Duration]</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="query" label="Query" menu="" required="false" tooltip="The query that will be used to search the submissions. Ex: values[company]=Kinetic">values[Status]="Active" AND values[Record Type]="Member" AND values[Member Condition]="Cancelled" AND values[Member Condition Duration]="0"</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="limit" label="Limit" menu="" required="false" tooltip="An integer representing the max results that the search can return."></parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="return_type" label="Return Type" menu="JSON,XML,ID List" required="true" tooltip="The format that the results should be returned in.">JSON</parameter>
+                </parameters>
                 <messages>
                     <message type="Complete"></message>
                 </messages>
                 <dependents>
-                    <task label="" type="Complete" value="">kinetic_request_ce_submission_create_v1_68</task>
+                    <task label="" type="Complete" value="">generate_journey_events_v1_76</task>
                 </dependents>
+            </task>
+            <task definition_id="generate_journey_events_v1" id="generate_journey_events_v1_76" name="Generate Journey Events" x="712" y="98">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>true</visible>
+                <parameters>
+                    <parameter dependsOnId="" dependsOnValue="" id="journey_triggers_json" label="Journey Triggers JSON" menu="" required="true" tooltip="Journney Trigger records as JSON">&lt;%= @results['Find Journey Triggers']['Result'] %&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="record_id" label="Record ID" menu="" required="true" tooltip="Record ID of Lead or member">&lt;%=  @values['Members'] %&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="record_name" label="Record Name" menu="" required="true" tooltip="Record Name of Lead or member">&lt;%=  @values['Student First Name']+" "+@values['Student First Name'] %&gt;</parameter>
+                </parameters>
+                <messages>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents></dependents>
             </task>
         </request>
     </taskTree>

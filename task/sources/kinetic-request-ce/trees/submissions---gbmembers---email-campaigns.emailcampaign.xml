@@ -38,7 +38,7 @@
                     <task label="" type="Complete" value="">kinetic_request_ce_submission_retrieve_v2_40</task>
                 </dependents>
             </task>
-            <task definition_id="system_loop_tail_v1" id="system_loop_tail_v1_4" name="Loop tail" x="662" y="658">
+            <task definition_id="system_loop_tail_v1" id="system_loop_tail_v1_4" name="Loop tail" x="620" y="665">
                 <version>1</version>
                 <configured>true</configured>
                 <defers>false</defers>
@@ -51,7 +51,7 @@
                 <messages></messages>
                 <dependents></dependents>
             </task>
-            <task definition_id="kinetic_request_ce_submission_update_v1" id="kinetic_request_ce_submission_update_v1_14" name="Update member" x="950" y="560">
+            <task definition_id="kinetic_request_ce_submission_update_v1" id="kinetic_request_ce_submission_update_v1_14" name="Update member" x="1071" y="623">
                 <version>1</version>
                 <configured>true</configured>
                 <defers>false</defers>
@@ -373,10 +373,14 @@ File.delete(filename)
 @results['Load Body']['Body'].gsub!("member(&amp;#039;Last Name&amp;#039;)", JSON.parse(@results['Retrieve member']['Values JSON'])["Last Name"])
 @results['Load Body']['Body'].gsub!("member('Last Name')", JSON.parse(@results['Retrieve member']['Values JSON'])["Last Name"])
 
+@results['Load Body']['Body'].gsub!("${date}",  DateTime.now.strftime("%d %B %Y"))
+
 @results['Load Body']['Body']
 %&gt;</parameter>
                 </parameters>
-                <messages></messages>
+                <messages>
+                    <message type="Complete"></message>
+                </messages>
                 <dependents>
                     <task label="" type="Complete" value="">utilities_echo_v1_36</task>
                 </dependents>
@@ -441,7 +445,7 @@ content
                     <task label="" type="Complete" value="">utilities_echo_v1_35</task>
                 </dependents>
             </task>
-            <task definition_id="smtp_email_send_v1" id="smtp_email_send_v1_41" name="SMTP Email Send" x="1070" y="422">
+            <task definition_id="smtp_email_send_v1" id="smtp_email_send_v1_41" name="SMTP Email Send" x="1217" y="374">
                 <version>1</version>
                 <configured>true</configured>
                 <defers>false</defers>
@@ -465,7 +469,7 @@ content
                     <task label="For Lead" type="Complete" value="@results['Retrieve member']['Form Name']==&quot;Lead&quot;">kinetic_request_ce_submission_create_v1_43</task>
                 </dependents>
             </task>
-            <task definition_id="kinetic_request_ce_submission_create_v1" id="kinetic_request_ce_submission_create_v1_42" name="Create Member Email Activity" x="798" y="453">
+            <task definition_id="kinetic_request_ce_submission_create_v1" id="kinetic_request_ce_submission_create_v1_42" name="Create Member Email Activity" x="898" y="492">
                 <version>1</version>
                 <configured>true</configured>
                 <defers>false</defers>
@@ -503,7 +507,7 @@ values.to_json
                     <task label="" type="Complete" value="">kinetic_request_ce_submission_update_v1_14</task>
                 </dependents>
             </task>
-            <task definition_id="kinetic_request_ce_submission_create_v1" id="kinetic_request_ce_submission_create_v1_43" name="Create Lead Email Activity" x="1077" y="649">
+            <task definition_id="kinetic_request_ce_submission_create_v1" id="kinetic_request_ce_submission_create_v1_43" name="Create Lead Email Activity" x="1284" y="626">
                 <version>1</version>
                 <configured>true</configured>
                 <defers>false</defers>
@@ -541,7 +545,7 @@ values.to_json
                     <task label="" type="Complete" value="">kinetic_request_ce_submission_update_v1_14</task>
                 </dependents>
             </task>
-            <task definition_id="system_junction_v1" id="system_junction_v1_44" name="continue" x="811" y="658">
+            <task definition_id="system_junction_v1" id="system_junction_v1_44" name="continue" x="822" y="673">
                 <version>1</version>
                 <configured>true</configured>
                 <defers>false</defers>

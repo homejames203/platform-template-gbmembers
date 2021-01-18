@@ -117,6 +117,14 @@
         "values[Status]"
       ],
       "unique": false
+    },
+    {
+      "name": "values[Status],values[Program]",
+      "parts": [
+        "values[Status]",
+        "values[Program]"
+      ],
+      "unique": false
     }
   ],
   "name": "Program Belts",
@@ -376,6 +384,6 @@
     }
   ],
   "slug": "program-belts",
-  "status": "New",
+  "status": "Active",
   "submissionLabelExpression": "${values('Program')}-${values('Belt')}"
 }

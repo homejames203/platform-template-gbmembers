@@ -24,6 +24,9 @@
     },
     {
       "name": "Status"
+    },
+    {
+      "name": "Title"
     }
   ],
   "mappings": [
@@ -61,6 +64,10 @@
         {
           "name": "id",
           "structureField": "${fields('id')}"
+        },
+        {
+          "name": "Title",
+          "structureField": "${fields('values[Title]')}"
         }
       ],
       "bridgeSlug": "kinetic-core",

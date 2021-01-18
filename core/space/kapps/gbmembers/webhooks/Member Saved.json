@@ -1,5 +1,5 @@
 {
-  "event": "Saved",
+  "event": "Updated",
   "filter": "form('name')==\"Member\"",
   "name": "Member Saved",
   "type": "Submission",

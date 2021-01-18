@@ -96,6 +96,14 @@
         "values[Status]"
       ],
       "unique": false
+    },
+    {
+      "name": "values[Status],values[Frequency]",
+      "parts": [
+        "values[Status]",
+        "values[Frequency]"
+      ],
+      "unique": false
     }
   ],
   "name": "Membership Fees",

@@ -1,0 +1,178 @@
+<tree schema_version="1.0">
+    <sourceName>Kinetic Robot</sourceName>
+    <sourceGroup>Robots</sourceGroup>
+    <type>Tree</type>
+    <status>Active</status>
+    <taskTree builder_version="" schema_version="1.0" version="">
+        <name>JourneyTriggers</name>
+        <author></author>
+        <notes></notes>
+        <lastID>30</lastID>
+        <request>
+            <task definition_id="system_start_v1" id="start" name="Start" x="10" y="10">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters></parameters>
+                <messages></messages>
+                <dependents>
+                    <task label="Not from Robot" type="Complete" value="if !@source['Data']&#10;  true&#10;elsif !JSON.parse(@source['Data']).has_key? ('Kinetic Robot Execution Record Id')&#10;  true&#10;else&#10;  false&#10;end">routine_kinetic_space_retrieve_v1_29</task>
+                    <task label="Robot Initiated" type="Complete" value="if @source['Data']&#10;  JSON.parse(@source['Data']).has_key? ('Kinetic Robot Execution Record Id')&#10;else &#10;  false&#10;end">routine_kinetic_datastore_submission_update_v1_19</task>
+                </dependents>
+            </task>
+            <task definition_id="utilities_create_trigger_v1" id="utilities_create_trigger_v1_1" name="Robot return trigger" x="550.14197" y="593.68774">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>true</visible>
+                <parameters>
+                    <parameter dependsOnId="" dependsOnValue="" id="action_type" label="Action Type" menu="Update,Complete" required="true" tooltip="">Complete</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="deferral_token" label="Deferral Token" menu="" required="true" tooltip="">&lt;%=JSON.parse(@source['Data'])['Kinetic Robot Deferral Token']%&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="deferred_variables" label="Deferred Results" menu="" required="false" tooltip="">&lt;results&gt;
+&lt;result name="output"&gt;{"message":"&lt;%=@results['Done']['output']%&gt;"}&lt;/result&gt;
+&lt;/results&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="message" label="Message" menu="" required="false" tooltip=""></parameter>
+                </parameters>
+                <messages></messages>
+                <dependents>
+                    <task label="" type="Complete" value="">system_junction_v1_13</task>
+                </dependents>
+            </task>
+            <task definition_id="utilities_echo_v1" id="utilities_echo_v1_10" name="Done" x="550.50653" y="446.07095">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>true</visible>
+                <parameters>
+                    <parameter dependsOnId="" dependsOnValue="" id="input" label="Input" menu="" required="true" tooltip="">Done</parameter>
+                </parameters>
+                <messages></messages>
+                <dependents>
+                    <task label="Not from Robot" type="Complete" value="if !@source['Data']&#10;  true&#10;elsif !JSON.parse(@source['Data']).has_key? ('Kinetic Robot Execution Record Id')&#10;  true&#10;else&#10;  false&#10;end">system_junction_v1_13</task>
+                    <task label="Robot Initiated" type="Complete" value="if @source['Data']&#10;  JSON.parse(@source['Data']).has_key? ('Kinetic Robot Execution Record Id')&#10;else &#10;  false&#10;end">utilities_create_trigger_v1_1</task>
+                </dependents>
+            </task>
+            <task definition_id="system_noop_v1" id="system_noop_v1_12" name="End" x="0" y="456">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters></parameters>
+                <messages></messages>
+                <dependents></dependents>
+            </task>
+            <task definition_id="system_junction_v1" id="system_junction_v1_13" name="Junction" x="188" y="464">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters></parameters>
+                <messages></messages>
+                <dependents>
+                    <task label="" type="Complete" value="">system_noop_v1_12</task>
+                </dependents>
+            </task>
+            <task definition_id="routine_kinetic_datastore_submission_update_v1" id="routine_kinetic_datastore_submission_update_v1_19" name="Update Robot Execution Status" x="7" y="148">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>true</defers>
+                <deferrable>true</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter dependsOnId="" dependsOnValue="" id="Id" label="Id" menu="" required="true" tooltip="The id of the submission to update">&lt;%=JSON.parse(@source['Data'])['Kinetic Robot Execution Record Id']%&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="Updated - Core State" label="Updated - Core State" menu="" required="false" tooltip="The submissions core state"></parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="Updated - Current Page Name" label="Updated - Current Page Name" menu="" required="false" tooltip="The page to set the submission to"></parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="Updated - Current Page Navigation" label="Updated - Current Page Navigation" menu="" required="false" tooltip="The direction of the next page (next or previous)"></parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="Updated - Values JSON" label="Updated - Values JSON" menu="" required="false" tooltip="A JSON representation of the submissions values">{"Status":"Running"}</parameter>
+                </parameters>
+                <messages></messages>
+                <dependents>
+                    <task label="" type="Complete" value="">routine_kinetic_space_retrieve_v1_29</task>
+                </dependents>
+            </task>
+            <task definition_id="generate_lead_journey_events_v1" id="generate_lead_journey_events_v1_26" name="Generate Lead Journey Events" x="558" y="87">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>true</visible>
+                <parameters>
+                    <parameter dependsOnId="" dependsOnValue="" id="ignore_status_values" label="Status values to ignore" menu="" required="false" tooltip="Status values that are considered closed, eg Dead Lead">&lt;%= JSON.parse(@results['Get Kapp']['Attributes Map JSON'])['Ignore Lead Status Values'] %&gt;</parameter>
+                </parameters>
+                <messages></messages>
+                <dependents>
+                    <task label="" type="Complete" value="">generate_member_journey_events_v1_27</task>
+                </dependents>
+            </task>
+            <task definition_id="generate_member_journey_events_v1" id="generate_member_journey_events_v1_27" name="Generate Member Journey Events" x="557" y="217">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>true</visible>
+                <parameters>
+                    <parameter dependsOnId="" dependsOnValue="" id="ignore_status_values" label="Status values to ignore" menu="" required="false" tooltip="Status values that are considered closed, eg Dead Lead">&lt;%= JSON.parse(@results['Get Kapp']['Attributes Map JSON'])['Ignore Member Status Values'] %&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="service_value" label="Billing Service Value" menu="" required="true" tooltip="GBMembers Billing Service call value (billingInfo,)">overdues</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="billing_company" label="Billing Company" menu="" required="true" tooltip="Billing Company that the service will operate against.(eg, PaySmart)">&lt;%= JSON.parse(@results['Get Space']['Attributes Map JSON'])['Billing Company'] %&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="json_args" label="JSON arguments" menu="" required="true" tooltip="A JSON structure containing all argument passed to the Billing Service">{
+  "space":"&lt;%= @results['Get Kapp']['Slug'] %&gt;"
+}</parameter>
+                </parameters>
+                <messages>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">utilities_echo_v1_10</task>
+                </dependents>
+            </task>
+            <task definition_id="routine_kinetic_kapp_retrieve_v1" id="routine_kinetic_kapp_retrieve_v1_28" name="Get Kapp" x="229" y="251">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>true</defers>
+                <deferrable>true</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter dependsOnId="" dependsOnValue="" id="Kapp Slug" label="Kapp Slug" menu="" required="false" tooltip="The slug of the Kapp to retrieve">gbmembers</parameter>
+                </parameters>
+                <messages></messages>
+                <dependents>
+                    <task label="" type="Complete" value="">utility_date_in_timezone_v2_30</task>
+                </dependents>
+            </task>
+            <task definition_id="routine_kinetic_space_retrieve_v1" id="routine_kinetic_space_retrieve_v1_29" name="Get Space" x="282" y="107">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>true</defers>
+                <deferrable>true</deferrable>
+                <visible>false</visible>
+                <parameters></parameters>
+                <messages></messages>
+                <dependents>
+                    <task label="" type="Complete" value="">routine_kinetic_kapp_retrieve_v1_28</task>
+                </dependents>
+            </task>
+            <task definition_id="utility_date_in_timezone_v2" id="utility_date_in_timezone_v2_30" name="Test" x="356" y="340">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>true</visible>
+                <parameters>
+                    <parameter dependsOnId="" dependsOnValue="" id="timezone" label="Timezone" menu="" required="true" tooltip="The timezone being explored.">Australia/Brisbane</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="timestamp" label="Timestamp" menu="" required="false" tooltip="Current time will be used if a timestamp is not entered. Format: YYYY-MM-DD'T'HH:MM:SS'Z' (iso8601)"></parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="direction" label="Direction" menu="To Local,To UTC" required="true" tooltip="Convert from UTC to local time, or a local time to a UTC.">To Local</parameter>
+                </parameters>
+                <messages></messages>
+                <dependents>
+                    <task label="" type="Complete" value="">generate_lead_journey_events_v1_26</task>
+                </dependents>
+            </task>
+        </request>
+    </taskTree>
+</tree>

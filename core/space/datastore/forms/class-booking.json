@@ -140,6 +140,13 @@
         "values[Status]"
       ],
       "unique": false
+    },
+    {
+      "name": "values[Title]",
+      "parts": [
+        "values[Title]"
+      ],
+      "unique": false
     }
   ],
   "name": "Class Booking",
@@ -199,6 +206,31 @@
           "name": "Program",
           "label": "Program",
           "key": "f1",
+          "defaultValue": null,
+          "defaultResourceName": null,
+          "visible": true,
+          "enabled": true,
+          "required": false,
+          "requiredMessage": null,
+          "omitWhenHidden": null,
+          "pattern": null,
+          "constraints": [
+
+          ],
+          "events": [
+
+          ],
+          "renderAttributes": {
+          },
+          "dataType": "string",
+          "renderType": "text",
+          "rows": 1
+        },
+        {
+          "type": "field",
+          "name": "Title",
+          "label": "Title",
+          "key": "f9",
           "defaultValue": null,
           "defaultResourceName": null,
           "visible": true,
@@ -377,5 +409,5 @@
   ],
   "slug": "class-booking",
   "status": "Active",
-  "submissionLabelExpression": "${values('Class Date')}-${values('Class Time')}-${values('Member Name')}-${values('Status')}"
+  "submissionLabelExpression": "${values('Class Date')}-${values('Class Time')}-${values('Member Name')}-${values('Status')}-${values('Program')}-${values('Title')}"
 }

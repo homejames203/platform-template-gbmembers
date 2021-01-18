@@ -11,6 +11,11 @@
   },
   {
     "allowsMultiple": false,
+    "description": "Enable Cash Payment capture",
+    "name": "Allow Cash Payments"
+  },
+  {
+    "allowsMultiple": false,
     "description": "The Queue kapp form which approvals should be created in (Overridden by Kapp and Form Attributes)",
     "name": "Approval Form Slug"
   },
@@ -148,6 +153,16 @@
     "allowsMultiple": false,
     "description": null,
     "name": "School Telephone"
+  },
+  {
+    "allowsMultiple": false,
+    "description": "Full timetable website URL",
+    "name": "School Timetable URL"
+  },
+  {
+    "allowsMultiple": false,
+    "description": "",
+    "name": "School Website"
   },
   {
     "allowsMultiple": false,

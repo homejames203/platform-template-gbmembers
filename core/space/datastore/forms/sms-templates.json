@@ -65,6 +65,14 @@
       "unique": false
     },
     {
+      "name": "values[Category],values[Template Name]:UNIQUE",
+      "parts": [
+        "values[Category]",
+        "values[Template Name]"
+      ],
+      "unique": true
+    },
+    {
       "name": "values[SMS Content]",
       "parts": [
         "values[SMS Content]"

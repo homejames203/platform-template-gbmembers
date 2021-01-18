@@ -3,7 +3,8 @@
   "description": null,
   "type": "Stored",
   "handlers": [
-    "gbmembers_billing_service_v1"
+    "gbmembers_billing_service_v1",
+    "gbmembers_messaging_service_v1"
   ],
   "policyRules": [
 

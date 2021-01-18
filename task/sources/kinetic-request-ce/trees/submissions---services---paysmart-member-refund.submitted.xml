@@ -36,9 +36,7 @@
                     <parameter dependsOnId="" dependsOnValue="" id="type" label="Type" menu="" required="false" tooltip="Specifies the a submission activity 'Type', which should indicate what type of data is included.">Success</parameter>
                     <parameter dependsOnId="" dependsOnValue="" id="data" label="Data" menu="" required="false" tooltip="Additional data that can be used by resources consuming the submission activity record (for example a Request bundle may render submission details based upon JSON content in the activity data).">{"Message":"Refund for &lt;%= @values['Student First Name']%&gt; &lt;%= @values['Student Last Name']%&gt; has been received"}</parameter>
                 </parameters>
-                <messages>
-                    <message type="Complete"></message>
-                </messages>
+                <messages></messages>
                 <dependents>
                     <task label="" type="Complete" value="">kinetic_request_ce_submission_create_v1_9</task>
                 </dependents>
@@ -90,7 +88,7 @@ values.to_json
   "customerId": "&lt;%= @values['Billing Customer Id']%&gt;",
   "billingService": "PaySmart",
   "space": "&lt;%= @space['Slug']%&gt;",
-  "refundAmount": "&lt;%=  @values['Refund Amount'] %&gt;",
+  "refundAmount": &lt;%=  @values['Refund Amount'] %&gt;,
   "effectiveDate": "&lt;%=  @values['Date of Refund'] %&gt;"
 }</parameter>
                 </parameters>
@@ -118,9 +116,7 @@ Error Message: &lt;%=JSON.parse(@results['Refund']['Result JSON'])['errorMessage
                     <parameter dependsOnId="" dependsOnValue="" id="type" label="Type" menu="" required="false" tooltip="Specifies the a submission activity 'Type', which should indicate what type of data is included.">Error</parameter>
                     <parameter dependsOnId="" dependsOnValue="" id="data" label="Data" menu="" required="false" tooltip="Additional data that can be used by resources consuming the submission activity record (for example a Request bundle may render submission details based upon JSON content in the activity data).">&lt;%=@results['Refund']['Result JSON']%&gt;</parameter>
                 </parameters>
-                <messages>
-                    <message type="Complete"></message>
-                </messages>
+                <messages></messages>
                 <dependents></dependents>
             </task>
         </request>

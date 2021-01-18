@@ -7,7 +7,7 @@
         <name>Submitted</name>
         <author>unus.gaffoor@kineticdata.com</author>
         <notes></notes>
-        <lastID>19</lastID>
+        <lastID>20</lastID>
         <request>
             <task definition_id="system_start_v1" id="start" name="Start" x="11" y="11">
                 <version>1</version>
@@ -221,12 +221,15 @@
   "billingService": "PaySmart",
   "space": "&lt;%= @space['Slug']%&gt;",
   "schedulePeriodType": "&lt;%=  @values['Billing Period'] %&gt;",  
-  "scheduleStartDate": "&lt;%=  @values['Date Affective'] %&gt;",
+  "flag": "&lt;%= (@values['Make Permanent'].include? "Make Permanent") ? "1" : "" %&gt;",  
+  "scheduleStartDate": "&lt;%=  @values['Date Affective']%&gt;",
   "scheduleResumeDate": "&lt;%= (@values['Resume Date Option']=="Resume Date" ? @values['Date Payments Resume'] : "")%&gt;",
   "paymentAmountInCents": "&lt;%= (@values['Payment Total'].to_i * 100) %&gt;"
 }</parameter>
                 </parameters>
-                <messages></messages>
+                <messages>
+                    <message type="Complete"></message>
+                </messages>
                 <dependents>
                     <task label="Failed Payment Variation" type="Complete" value="JSON.parse(@results['Apply Payment Variation']['Result JSON'])['error']==100">kinetic_request_ce_submission_activity_create_v1_17</task>
                     <task label="Success" type="Complete" value="JSON.parse(@results['Apply Payment Variation']['Result JSON'])['error']==0">kinetic_request_ce_submission_activity_create_v1_18</task>
@@ -298,9 +301,7 @@ values.to_json
                     <parameter dependsOnId="" dependsOnValue="" id="origin_id" label="Origin ID" menu="" required="false" tooltip="Set the origin ID."></parameter>
                     <parameter dependsOnId="" dependsOnValue="" id="parent_id" label="Parent ID" menu="" required="false" tooltip="Set the parent ID."></parameter>
                 </parameters>
-                <messages>
-                    <message type="Complete"></message>
-                </messages>
+                <messages></messages>
                 <dependents></dependents>
             </task>
         </request>

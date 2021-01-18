@@ -235,7 +235,7 @@ startDt=Date.parse(@values['Date Payments Resume'])
                     <task label="" type="Complete" value="">kinetic_request_ce_submission_update_v1_19</task>
                 </dependents>
             </task>
-            <task definition_id="kinetic_request_ce_submission_update_v1" id="kinetic_request_ce_submission_update_v1_19" name="Update Status after Start Date" x="344" y="575">
+            <task definition_id="kinetic_request_ce_submission_update_v1" id="kinetic_request_ce_submission_update_v1_19" name="Update Status after Start Date" x="356" y="579">
                 <version>1</version>
                 <configured>true</configured>
                 <defers>false</defers>
@@ -243,7 +243,7 @@ startDt=Date.parse(@values['Date Payments Resume'])
                 <visible>true</visible>
                 <parameters>
                     <parameter dependsOnId="" dependsOnValue="" id="error_handling" label="Error Handling" menu="Error Message,Raise Error" required="true" tooltip="Determine what to return if an error is encountered.">Error Message</parameter>
-                    <parameter dependsOnId="" dependsOnValue="" id="space_slug" label="Space Slug" menu="" required="false" tooltip="The Space the submission is being retrieved from (defaults to info value if not provided).">&lt;%= @space['Slug']%&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="space_slug" label="Space Slug" menu="" required="false" tooltip="The Space the submission is being retrieved from (defaults to info value if not provided)."></parameter>
                     <parameter dependsOnId="" dependsOnValue="" id="submission_id" label="Submission Id" menu="" required="true" tooltip="The id of the submission being updated.">&lt;%= @values['Members']%&gt;</parameter>
                     <parameter dependsOnId="" dependsOnValue="" id="state" label="State" menu="" required="false" tooltip="The value used to set the submission state."></parameter>
                     <parameter dependsOnId="" dependsOnValue="" id="values" label="Values" menu="" required="false" tooltip="A JSON map of field names to values that should be set.">{
@@ -255,7 +255,9 @@ startDt=Date.parse(@values['Date Payments Resume'])
                     <parameter dependsOnId="" dependsOnValue="" id="origin_id" label="Origin ID" menu="" required="false" tooltip="Set the origin ID."></parameter>
                     <parameter dependsOnId="" dependsOnValue="" id="parent_id" label="Parent ID" menu="" required="false" tooltip="Set the parent ID."></parameter>
                 </parameters>
-                <messages></messages>
+                <messages>
+                    <message type="Complete"></message>
+                </messages>
                 <dependents>
                     <task label="" type="Complete" value="">routine_kinetic_request_ce_submission_activity_create_v1_20</task>
                 </dependents>

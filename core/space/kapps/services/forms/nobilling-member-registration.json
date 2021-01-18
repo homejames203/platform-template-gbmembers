@@ -122,7 +122,7 @@
       }
     }
   ],
-  "customHeadContent": "<style>\n  .hidden{\n   display:none; \n  }\nbutton.editButton {\n    border-radius: .25rem;\n    line-height: 1.0rem;\n    padding: .2rem 0.8rem;\n    margin-right: .5rem;\n    border: none;\n    color: #fff;\n    font-size: .75rem;\n    background-color: #0c384f;\n}\n</style>\n<script>\nfunction completeTableChange(){\n  K('field[Family Member]').value(\"\");\n  K('field[Programs]').value(\"\");\n  K('field[tableMemberID]').value(\"\");\n  K('field[tableMemberName]').value(\"\");\n  K('field[tableProgram]').value(\"\");\n  K('field[tableFee]').value(\"\");\n  \n  // Sort table\n  viewerConfig.response.sort(function(a, b){return b.cost - a.cost});\n  // Let calculate the discounts\n  viewerConfig.response.forEach(function(item, index){\n    if (index===0){\n      item.discount=\"0%\";\n      item.fee=((new Number(item.cost))).toFixed(2);\n    } else if(index===1){\n      item.discount=\"10%\";\n      item.fee=((new Number(item.cost))*0.9).toFixed(2);\n    } else if(index===2){\n      item.discount=\"20%\";\n      item.fee=((new Number(item.cost))*0.8).toFixed(2);\n    } else if(index>=3){\n      item.discount=\"30%\";\n      item.fee=((new Number(item.cost))*0.7).toFixed(2);\n    }      \n  });\n  \n  // Set payment value\n  var total=0;\n  viewerConfig.response.forEach(function(item, index){\n\t\ttotal=total+(new Number((new Number(item.fee)).toFixed(2)));\n  });\n  K('field[I promise to pay equal FREQUENCY instalments of]').value(total);\n\n  global.viewerConfig.renderer.type($('#memberTableDiv'),global.viewerConfig);\n\n  $('#member-table tbody tr').on( 'click', function () {\n    if ( $(this).hasClass('selected') ) {\n      $(this).removeClass('selected');\n    }\n    else {\n      $('#member-table').DataTable().$('tr.selected').removeClass('selected');\n      $(this).addClass('selected');\n    }\n  } );  \n  \n}  \n  \nfunction memberProgramAdded(memberID, feeProgram) {\n  found=false;\n\n  viewerConfig.response.forEach(function(item){\n      if (item.id===memberID && item.feeProgram===feeProgram) {\n        found=true;\n      }\n  });  \n  return found;\n}\n</script>\n<script>\nfunction enabledAddressEdit(){\n  K('field[Address]').enable();\n  K('field[Suburb]').enable();\n  K('field[State]').enable();\n  K('field[Postcode]').enable();\n}\nfunction geolocate() {\n  if (navigator.geolocation) {\n    navigator.geolocation.getCurrentPosition(function(position) {\n      var geolocation = {\n        lat: position.coords.latitude,\n        lng: position.coords.longitude\n      };\n      var circle = new google.maps.Circle(\n          {center: geolocation, radius: position.coords.accuracy});\n      autocomplete.setBounds(circle.getBounds());\n    });\n  }\n}\nfunction fillInAddress() {\n  K(\"field[Address]\").value(\"\");\n\n  // Get the place details from the autocomplete object.\n  var place = autocomplete.getPlace();\n\ndebugger;\n  // Get each component of the address from the place details,\n  // and then fill-in the corresponding field on the form.\n  for (var i = 0; i < place.address_components.length; i++) {\n    var addressType = place.address_components[i].types[0];\n\n    if (addressType===\"street_number\") {\n    \tK(\"field[Address]\").value(place.address_components[i][\"long_name\"]);\n    }\n    if (addressType===\"route\") {\n    \tK(\"field[Address]\").value(K(\"field[Address]\").value()+\" \"+place.address_components[i][\"long_name\"]);\n    }\n    if (addressType===\"locality\") {\n    \tK(\"field[Suburb]\").value(place.address_components[i][\"long_name\"]);\n    }\n    if (addressType===\"administrative_area_level_1\") {\n    \tK(\"field[State]\").value(place.address_components[i][\"short_name\"]);\n    }\n    if (addressType===\"postal_code\") {\n    \tK(\"field[Postcode]\").value(place.address_components[i][\"short_name\"]);\n    }\n    if (addressType===\"country\") {\n    \tK(\"field[Country]\").value(place.address_components[i][\"long_name\"]);\n    }\n  }\n}  \nfunction initAutocomplete() {\n  debugger;\n  if (document.getElementById('autocomplete')!==undefined) {\n    // Create the autocomplete object, restricting the search predictions to\n    // geographical location types.\n    autocomplete = new google.maps.places.Autocomplete(\n        document.getElementById('autocomplete'), {types: ['geocode']});\n\n    // Avoid paying for data that you don't need by restricting the set of\n    // place fields that are returned to just the address components.\n    autocomplete.setFields(['address_component']);\n\n    // When the user selects an address from the drop-down, populate the\n    // address fields in the form.\n    autocomplete.addListener('place_changed', fillInAddress);\n  }\n}  \n</script>\n\n<script src=\"https://maps.googleapis.com/maps/api/js?key=AIzaSyANn8OeuTR-YH0f-l7S-Qk04cROra8iUfM&libraries=places&callback=initAutocomplete\"\n        async defer>\n</script>",
+  "customHeadContent": "<style>\n  .hidden{\n   display:none; \n  }\n\t.acceptTerms + label {\n    margin-left: 20px !important;\n\t}  \n  body a {\n      color: #003b72;\n  }    \n  button.editButton {\n    border-radius: .25rem;\n    line-height: 1.0rem;\n    padding: .2rem 0.8rem;\n    margin-right: .5rem;\n    border: none;\n    color: #fff;\n    font-size: .75rem;\n    background-color: #0c384f;\n}\n</style>\n<script>\nfunction completeTableChange(){\n  K('field[Family Member]').value(\"\");\n  K('field[Programs]').value(\"\");\n  K('field[tableMemberID]').value(\"\");\n  K('field[tableMemberName]').value(\"\");\n  K('field[tableProgram]').value(\"\");\n  K('field[tableFee]').value(\"\");\n  \n  // Sort table\n  viewerConfig.response.sort(function(a, b){return b.cost - a.cost});\n  // Let calculate the discounts\n  viewerConfig.response.forEach(function(item, index){\n    if (index===0){\n      item.discount=\"0%\";\n      item.fee=((new Number(item.cost))).toFixed(2);\n    } else if(index===1){\n      item.discount=\"10%\";\n      item.fee=((new Number(item.cost))*0.9).toFixed(2);\n    } else if(index===2){\n      item.discount=\"20%\";\n      item.fee=((new Number(item.cost))*0.8).toFixed(2);\n    } else if(index>=3){\n      item.discount=\"30%\";\n      item.fee=((new Number(item.cost))*0.7).toFixed(2);\n    }      \n  });\n  \n  // Set payment value\n  var total=0;\n  viewerConfig.response.forEach(function(item, index){\n\t\ttotal=total+(new Number((new Number(item.fee)).toFixed(2)));\n  });\n  K('field[I promise to pay equal FREQUENCY instalments of]').value(total);\n\n  global.viewerConfig.renderer.type($('#memberTableDiv'),global.viewerConfig);\n\n  $('#member-table tbody tr').on( 'click', function () {\n    if ( $(this).hasClass('selected') ) {\n      $(this).removeClass('selected');\n    }\n    else {\n      $('#member-table').DataTable().$('tr.selected').removeClass('selected');\n      $(this).addClass('selected');\n    }\n  } );  \n  \n}  \n  \nfunction memberProgramAdded(memberID, feeProgram) {\n  found=false;\n\n  viewerConfig.response.forEach(function(item){\n      if (item.id===memberID && item.feeProgram===feeProgram) {\n        found=true;\n      }\n  });  \n  return found;\n}\n</script>\n<script>\nfunction enabledAddressEdit(){\n  K('field[Address]').enable();\n  K('field[Suburb]').enable();\n  K('field[State]').enable();\n  K('field[Postcode]').enable();\n}\nfunction geolocate() {\n  if (navigator.geolocation) {\n    navigator.geolocation.getCurrentPosition(function(position) {\n      var geolocation = {\n        lat: position.coords.latitude,\n        lng: position.coords.longitude\n      };\n      var circle = new google.maps.Circle(\n          {center: geolocation, radius: position.coords.accuracy});\n      autocomplete.setBounds(circle.getBounds());\n    });\n  }\n}\nfunction fillInAddress() {\n  K(\"field[Address]\").value(\"\");\n\n  // Get the place details from the autocomplete object.\n  var place = autocomplete.getPlace();\n\ndebugger;\n  // Get each component of the address from the place details,\n  // and then fill-in the corresponding field on the form.\n  for (var i = 0; i < place.address_components.length; i++) {\n    var addressType = place.address_components[i].types[0];\n\n    if (addressType===\"street_number\") {\n    \tK(\"field[Address]\").value(place.address_components[i][\"long_name\"]);\n    }\n    if (addressType===\"route\") {\n    \tK(\"field[Address]\").value(K(\"field[Address]\").value()+\" \"+place.address_components[i][\"long_name\"]);\n    }\n    if (addressType===\"locality\") {\n    \tK(\"field[Suburb]\").value(place.address_components[i][\"long_name\"]);\n    }\n    if (addressType===\"administrative_area_level_1\") {\n    \tK(\"field[State]\").value(place.address_components[i][\"short_name\"]);\n    }\n    if (addressType===\"postal_code\") {\n    \tK(\"field[Postcode]\").value(place.address_components[i][\"short_name\"]);\n    }\n    if (addressType===\"country\") {\n    \tK(\"field[Country]\").value(place.address_components[i][\"long_name\"]);\n    }\n  }\n}  \nfunction initAutocomplete() {\n  debugger;\n  if (document.getElementById('autocomplete')!==undefined) {\n    // Create the autocomplete object, restricting the search predictions to\n    // geographical location types.\n    autocomplete = new google.maps.places.Autocomplete(\n        document.getElementById('autocomplete'), {types: ['geocode']});\n\n    // Avoid paying for data that you don't need by restricting the set of\n    // place fields that are returned to just the address components.\n    autocomplete.setFields(['address_component']);\n\n    // When the user selects an address from the drop-down, populate the\n    // address fields in the form.\n    autocomplete.addListener('place_changed', fillInAddress);\n  }\n}  \n</script>\n\n<script src=\"https://maps.googleapis.com/maps/api/js?key=AIzaSyANn8OeuTR-YH0f-l7S-Qk04cROra8iUfM&libraries=places&callback=initAutocomplete\"\n        async defer>\n</script>",
   "description": "Record a members Registration details.\nNo Billing changes are applied.",
   "name": "Member Registration",
   "notes": null,
@@ -972,8 +972,8 @@
         {
           "type": "section",
           "renderType": null,
-          "name": "Terms",
-          "title": "Terms",
+          "name": "Accept Terms and Conditions",
+          "title": null,
           "visible": "values('Include Family Members')!==null",
           "omitWhenHidden": false,
           "renderAttributes": {
@@ -981,16 +981,16 @@
           "elements": [
             {
               "type": "field",
-              "name": "Terms Information Text",
-              "label": "Terms Information Text",
-              "key": "f56",
+              "name": "Accept Gracie Barra Terms and Conditions",
+              "label": "Gracie Barra <a href=\"javascript:$(K('section[Terms]').element()).toggle('slow')\">Terms and Conditions</a>",
+              "key": "f57",
               "defaultValue": null,
               "defaultResourceName": null,
-              "visible": false,
+              "visible": true,
               "enabled": true,
-              "required": false,
+              "required": true,
               "requiredMessage": null,
-              "omitWhenHidden": false,
+              "omitWhenHidden": null,
               "pattern": null,
               "constraints": [
 
@@ -999,20 +999,77 @@
 
               ],
               "renderAttributes": {
+                "class": "acceptTerms"
               },
-              "dataType": "string",
-              "renderType": "text",
-              "rows": 1
+              "dataType": "json",
+              "renderType": "checkbox",
+              "choicesResourceName": null,
+              "choicesRunIf": null,
+              "choices": [
+                {
+                  "label": "Accept Gracie Barra Terms and Conditions",
+                  "value": "Accept Gracie Barra Terms and Conditions"
+                }
+              ]
             },
             {
-              "type": "content",
-              "renderType": "html",
-              "name": "Terms Information",
-              "text": "<span id=\"termsInformation\"/>",
-              "visible": true,
+              "type": "section",
+              "renderType": null,
+              "name": "Terms",
+              "title": null,
+              "visible": false,
+              "omitWhenHidden": false,
               "renderAttributes": {
-              }
-            },
+              },
+              "elements": [
+                {
+                  "type": "field",
+                  "name": "Terms Information Text",
+                  "label": "Terms Information Text",
+                  "key": "f56",
+                  "defaultValue": null,
+                  "defaultResourceName": null,
+                  "visible": false,
+                  "enabled": true,
+                  "required": false,
+                  "requiredMessage": null,
+                  "omitWhenHidden": false,
+                  "pattern": null,
+                  "constraints": [
+
+                  ],
+                  "events": [
+
+                  ],
+                  "renderAttributes": {
+                  },
+                  "dataType": "string",
+                  "renderType": "text",
+                  "rows": 1
+                },
+                {
+                  "type": "content",
+                  "renderType": "html",
+                  "name": "Terms Information",
+                  "text": "<span id=\"termsInformation\"/>",
+                  "visible": true,
+                  "renderAttributes": {
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "section",
+          "renderType": null,
+          "name": "Signatures",
+          "title": "Signatures",
+          "visible": "values('Include Family Members')!==null",
+          "omitWhenHidden": false,
+          "renderAttributes": {
+          },
+          "elements": [
             {
               "type": "field",
               "name": "Term Date",
@@ -1042,7 +1099,7 @@
               "renderType": "html",
               "name": "Gracie Barra Rep Signature",
               "text": "<label class=\"field-label required\">Gracie Barra Representative Signature</label><div id=\"gbrepresentative-signature-canvas\"/>",
-              "visible": true,
+              "visible": false,
               "renderAttributes": {
               }
             },
@@ -1055,8 +1112,8 @@
               "defaultResourceName": null,
               "visible": false,
               "enabled": true,
-              "required": true,
-              "requiredMessage": "Gracie Barra Representative Signature is required",
+              "required": false,
+              "requiredMessage": null,
               "omitWhenHidden": false,
               "pattern": null,
               "constraints": [

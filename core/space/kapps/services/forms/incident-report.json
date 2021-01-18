@@ -475,7 +475,13 @@
 
               ],
               "events": [
-
+                {
+                  "name": "Invalid date",
+                  "type": "Change",
+                  "action": "Custom",
+                  "code": "K('field[Date of birth]').value(\"\")",
+                  "runIf": "K('field[Date of birth]').value()===\"Invalid date\""
+                }
               ],
               "renderAttributes": {
               },
@@ -525,11 +531,11 @@
               "key": "f55",
               "defaultValue": null,
               "defaultResourceName": null,
-              "visible": true,
+              "visible": "moment().diff(moment(K('field[Date of birth]').value(), \"YYYY-MM-DD\"),\"years\")<18",
               "enabled": true,
               "required": false,
               "requiredMessage": null,
-              "omitWhenHidden": null,
+              "omitWhenHidden": true,
               "pattern": null,
               "constraints": [
 
@@ -683,7 +689,12 @@
 
               ],
               "events": [
-
+                {
+                  "name": "Treatment was Provided",
+                  "type": "Change",
+                  "action": "Custom",
+                  "code": "if (K('field[Was treatment received for this injury]').value()===\"Treatment was provided\"){\n      K('section[No Medical Attention Was Desired and or Required]').hide();        \n} else {\n      K('section[No Medical Attention Was Desired and or Required]').show();        \n}"
+                }
               ],
               "renderAttributes": {
               },
@@ -1155,8 +1166,8 @@
               "type": "content",
               "renderType": "html",
               "name": "Parent Signature",
-              "text": "<label class=\"field-label\">Parent Signature</label><div id=\"parent-signature-canvas\"/>",
-              "visible": true,
+              "text": "<label class=\"field-label\">Parent/Guardian Signature</label><div id=\"parent-signature-canvas\"/>",
+              "visible": "moment().diff(moment(K('field[Date of birth]').value(), \"YYYY-MM-DD\"),\"years\")<18",
               "renderAttributes": {
               }
             },
@@ -1192,7 +1203,7 @@
           "renderType": null,
           "name": "No Medical Attention Was Desired and or Required",
           "title": "No Medical Attention Was Desired and/or Required",
-          "visible": false,
+          "visible": "values('Was treatment received for this injury')!==null && values('Was treatment received for this injury')!==\"Treatment was provided\"",
           "omitWhenHidden": true,
           "renderAttributes": {
           },
@@ -1215,7 +1226,7 @@
               "defaultResourceName": null,
               "visible": false,
               "enabled": true,
-              "required": true,
+              "required": "values('Was treatment received for this injury')!==\"Treatment was provided\"",
               "requiredMessage": "Waiver Signature is required",
               "omitWhenHidden": false,
               "pattern": null,
@@ -1236,7 +1247,7 @@
               "renderType": "html",
               "name": "Waiver Parent Signature",
               "text": "<label class=\"field-label\">Waiver Parent Signature</label><div id=\"waiver-parent-signature-canvas\"/>",
-              "visible": true,
+              "visible": "moment().diff(moment(K('field[Date of birth]').value(), \"YYYY-MM-DD\"),\"years\")<18",
               "renderAttributes": {
               }
             },
@@ -1332,6 +1343,13 @@
           "action": "Custom",
           "code": "if (K('field[Members]').value()===null && K('field[Leads]').value()===null) {\n\tloadingDetails=true;\n  K('section[Menu Space]').show();   \n}else {\n\tloadingDetails=false;\n  K('section[Menu Space]').hide();   \n}\nK('field[Date Time of Injury]').value(moment().format(\"YYYY-MM-DD\"));\nK('field[Date of Report]').value(moment().format(\"YYYY-MM-DD\"));",
           "runIf": "!form('review')"
+        },
+        {
+          "name": "Review",
+          "type": "Load",
+          "action": "Custom",
+          "code": "if (K('field[Was treatment received for this injury]').value()===\"Treatment was provided\"){\n      K('section[No Medical Attention Was Desired and or Required]').hide();        \n} else {\n      K('section[No Medical Attention Was Desired and or Required]').show();        \n}",
+          "runIf": "form('review')"
         }
       ],
       "name": "Instalment Information",

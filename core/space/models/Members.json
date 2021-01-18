@@ -235,7 +235,7 @@
         },
         {
           "name": "Get Active and Frozen Members",
-          "query": "kappSlug=gbmembers&formSlug=member&q=values[Status]=\"Active\" OR  values[Status]=\"Frozen\" OR values[Status]=\"Pending Freeze\""
+          "query": "kappSlug=gbmembers&formSlug=member&q=values[Status]=\"Active\" OR  values[Status]=\"Frozen\" OR values[Status]=\"Pending Freeze\" OR values[Status]=\"Pending Cancellation\""
         }
       ],
       "structure": "Submissions"

@@ -93,7 +93,7 @@
       "parameters": [
 
       ],
-      "qualification": "Active Members",
+      "qualification": "Get Active and Frozen Members",
       "status": "Active"
     },
     {
@@ -983,6 +983,84 @@
                   },
                   "dataType": "string",
                   "renderType": "date"
+                },
+                {
+                  "type": "field",
+                  "name": "Make Permanent",
+                  "label": "",
+                  "key": "f62",
+                  "defaultValue": null,
+                  "defaultResourceName": null,
+                  "visible": "values('Resume Date Option')===\"Until Further Notice\"",
+                  "enabled": true,
+                  "required": false,
+                  "requiredMessage": null,
+                  "omitWhenHidden": true,
+                  "pattern": null,
+                  "constraints": [
+
+                  ],
+                  "events": [
+
+                  ],
+                  "renderAttributes": {
+                  },
+                  "dataType": "json",
+                  "renderType": "checkbox",
+                  "choicesResourceName": null,
+                  "choicesRunIf": null,
+                  "choices": [
+                    {
+                      "label": "Make Permanent",
+                      "value": "Make Permanent"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "section",
+              "renderType": null,
+              "name": "Signature",
+              "title": null,
+              "visible": true,
+              "omitWhenHidden": null,
+              "renderAttributes": {
+              },
+              "elements": [
+                {
+                  "type": "field",
+                  "name": "Encoded Person Signature",
+                  "label": "Encoded Person Signature",
+                  "key": "f63",
+                  "defaultValue": null,
+                  "defaultResourceName": null,
+                  "visible": false,
+                  "enabled": true,
+                  "required": false,
+                  "requiredMessage": null,
+                  "omitWhenHidden": false,
+                  "pattern": null,
+                  "constraints": [
+
+                  ],
+                  "events": [
+
+                  ],
+                  "renderAttributes": {
+                  },
+                  "dataType": "string",
+                  "renderType": "text",
+                  "rows": 1
+                },
+                {
+                  "type": "content",
+                  "renderType": "html",
+                  "name": "Person Signature",
+                  "text": "<label class=\"field-label\">Person Signature</label><div id=\"person-signature-canvas\"/>",
+                  "visible": true,
+                  "renderAttributes": {
+                  }
                 }
               ]
             }
@@ -1059,6 +1137,12 @@
           "type": "Submit",
           "action": "Custom",
           "code": "K('field[feesJSON]').value(JSON.stringify(viewerConfig.response));\n\nmembers=new Array();\nviewerConfig.response.forEach(function(item){\n  members.push(item.id);\n});\nK('field[membersJSON]').value(JSON.stringify(members));\n\n"
+        },
+        {
+          "name": "Load Signatures",
+          "type": "Load",
+          "action": "Custom",
+          "code": "bundle.config.widgets.signatureCanvas({\n  element: K(\"form\").find(\"#person-signature-canvas\")[0],\n  initialValue: K(\"field[Encoded Person Signature]\").value(),\n  onChange: function(value) {\n\t  K(\"field[Encoded Person Signature]\").value(value);\n\t},\n  height: 250,\n  width: 500,\n  disable: form('review'),\n  ref: function(el) {\n    window.personSignaturePad = el;\n  },\n});\n"
         }
       ],
       "name": "Instalment Information",
@@ -1069,7 +1153,7 @@
   "securityPolicies": [
     {
       "endpoint": "Display",
-      "name": "PaySmart Program Managers"
+      "name": "Paysmart Program Managers"
     },
     {
       "endpoint": "Submission Access",

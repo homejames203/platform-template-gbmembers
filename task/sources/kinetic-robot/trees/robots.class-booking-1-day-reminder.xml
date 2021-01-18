@@ -7,7 +7,7 @@
         <name>Class Booking 1 Day Reminder</name>
         <author></author>
         <notes></notes>
-        <lastID>24</lastID>
+        <lastID>25</lastID>
         <request>
             <task definition_id="system_start_v1" id="start" name="Start" x="10" y="10">
                 <version>1</version>
@@ -32,11 +32,13 @@
                     <parameter dependsOnId="" dependsOnValue="" id="action_type" label="Action Type" menu="Update,Complete" required="true" tooltip="">Complete</parameter>
                     <parameter dependsOnId="" dependsOnValue="" id="deferral_token" label="Deferral Token" menu="" required="true" tooltip="">&lt;%=JSON.parse(@source['Data'])['Kinetic Robot Deferral Token']%&gt;</parameter>
                     <parameter dependsOnId="" dependsOnValue="" id="deferred_variables" label="Deferred Results" menu="" required="false" tooltip="">&lt;results&gt;
-&lt;result name="output"&gt;{"message":&lt;%=@results['Done']['output']%&gt;}&lt;/result&gt;
+&lt;result name="output"&gt;{"message":"&lt;%=@results['Done']['output']%&gt;"}&lt;/result&gt;
 &lt;/results&gt;</parameter>
                     <parameter dependsOnId="" dependsOnValue="" id="message" label="Message" menu="" required="false" tooltip=""></parameter>
                 </parameters>
-                <messages></messages>
+                <messages>
+                    <message type="Complete"></message>
+                </messages>
                 <dependents>
                     <task label="" type="Complete" value="">system_junction_v1_13</task>
                 </dependents>
@@ -86,30 +88,6 @@
                 <dependents>
                     <task label="" type="Complete" value="">system_loop_head_v1_4</task>
                 </dependents>
-            </task>
-            <task definition_id="routine_tech_bar_move_pending_to_open_v1" id="routine_tech_bar_move_pending_to_open_v1_9" name="Move Pending Tickets to Open" x="1369" y="334">
-                <version>1</version>
-                <configured>true</configured>
-                <defers>true</defers>
-                <deferrable>true</deferrable>
-                <visible>false</visible>
-                <parameters>
-                    <parameter dependsOnId="" dependsOnValue="" id="Queue Kapp Slug" label="Queue Kapp Slug" menu="" required="true" tooltip="The slug of the Queue Kapp">queue</parameter>
-                    <parameter dependsOnId="" dependsOnValue="" id="Tech Bar Team" label="Tech Bar Team" menu="" required="true" tooltip="">&lt;%=
-team_name = "Scheduler::"
-
-tech_bars = JSON.parse(@results['Find tomorrow bookings']['Submissions List JSON'])
-tech_bar_values = tech_bars[@results['Loop Begin']['Index']]['values']
-
-team_name += tech_bar_values['Name']
-%&gt;</parameter>
-                    <parameter dependsOnId="" dependsOnValue="" id="Tech Bar Date" label="Tech Bar Date" menu="" required="true" tooltip="">&lt;%=@results['Get Date in Tech Bar Timezone']['Date']%&gt;</parameter>
-                    <parameter dependsOnId="" dependsOnValue="" id="Starting Count" label="Starting Count" menu="" required="true" tooltip="">0</parameter>
-                    <parameter dependsOnId="" dependsOnValue="" id="Limit" label="Limit" menu="" required="true" tooltip="">100</parameter>
-                    <parameter dependsOnId="" dependsOnValue="" id="Page Token" label="Page Token" menu="" required="false" tooltip="The value to use as the offset for the page of submissions to return. The submission that matches this value will not be included in the results."></parameter>
-                </parameters>
-                <messages></messages>
-                <dependents></dependents>
             </task>
             <task definition_id="utilities_echo_v1" id="utilities_echo_v1_10" name="Done" x="489.50656" y="460.07095">
                 <version>1</version>
@@ -167,26 +145,6 @@ team_name += tech_bar_values['Name']
                     <task label="" type="Complete" value="">utility_json_to_xml_v1_6</task>
                 </dependents>
             </task>
-            <task definition_id="utility_date_in_timezone_v2" id="utility_date_in_timezone_v2_18" name="Get Date in Tech Bar Timezone" x="1367" y="200">
-                <version>2</version>
-                <configured>true</configured>
-                <defers>false</defers>
-                <deferrable>false</deferrable>
-                <visible>true</visible>
-                <parameters>
-                    <parameter dependsOnId="" dependsOnValue="" id="timezone" label="Timezone" menu="" required="true" tooltip="The timezone being explored.">&lt;%=
-tech_bars = JSON.parse(@results['Find tomorrow bookings']['Submissions List JSON'])
-tech_bar_values = tech_bars[@results['Loop Begin']['Index']]['values']
-tech_bar_values['Timezone']
-%&gt;</parameter>
-                    <parameter dependsOnId="" dependsOnValue="" id="timestamp" label="Timestamp" menu="" required="false" tooltip="Current time will be used if a timestamp is not entered. Format: YYYY-MM-DD'T'HH:MM:SS'Z' (iso8601)"></parameter>
-                    <parameter dependsOnId="" dependsOnValue="" id="direction" label="Direction" menu="To Local,To UTC" required="true" tooltip="Convert from UTC to local time, or a local time to a UTC.">To Local</parameter>
-                </parameters>
-                <messages></messages>
-                <dependents>
-                    <task label="" type="Complete" value="">routine_tech_bar_move_pending_to_open_v1_9</task>
-                </dependents>
-            </task>
             <task definition_id="routine_kinetic_datastore_submission_update_v1" id="routine_kinetic_datastore_submission_update_v1_19" name="Update Robot Execution Status" x="7" y="148">
                 <version>1</version>
                 <configured>true</configured>
@@ -214,9 +172,7 @@ tech_bar_values['Timezone']
                 <parameters>
                     <parameter dependsOnId="" dependsOnValue="" id="input" label="Input" menu="" required="true" tooltip="">&lt;%= (Date.today+1).strftime("%Y-%m-%d")%&gt;</parameter>
                 </parameters>
-                <messages>
-                    <message type="Complete"></message>
-                </messages>
+                <messages></messages>
                 <dependents>
                     <task label="" type="Complete" value="">routine_kinetic_datastore_submissions_retrieve_list_v1_17</task>
                 </dependents>
@@ -241,7 +197,7 @@ tech_bar_values['Timezone']
                     <task label="" type="Complete" value="">routine_kinetic_email_template_notification_send_v1_24</task>
                 </dependents>
             </task>
-            <task definition_id="utilities_echo_v1" id="utilities_echo_v1_23" name="Get Member GUID" x="1028" y="219">
+            <task definition_id="utilities_echo_v1" id="utilities_echo_v1_23" name="Get Member GUID" x="1014" y="75">
                 <version>1</version>
                 <configured>true</configured>
                 <defers>false</defers>
@@ -252,7 +208,8 @@ tech_bar_values['Timezone']
                 </parameters>
                 <messages></messages>
                 <dependents>
-                    <task label="" type="Complete" value="">kinetic_request_ce_submission_retrieve_v2_22</task>
+                    <task label="Has Title" type="Complete" value="!JSON.parse(@results['Find tomorrow bookings']['Submissions List JSON'])[@results['Loop Begin']['Index']]['values']['Title'].nil?">kinetic_request_ce_submission_retrieve_v2_22</task>
+                    <task label="Booking NO Title" type="Complete" value="JSON.parse(@results['Find tomorrow bookings']['Submissions List JSON'])[@results['Loop Begin']['Index']]['values']['Title'].nil?">routine_kinetic_datastore_submission_update_v1_25</task>
                 </dependents>
             </task>
             <task definition_id="routine_kinetic_email_template_notification_send_v1" id="routine_kinetic_email_template_notification_send_v1_24" name="Send Reminder" x="1030" y="432">
@@ -273,6 +230,26 @@ tech_bar_values['Timezone']
                 <messages></messages>
                 <dependents>
                     <task label="" type="Complete" value="">system_loop_tail_v1_5</task>
+                </dependents>
+            </task>
+            <task definition_id="routine_kinetic_datastore_submission_update_v1" id="routine_kinetic_datastore_submission_update_v1_25" name="Update Title" x="1227" y="256">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>true</defers>
+                <deferrable>true</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter dependsOnId="" dependsOnValue="" id="Id" label="Id" menu="" required="true" tooltip="The id of the submission to update">&lt;%= JSON.parse(@results['Find tomorrow bookings']['Submissions List JSON'])[@results['Loop Begin']['Index']]['id'] %&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="Updated - Core State" label="Updated - Core State" menu="" required="false" tooltip="The submissions core state"></parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="Updated - Current Page Name" label="Updated - Current Page Name" menu="" required="false" tooltip="The page to set the submission to"></parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="Updated - Current Page Navigation" label="Updated - Current Page Navigation" menu="" required="false" tooltip="The direction of the next page (next or previous)"></parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="Updated - Values JSON" label="Updated - Values JSON" menu="" required="false" tooltip="A JSON representation of the submissions values">{
+ "Title": " "
+}</parameter>
+                </parameters>
+                <messages></messages>
+                <dependents>
+                    <task label="" type="Complete" value="">kinetic_request_ce_submission_retrieve_v2_22</task>
                 </dependents>
             </task>
         </request>

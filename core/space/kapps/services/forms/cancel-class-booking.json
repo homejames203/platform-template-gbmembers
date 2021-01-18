@@ -214,6 +214,31 @@
               "dataType": "string",
               "renderType": "text",
               "rows": 1
+            },
+            {
+              "type": "field",
+              "name": "Title",
+              "label": "Title",
+              "key": "f8",
+              "defaultValue": null,
+              "defaultResourceName": null,
+              "visible": true,
+              "enabled": false,
+              "required": false,
+              "requiredMessage": null,
+              "omitWhenHidden": null,
+              "pattern": null,
+              "constraints": [
+
+              ],
+              "events": [
+
+              ],
+              "renderAttributes": {
+              },
+              "dataType": "string",
+              "renderType": "text",
+              "rows": 1
             }
           ]
         },
@@ -260,7 +285,7 @@
           "name": "Set Details",
           "type": "Load",
           "action": "Custom",
-          "code": "K('bridgedResource[Class Booking]').load({\n  success: function(bridgedData) {\n\t\tK('field[Status]').value(bridgedData['Status']);\n\t\tK('field[Member Name]').value(bridgedData['Member Name']);\n\t\tK('field[Class Date]').value(bridgedData['Class Date']);\n\t\tK('field[Class Time]').value(moment(bridgedData['Class Time'], \"HH:mm\").format(\"LT\"));\n\t\tK('field[Program]').value(bridgedData['Program']);\n    \n    if (bridgedData['Status']!==\"Booked\"){\n        K('button[Submit Button]').hide();\n      \tK('section[Already Cancelled or Attended]').show();\n    }\n  }\n});\n"
+          "code": "K('bridgedResource[Class Booking]').load({\n  success: function(bridgedData) {\n\t\tK('field[Status]').value(bridgedData['Status']);\n\t\tK('field[Member Name]').value(bridgedData['Member Name']);\n\t\tK('field[Class Date]').value(bridgedData['Class Date']);\n\t\tK('field[Class Time]').value(moment(bridgedData['Class Time'], \"HH:mm\").format(\"LT\"));\n\t\tK('field[Program]').value(bridgedData['Program']);\n\t\tK('field[Title]').value(bridgedData['Title']);\n    \n    if (bridgedData['Status']!==\"Booked\"){\n        K('button[Submit Button]').hide();\n      \tK('section[Already Cancelled or Attended]').show();\n    }\n  }\n});\n"
         }
       ],
       "name": "Main",

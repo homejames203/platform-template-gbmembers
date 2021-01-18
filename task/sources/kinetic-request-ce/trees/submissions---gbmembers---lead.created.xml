@@ -1,0 +1,62 @@
+<tree schema_version="1.0">
+    <sourceName>Kinetic Request CE</sourceName>
+    <sourceGroup>Submissions > gbmembers > lead</sourceGroup>
+    <type>Tree</type>
+    <status>Active</status>
+    <taskTree builder_version="" schema_version="1.0" version="">
+        <name>Created</name>
+        <author></author>
+        <notes></notes>
+        <lastID>7</lastID>
+        <request>
+            <task definition_id="system_start_v1" id="start" name="Start" x="10" y="10">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters></parameters>
+                <messages></messages>
+                <dependents>
+                    <task label="" type="Complete" value="">kinetic_request_ce_datastore_submission_search_v1_1</task>
+                </dependents>
+            </task>
+            <task definition_id="kinetic_request_ce_datastore_submission_search_v1" id="kinetic_request_ce_datastore_submission_search_v1_1" name="Get Lead Triggers" x="68" y="183">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter dependsOnId="" dependsOnValue="" id="error_handling" label="Error Handling" menu="Error Message,Raise Error" required="true" tooltip="Determine what to return if an error is encountered.">Error Message</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="space_slug" label="Space Slug" menu="" required="false" tooltip="The Space the submission is being retrieved from (defaults to info value if not provided)."></parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="form_slug" label="Datastore Form Slug" menu="" required="false" tooltip="The slug of the Datastore Form to search for submissions in.">journey-triggers</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="index" label="Index" menu="" required="false" tooltip="The index to use for the search.">values[Status],values[Record Type],values[Lead Condition],values[Lead Condition Duration]</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="query" label="Query" menu="" required="false" tooltip="The query that will be used to search the submissions. Ex: values[company]=Kinetic">values[Status]="Active" AND values[Record Type]="Lead" AND values[Lead Condition]="On Create" AND values[Lead Condition Duration]="0"</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="limit" label="Limit" menu="" required="false" tooltip="An integer representing the max results that the search can return."></parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="return_type" label="Return Type" menu="JSON,XML,ID List" required="true" tooltip="The format that the results should be returned in.">JSON</parameter>
+                </parameters>
+                <messages>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">generate_journey_events_v1_7</task>
+                </dependents>
+            </task>
+            <task definition_id="generate_journey_events_v1" id="generate_journey_events_v1_7" name="Generate Events" x="347" y="340">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>true</visible>
+                <parameters>
+                    <parameter dependsOnId="" dependsOnValue="" id="journey_triggers_json" label="Journey Triggers JSON" menu="" required="true" tooltip="Journney Trigger records as JSON">&lt;%= @results['Get Lead Triggers']['Result'] %&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="record_id" label="Record ID" menu="" required="true" tooltip="Record ID of Lead or member">&lt;%=  @submission['Id'] %&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="record_name" label="Record Name" menu="" required="true" tooltip="Record Name of Lead or member">&lt;%=  @values['First Name'] +" "+ @values['Last Name'] %&gt;</parameter>
+                </parameters>
+                <messages></messages>
+                <dependents></dependents>
+            </task>
+        </request>
+    </taskTree>
+</tree>

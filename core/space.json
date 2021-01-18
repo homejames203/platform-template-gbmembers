@@ -14,6 +14,12 @@
       ]
     },
     {
+      "name": "Allow Cash Payments",
+      "values": [
+        "true"
+      ]
+    },
+    {
       "name": "Approval Form Slug",
       "values": [
         "approval"
@@ -28,7 +34,7 @@
     {
       "name": "Calendar Time Slots",
       "values": [
-        "5"
+        "15"
       ]
     },
     {
@@ -127,7 +133,7 @@
     {
       "name": "Payment Frequencies",
       "values": [
-        "Fortnightly,Weekly"
+        "Fortnightly,Weekly,Yearly"
       ]
     },
     {
@@ -170,6 +176,18 @@
       "name": "School Telephone",
       "values": [
         "02 9899 7778"
+      ]
+    },
+    {
+      "name": "School Timetable URL",
+      "values": [
+        "https://gbsydney.com.au/timetable"
+      ]
+    },
+    {
+      "name": "School Website",
+      "values": [
+        "https://gboceania.com.au"
       ]
     },
     {
