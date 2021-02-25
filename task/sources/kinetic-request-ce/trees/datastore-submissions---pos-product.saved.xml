@@ -1,0 +1,81 @@
+<tree schema_version="1.0">
+    <sourceName>Kinetic Request CE</sourceName>
+    <sourceGroup>Datastore Submissions > pos-product</sourceGroup>
+    <type>Tree</type>
+    <status>Active</status>
+    <taskTree builder_version="" schema_version="1.0" version="">
+        <name>Saved</name>
+        <author></author>
+        <notes></notes>
+        <lastID>3</lastID>
+        <request>
+            <task definition_id="system_start_v1" id="start" name="Start" x="10" y="10">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters></parameters>
+                <messages></messages>
+                <dependents>
+                    <task label="Not upload to S3" type="Complete" value="!@values['Image URL'].nil? &amp;&amp; (@values['Image URL'].include? &quot;submissions&quot;)">utilities_echo_v1_1</task>
+                </dependents>
+            </task>
+            <task definition_id="utilities_echo_v1" id="utilities_echo_v1_1" name="Get Filename" x="160" y="240">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>true</visible>
+                <parameters>
+                    <parameter dependsOnId="" dependsOnValue="" id="input" label="Input" menu="" required="true" tooltip="">&lt;%=  @values['Image'][0]['name'] %&gt;</parameter>
+                </parameters>
+                <messages></messages>
+                <dependents>
+                    <task label="" type="Complete" value="">amazon_s3_file_upload_from_datastore_submission_v1_2</task>
+                </dependents>
+            </task>
+            <task definition_id="amazon_s3_file_upload_from_datastore_submission_v1" id="amazon_s3_file_upload_from_datastore_submission_v1_2" name="Upload Image" x="160" y="440">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter dependsOnId="" dependsOnValue="" id="region" label="Region" menu="" required="false" tooltip="Id of the region the inteded S3 server is located in (can also be configured as an info value).">&lt;%=  @space_attributes['AWS Region'].nil? ? "ap-southeast-2" : @space_attributes['AWS Region'] %&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="space_slug" label="Space Slug" menu="" required="false" tooltip="Slug for the space the submission is in (can also be configured as an info value)."></parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="bucket" label="Bucket" menu="" required="true" tooltip="Name of the bucket to upload to.">gbmembers-gbshop</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="file_name" label="File Name" menu="" required="false" tooltip="Name that will be given to the file on upload (if not provided, will default to the default filename stored in Request CE).">&lt;%=@space['Slug']%&gt;-&lt;%=@results['Get Filename']['output'] %&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="submission_id" label="Submission Id" menu="" required="true" tooltip="Submission Id that the attachment is located on.">&lt;%=  @submission['Id'] %&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="field" label="Field Label" menu="" required="true" tooltip="Field Label for the attachment field.">Image</parameter>
+                </parameters>
+                <messages>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="" type="Complete" value="">kinetic_request_ce_datastore_submission_update_v1_3</task>
+                </dependents>
+            </task>
+            <task definition_id="kinetic_request_ce_datastore_submission_update_v1" id="kinetic_request_ce_datastore_submission_update_v1_3" name="Update Image URL" x="160" y="640">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>true</visible>
+                <parameters>
+                    <parameter dependsOnId="" dependsOnValue="" id="error_handling" label="Error Handling" menu="Error Message,Raise Error" required="true" tooltip="Determine what to return if an error is encountered.">Error Message</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="space_slug" label="Space Slug" menu="" required="false" tooltip="The Space the submission is being updated in (defaults to info value if not provided)."></parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="submission_id" label="Datastore Submission Id" menu="" required="true" tooltip="The id of the submission being updated.">&lt;%=  @submission['Id'] %&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="state" label="State" menu="" required="false" tooltip="The value used to set the submission state."></parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="values" label="Values" menu="" required="false" tooltip="A JSON map of field names to values that should be set.">&lt;%={
+  "Image URL" =&gt; @results['Upload Image']['Public Url']
+}.to_json %&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="current_page_name" label="Current Page Name" menu="" required="false" tooltip="Set the current page name."></parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="current_page_navigation" label="Current Page Navigation" menu="" required="false" tooltip="Set the current page navigation."></parameter>
+                </parameters>
+                <messages></messages>
+                <dependents></dependents>
+            </task>
+        </request>
+    </taskTree>
+</tree>

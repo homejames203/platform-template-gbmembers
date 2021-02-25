@@ -28,23 +28,19 @@
                 <deferrable>false</deferrable>
                 <visible>true</visible>
                 <parameters>
-                    <parameter id="error_handling" label="Error Handling" menu="Error Message,Raise Error" required="true" tooltip="Determine what to return if an error is encountered.">Error Message</parameter>
-                    <parameter id="space_slug" label="Space Slug" menu="" required="false" tooltip="The Space the submission is being retrieved from (defaults to info value if not provided)."></parameter>
-                    <parameter id="submission_id" label="Submission Id" menu="" required="true" tooltip="The id of the submission being updated.">&lt;%= @values['originatingID']%&gt;</parameter>
-                    <parameter id="state" label="State" menu="" required="false" tooltip="The value used to set the submission state."></parameter>
-                    <parameter id="values" label="Values" menu="" required="false" tooltip="A JSON map of field names to values that should be set.">&lt;%={
+                    <parameter dependsOnId="" dependsOnValue="" id="error_handling" label="Error Handling" menu="Error Message,Raise Error" required="true" tooltip="Determine what to return if an error is encountered.">Error Message</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="space_slug" label="Space Slug" menu="" required="false" tooltip="The Space the submission is being retrieved from (defaults to info value if not provided)."></parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="submission_id" label="Submission Id" menu="" required="true" tooltip="The id of the submission being updated.">&lt;%= @values['originatingID']%&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="state" label="State" menu="" required="false" tooltip="The value used to set the submission state."></parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="values" label="Values" menu="" required="false" tooltip="A JSON map of field names to values that should be set.">&lt;%={
   "Photo" =&gt; @results['Upload Photo']['Public Url']
 }.to_json %&gt;</parameter>
-                    <parameter id="current_page_name" label="Current Page Name" menu="" required="false" tooltip="Set the current page name."></parameter>
-                    <parameter id="current_page_navigation" label="Current Page Navigation" menu="" required="false" tooltip="Set the current page navigation."></parameter>
-                    <parameter id="origin_id" label="Origin ID" menu="" required="false" tooltip="Set the origin ID."></parameter>
-                    <parameter id="parent_id" label="Parent ID" menu="" required="false" tooltip="Set the parent ID."></parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="current_page_name" label="Current Page Name" menu="" required="false" tooltip="Set the current page name."></parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="current_page_navigation" label="Current Page Navigation" menu="" required="false" tooltip="Set the current page navigation."></parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="origin_id" label="Origin ID" menu="" required="false" tooltip="Set the origin ID."></parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="parent_id" label="Parent ID" menu="" required="false" tooltip="Set the parent ID."></parameter>
                 </parameters>
-                <messages>
-                    <message type="Create"></message>
-                    <message type="Update"></message>
-                    <message type="Complete"></message>
-                </messages>
+                <messages></messages>
                 <dependents></dependents>
             </task>
             <task definition_id="amazon_s3_file_upload_v2" id="amazon_s3_file_upload_v2_56" name="Upload Photo" x="299" y="254">
@@ -54,15 +50,13 @@
                 <deferrable>false</deferrable>
                 <visible>false</visible>
                 <parameters>
-                    <parameter id="region" label="Region" menu="" required="true" tooltip="Id of the region the inteded S3 server is located in.">ap-southeast-2</parameter>
-                    <parameter id="bucket" label="Bucket" menu="" required="true" tooltip="Name of the bucket to upload to.">gbmembers-photos</parameter>
-                    <parameter id="file_name" label="File Name" menu="" required="true" tooltip="Name of the file to upload.">&lt;%= @values['Filename']%&gt;</parameter>
-                    <parameter id="file_content" label="File Content" menu="" required="false" tooltip="String to upload as the contents of the new file."></parameter>
-                    <parameter id="file_location" label="File Location to upload" menu="" required="false" tooltip="Path to file to upload">&lt;%= @results['Work Directory']['output']+@values['Filename'] %&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="region" label="Region" menu="" required="true" tooltip="Id of the region the inteded S3 server is located in.">&lt;%=  @space_attributes['AWS Region'].nil? ? "ap-southeast-2" : @space_attributes['AWS Region'] %&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="bucket" label="Bucket" menu="" required="true" tooltip="Name of the bucket to upload to.">gbmembers-photos</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="file_name" label="File Name" menu="" required="true" tooltip="Name of the file to upload.">&lt;%= @values['Filename']%&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="file_content" label="File Content" menu="" required="false" tooltip="String to upload as the contents of the new file."></parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="file_location" label="File Location to upload" menu="" required="false" tooltip="Path to file to upload">&lt;%= @results['Work Directory']['output']+@values['Filename'] %&gt;</parameter>
                 </parameters>
                 <messages>
-                    <message type="Create"></message>
-                    <message type="Update"></message>
                     <message type="Complete"></message>
                 </messages>
                 <dependents>
@@ -76,7 +70,7 @@
                 <deferrable>false</deferrable>
                 <visible>true</visible>
                 <parameters>
-                    <parameter id="input" label="Input" menu="" required="true" tooltip="">&lt;%=
+                    <parameter dependsOnId="" dependsOnValue="" id="input" label="Input" menu="" required="true" tooltip="">&lt;%=
 require "base64"
 
 filename=@results['Work Directory']['output']+@values['Filename']
@@ -86,11 +80,7 @@ end
 %&gt;
 </parameter>
                 </parameters>
-                <messages>
-                    <message type="Create"></message>
-                    <message type="Update"></message>
-                    <message type="Complete"></message>
-                </messages>
+                <messages></messages>
                 <dependents>
                     <task label="" type="Complete" value="">amazon_s3_file_upload_v2_56</task>
                 </dependents>
@@ -102,16 +92,12 @@ end
                 <deferrable>false</deferrable>
                 <visible>true</visible>
                 <parameters>
-                    <parameter id="input" label="Input" menu="" required="true" tooltip="">&lt;%=require 'fileutils'
+                    <parameter dependsOnId="" dependsOnValue="" id="input" label="Input" menu="" required="true" tooltip="">&lt;%=require 'fileutils'
 wrkDir='/root/gbmember_files'
 FileUtils.mkdir_p wrkDir
 wrkDir%&gt;</parameter>
                 </parameters>
-                <messages>
-                    <message type="Create"></message>
-                    <message type="Update"></message>
-                    <message type="Complete"></message>
-                </messages>
+                <messages></messages>
                 <dependents>
                     <task label="" type="Complete" value="">utilities_echo_v1_59</task>
                 </dependents>
@@ -123,17 +109,13 @@ wrkDir%&gt;</parameter>
                 <deferrable>false</deferrable>
                 <visible>true</visible>
                 <parameters>
-                    <parameter id="input" label="Input" menu="" required="true" tooltip="">&lt;%=
+                    <parameter dependsOnId="" dependsOnValue="" id="input" label="Input" menu="" required="true" tooltip="">&lt;%=
 embeddedImage=@values['Photo Image']
 imageVAL=embeddedImage[embeddedImage.index(":")+1..embeddedImage.length]
 imageVAL[imageVAL.index(",")+1..imageVAL.length].sub('"','').sub('&amp;quot','')
 %&gt;</parameter>
                 </parameters>
-                <messages>
-                    <message type="Create"></message>
-                    <message type="Update"></message>
-                    <message type="Complete"></message>
-                </messages>
+                <messages></messages>
                 <dependents>
                     <task label="" type="Complete" value="">utilities_echo_v1_57</task>
                 </dependents>
@@ -145,16 +127,12 @@ imageVAL[imageVAL.index(",")+1..imageVAL.length].sub('"','').sub('&amp;quot','')
                 <deferrable>false</deferrable>
                 <visible>true</visible>
                 <parameters>
-                    <parameter id="input" label="Input" menu="" required="true" tooltip="">&lt;%
+                    <parameter dependsOnId="" dependsOnValue="" id="input" label="Input" menu="" required="true" tooltip="">&lt;%
 filename=@results['Work Directory']['output']+@values['Filename']
 File.delete(filename)
 %&gt;</parameter>
                 </parameters>
-                <messages>
-                    <message type="Create"></message>
-                    <message type="Update"></message>
-                    <message type="Complete"></message>
-                </messages>
+                <messages></messages>
                 <dependents>
                     <task label="" type="Complete" value="">kinetic_request_ce_submission_update_v1_55</task>
                 </dependents>

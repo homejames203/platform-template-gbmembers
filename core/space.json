@@ -26,6 +26,12 @@
       ]
     },
     {
+      "name": "AWS Region",
+      "values": [
+        "ap-southeast-2"
+      ]
+    },
+    {
       "name": "Billing Company",
       "values": [
         "PaySmart"
@@ -115,7 +121,7 @@
     {
       "name": "Kinetic Billing Server URL",
       "values": [
-        "https://gbbilling.com.au:8443/billingservice"
+        "http://localhost:8081/billingservice"
       ]
     },
     {
@@ -134,6 +140,24 @@
       "name": "Payment Frequencies",
       "values": [
         "Fortnightly,Weekly,Yearly"
+      ]
+    },
+    {
+      "name": "POS Accepted Cards",
+      "values": [
+        "['visa','mastercard','amex']"
+      ]
+    },
+    {
+      "name": "POS Service URL",
+      "values": [
+        "http://localhost:8081/billingservice/processPOS"
+      ]
+    },
+    {
+      "name": "POS System",
+      "values": [
+        "DebitSuccess"
       ]
     },
     {
@@ -259,7 +283,7 @@
   "defaultLocale": "en-AU",
   "defaultTimezone": "Australia/Brisbane",
   "displayType": "Single Page App",
-  "displayValue": "spa.jsp?location=https://s3-ap-southeast-2.amazonaws.com/gbmembers",
+  "displayValue": "spa.jsp?location=https://s3-ap-southeast-2.amazonaws.com/gbmembers-v2",
   "enabledLocales": [
     "en-AU"
   ],

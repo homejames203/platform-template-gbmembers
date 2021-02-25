@@ -188,6 +188,66 @@ task_handler_configurations["smtp_email_send_v1"] = {
     "space_slug" => nil,
     "enable_debug_logging" => "No",
   }
+
+  task_handler_configurations["generate_monthly_billing_statistics_v1"] = {
+    "space" => vars["core"]["space_slug"],
+    "service_url" => "https://gbbilling.com.au:8443/billingservice",
+    "api_server" => vars["core"]["server"],
+    "api_username" => vars["core"]["email_integration_user_username"],
+    "api_password" => vars["core"]["email_integration_user_password"],
+  }
+  task_handler_configurations["generate_member_journey_events_v1"] = {
+    "space" => vars["core"]["space_slug"],
+    "service_url" => "https://gbbilling.com.au:8443/billingservice",
+    "api_server" => vars["core"]["server"],
+    "api_username" => vars["core"]["email_integration_user_username"],
+    "api_password" => vars["core"]["email_integration_user_password"],
+  }
+  task_handler_configurations["generate_lead_journey_events_v1"] = {
+    "space" => vars["core"]["space_slug"],
+    "api_server" => vars["core"]["server"],
+    "api_username" => vars["core"]["email_integration_user_username"],
+    "api_password" => vars["core"]["email_integration_user_password"],
+  }
+  task_handler_configurations["generate_member_recurring_bookings_v1"] = {
+    "space" => vars["core"]["space_slug"],
+    "api_server" => vars["core"]["server"],
+    "api_username" => vars["core"]["email_integration_user_username"],
+    "api_password" => vars["core"]["email_integration_user_password"],
+  }
+  task_handler_configurations["generate_journey_events_v1"] = {
+    "space" => vars["core"]["space_slug"],
+    "api_server" => vars["core"]["server"],
+    "api_username" => vars["core"]["email_integration_user_username"],
+    "api_password" => vars["core"]["email_integration_user_password"],
+  }
+  task_handler_configurations["amazon_s3_file_upload_from_datastore_submission_v1"] = {
+    "access_key" => "AKIAIPDGK2F2PP75CWJA",
+    "secret_key" => "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",
+    "region" => "ap-southeast-2",
+    "request_ce_server" => vars["core"]["server"],
+    "request_ce_username" => vars["core"]["email_integration_user_username"],
+    "request_ce_password" => vars["core"]["email_integration_user_password"],
+    "space_slug" => "",
+    "enable_debug_logging" => "No",
+  }
+  task_handler_configurations["amazon_s3_file_upload_from_submission_v1"] = {
+    "access_key" => "AKIAIPDGK2F2PP75CWJA",
+    "secret_key" => "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",
+    "region" => "ap-southeast-2",
+    "request_ce_server" => vars["core"]["server"],
+    "request_ce_username" => vars["core"]["email_integration_user_username"],
+    "request_ce_password" => vars["core"]["email_integration_user_password"],
+    "space_slug" => "",
+    "enable_debug_logging" => "No",
+  }
+  task_handler_configurations["amazon_s3_file_upload_v2"] = {
+    "access_key" => "AKIAIPDGK2F2PP75CWJA",
+    "secret_key" => "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",
+    "region" => "ap-southeast-2",
+    "enable_debug_logging" => "No",
+  }
+
   task_handler_configurations = task_handler_configurations.merge(vars["data"]["handlers"] || {})
 
 http_options = (vars["http_options"] || {}).each_with_object({}) do |(k, v), result|
@@ -430,11 +490,47 @@ task_sdk.find_handlers.content["handlers"].each do |handler|
           "kinetic_task_location" => vars["core"]["task_api_v2"].gsub("/app/api/v2",""),
         },
       })
-    elsif handler_definition_id.start_with?("kinetic_request_ce_notification_template_send_v")
+    elsif handler_definition_id.start_with?("kinetic_request_ce_notification_template_send_v2")
       task_sdk.update_handler(handler_definition_id, {
         "properties" => task_handler_configurations["kinetic_request_ce_notification_template_send_v"],
       })
-    elsif handler_definition_id.start_with?("smtp_email_send")
+    elsif handler_definition_id.start_with?("kinetic_request_ce_notification_template_send_v3")
+      task_sdk.update_handler(handler_definition_id, {
+        "properties" => task_handler_configurations["kinetic_request_ce_notification_template_send_v"],
+      })
+    elsif handler_definition_id.start_with?("generate_monthly_billing_statistics_v1")
+      task_sdk.update_handler(handler_definition_id, {
+        "properties" => task_handler_configurations["generate_monthly_billing_statistics_v1"],
+      })
+    elsif handler_definition_id.start_with?("amazon_s3_file_upload_from_datastore_submission_v1")
+      task_sdk.update_handler(handler_definition_id, {
+        "properties" => task_handler_configurations["amazon_s3_file_upload_from_datastore_submission_v1"],
+      })
+    elsif handler_definition_id.start_with?("amazon_s3_file_upload_from_submission_v1")
+      task_sdk.update_handler(handler_definition_id, {
+        "properties" => task_handler_configurations["amazon_s3_file_upload_from_submission_v1"],
+      })
+    elsif handler_definition_id.start_with?("amazon_s3_file_upload_v2")
+      task_sdk.update_handler(handler_definition_id, {
+        "properties" => task_handler_configurations["amazon_s3_file_upload_v2"],
+      })
+    elsif handler_definition_id.start_with?("generate_member_journey_events_v1")
+      task_sdk.update_handler(handler_definition_id, {
+        "properties" => task_handler_configurations["generate_member_journey_events_v1"],
+      })
+    elsif handler_definition_id.start_with?("generate_lead_journey_events_v1")
+      task_sdk.update_handler(handler_definition_id, {
+        "properties" => task_handler_configurations["generate_lead_journey_events_v1"],
+      })
+    elsif handler_definition_id.start_with?("generate_member_recurring_bookings_v1")
+      task_sdk.update_handler(handler_definition_id, {
+        "properties" => task_handler_configurations["generate_member_recurring_bookings_v1"],
+      })
+    elsif handler_definition_id.start_with?("generate_journey_events_v1")
+      task_sdk.update_handler(handler_definition_id, {
+        "properties" => task_handler_configurations["generate_journey_events_v1"],
+      })
+    elsif handler_definition_id.start_with?("smtp_email_send_v1")
       task_sdk.update_handler(handler_definition_id, {
         "properties" => task_handler_configurations["smtp_email_send_v1"],
       })

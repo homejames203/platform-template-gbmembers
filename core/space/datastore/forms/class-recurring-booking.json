@@ -244,32 +244,32 @@
           "choicesRunIf": null,
           "choices": [
             {
-              "label": "1",
-              "value": "Monday"
+              "label": "Monday",
+              "value": "1"
             },
             {
-              "label": "2",
-              "value": "Tuesday"
+              "label": "Tuesday",
+              "value": "2"
             },
             {
-              "label": "3",
-              "value": "Wednesday"
+              "label": "Wednesday",
+              "value": "3"
             },
             {
-              "label": "4",
-              "value": "Thursday"
+              "label": "Thursday",
+              "value": "4"
             },
             {
-              "label": "5",
-              "value": "Friday"
+              "label": "Friday",
+              "value": "5"
             },
             {
-              "label": "6",
-              "value": "Saturday"
+              "label": "Saturday",
+              "value": "6"
             },
             {
-              "label": "7",
-              "value": "Sunday"
+              "label": "Sunday",
+              "value": "7"
             }
           ]
         },

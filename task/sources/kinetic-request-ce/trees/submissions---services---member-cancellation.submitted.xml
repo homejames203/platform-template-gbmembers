@@ -271,10 +271,12 @@ startDt=Date.parse(@values['The last debit will be taken on'])
                 <visible>true</visible>
                 <parameters>
                     <parameter dependsOnId="" dependsOnValue="" id="journey_triggers_json" label="Journey Triggers JSON" menu="" required="true" tooltip="Journney Trigger records as JSON">&lt;%= @results['Find Journey Triggers']['Result'] %&gt;</parameter>
-                    <parameter dependsOnId="" dependsOnValue="" id="record_id" label="Record ID" menu="" required="true" tooltip="Record ID of Lead or member">&lt;%=  @values['Member GUID'] %&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="record_id" label="Record ID" menu="" required="true" tooltip="Record ID of Lead or member">&lt;%=  @values['Members'] %&gt;</parameter>
                     <parameter dependsOnId="" dependsOnValue="" id="record_name" label="Record Name" menu="" required="true" tooltip="Record Name of Lead or member">&lt;%=  @values['Student First Name']+" "+@values['Student Last Name'] %&gt;</parameter>
                 </parameters>
-                <messages></messages>
+                <messages>
+                    <message type="Complete"></message>
+                </messages>
                 <dependents></dependents>
             </task>
             <task definition_id="kinetic_request_ce_user_retrieve_v2" id="kinetic_request_ce_user_retrieve_v2_21" name="Get Submitter" x="935" y="406">
@@ -288,9 +290,7 @@ startDt=Date.parse(@values['The last debit will be taken on'])
                     <parameter dependsOnId="" dependsOnValue="" id="space_slug" label="Space Slug" menu="" required="false" tooltip="The Space the submission is being retrieved from (defaults to info value if not provided)."></parameter>
                     <parameter dependsOnId="" dependsOnValue="" id="username" label="Username" menu="" required="true" tooltip="The unique username for the user.">&lt;%=  @submission['Submitted By'] %&gt;</parameter>
                 </parameters>
-                <messages>
-                    <message type="Complete"></message>
-                </messages>
+                <messages></messages>
                 <dependents>
                     <task label="No Program Manager" type="Complete" value="!@results['Get Submitter']['Memberships'].include? &quot;Role::Program Managers&quot;">routine_kinetic_email_template_notification_send_v1_22</task>
                 </dependents>
@@ -310,11 +310,7 @@ startDt=Date.parse(@values['The last debit will be taken on'])
                     <parameter dependsOnId="" dependsOnValue="" id="Form Slug Initiating Notification" label="Form Slug Initiating Notification" menu="" required="false" tooltip="The slug of the Form sending the notification (ex: work-order, cleaning, etc.)">&lt;%= @form['Slug']%&gt;</parameter>
                     <parameter dependsOnId="" dependsOnValue="" id="Is Datastore" label="Is Datastore" menu="" required="false" tooltip="If the Related Submission Id, or Form Slug is a datastore form.">false</parameter>
                 </parameters>
-                <messages>
-                    <message type="Create"></message>
-                    <message type="Update"></message>
-                    <message type="Complete"></message>
-                </messages>
+                <messages></messages>
                 <dependents></dependents>
             </task>
         </request>

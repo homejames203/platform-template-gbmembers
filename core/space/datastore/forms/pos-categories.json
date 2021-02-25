@@ -6,7 +6,7 @@
 
   ],
   "customHeadContent": null,
-  "description": "",
+  "description": "Categories for group of Apparel and Services available for POS",
   "indexDefinitions": [
     {
       "name": "createdAt",
@@ -58,53 +58,23 @@
       "unique": false
     },
     {
-      "name": "values[Action]",
+      "name": "values[Description]",
       "parts": [
-        "values[Action]"
+        "values[Description]"
       ],
       "unique": false
     },
     {
-      "name": "values[Contact Type]",
+      "name": "values[Icon]",
       "parts": [
-        "values[Contact Type]"
+        "values[Icon]"
       ],
       "unique": false
     },
     {
-      "name": "values[Record ID]",
+      "name": "values[Label]",
       "parts": [
-        "values[Record ID]"
-      ],
-      "unique": false
-    },
-    {
-      "name": "values[Record ID],values[Status]",
-      "parts": [
-        "values[Record ID]",
-        "values[Status]"
-      ],
-      "unique": false
-    },
-    {
-      "name": "values[Record ID],values[Trigger ID]:UNIQUE",
-      "parts": [
-        "values[Record ID]",
-        "values[Trigger ID]"
-      ],
-      "unique": true
-    },
-    {
-      "name": "values[Record Name]",
-      "parts": [
-        "values[Record Name]"
-      ],
-      "unique": false
-    },
-    {
-      "name": "values[Record Type]",
-      "parts": [
-        "values[Record Type]"
+        "values[Label]"
       ],
       "unique": false
     },
@@ -116,21 +86,22 @@
       "unique": false
     },
     {
-      "name": "values[Template Name]",
+      "name": "values[Type]",
       "parts": [
-        "values[Template Name]"
+        "values[Type]"
       ],
       "unique": false
     },
     {
-      "name": "values[Trigger ID]",
+      "name": "values[Type],values[Status]",
       "parts": [
-        "values[Trigger ID]"
+        "values[Type]",
+        "values[Status]"
       ],
       "unique": false
     }
   ],
-  "name": "Journey Event",
+  "name": "POS Categories",
   "notes": null,
   "pages": [
     {
@@ -147,7 +118,7 @@
           "defaultResourceName": null,
           "visible": true,
           "enabled": true,
-          "required": false,
+          "required": true,
           "requiredMessage": null,
           "omitWhenHidden": null,
           "pattern": null,
@@ -165,33 +136,61 @@
           "choicesRunIf": null,
           "choices": [
             {
-              "label": "New",
-              "value": "New"
+              "label": "Active",
+              "value": "Active"
             },
             {
-              "label": "Process",
-              "value": "Process"
-            },
-            {
-              "label": "Completed",
-              "value": "Completed"
-            },
-            {
-              "label": "Delete",
-              "value": "Delete"
+              "label": "Inactive",
+              "value": "Inactive"
             }
           ]
         },
         {
           "type": "field",
-          "name": "Trigger ID",
-          "label": "Trigger ID",
+          "name": "Type",
+          "label": "Type",
+          "key": "f5",
+          "defaultValue": null,
+          "defaultResourceName": null,
+          "visible": true,
+          "enabled": true,
+          "required": true,
+          "requiredMessage": null,
+          "omitWhenHidden": null,
+          "pattern": null,
+          "constraints": [
+
+          ],
+          "events": [
+
+          ],
+          "renderAttributes": {
+          },
+          "dataType": "string",
+          "renderType": "radio",
+          "choicesResourceName": null,
+          "choicesRunIf": null,
+          "choices": [
+            {
+              "label": "Apparel",
+              "value": "Apparel"
+            },
+            {
+              "label": "Services",
+              "value": "Services"
+            }
+          ]
+        },
+        {
+          "type": "field",
+          "name": "Label",
+          "label": "Label",
           "key": "f2",
           "defaultValue": null,
           "defaultResourceName": null,
           "visible": true,
           "enabled": true,
-          "required": false,
+          "required": true,
           "requiredMessage": null,
           "omitWhenHidden": null,
           "pattern": null,
@@ -209,8 +208,8 @@
         },
         {
           "type": "field",
-          "name": "Record Type",
-          "label": "Record Type",
+          "name": "Description",
+          "label": "Description",
           "key": "f3",
           "defaultValue": null,
           "defaultResourceName": null,
@@ -230,62 +229,12 @@
           },
           "dataType": "string",
           "renderType": "text",
-          "rows": 1
+          "rows": 3
         },
         {
           "type": "field",
-          "name": "Record ID",
-          "label": "Record ID",
-          "key": "f7",
-          "defaultValue": null,
-          "defaultResourceName": null,
-          "visible": true,
-          "enabled": true,
-          "required": false,
-          "requiredMessage": null,
-          "omitWhenHidden": null,
-          "pattern": null,
-          "constraints": [
-
-          ],
-          "events": [
-
-          ],
-          "renderAttributes": {
-          },
-          "dataType": "string",
-          "renderType": "text",
-          "rows": 1
-        },
-        {
-          "type": "field",
-          "name": "Record Name",
-          "label": "Record Name",
-          "key": "f8",
-          "defaultValue": null,
-          "defaultResourceName": null,
-          "visible": true,
-          "enabled": true,
-          "required": false,
-          "requiredMessage": null,
-          "omitWhenHidden": null,
-          "pattern": null,
-          "constraints": [
-
-          ],
-          "events": [
-
-          ],
-          "renderAttributes": {
-          },
-          "dataType": "string",
-          "renderType": "text",
-          "rows": 1
-        },
-        {
-          "type": "field",
-          "name": "Action",
-          "label": null,
+          "name": "Icon",
+          "label": "Icon",
           "key": "f4",
           "defaultValue": null,
           "defaultResourceName": null,
@@ -304,58 +253,27 @@
           "renderAttributes": {
           },
           "dataType": "string",
-          "renderType": "text",
-          "rows": 1
-        },
-        {
-          "type": "field",
-          "name": "Contact Type",
-          "label": "Contact Type",
-          "key": "f5",
-          "defaultValue": null,
-          "defaultResourceName": null,
-          "visible": true,
-          "enabled": true,
-          "required": false,
-          "requiredMessage": null,
-          "omitWhenHidden": null,
-          "pattern": null,
-          "constraints": [
-
-          ],
-          "events": [
-
-          ],
-          "renderAttributes": {
-          },
-          "dataType": "string",
-          "renderType": "text",
-          "rows": 1
-        },
-        {
-          "type": "field",
-          "name": "Template Name",
-          "label": "Template Name",
-          "key": "f6",
-          "defaultValue": null,
-          "defaultResourceName": null,
-          "visible": true,
-          "enabled": true,
-          "required": false,
-          "requiredMessage": null,
-          "omitWhenHidden": null,
-          "pattern": null,
-          "constraints": [
-
-          ],
-          "events": [
-
-          ],
-          "renderAttributes": {
-          },
-          "dataType": "string",
-          "renderType": "text",
-          "rows": 1
+          "renderType": "dropdown",
+          "choicesResourceName": null,
+          "choicesRunIf": null,
+          "choices": [
+            {
+              "label": "Events",
+              "value": "events"
+            },
+            {
+              "label": "Private Class",
+              "value": "private_class"
+            },
+            {
+              "label": "Promotion",
+              "value": "promotion"
+            },
+            {
+              "label": "Apparel",
+              "value": "apparel"
+            }
+          ]
         },
         {
           "type": "button",
@@ -377,20 +295,9 @@
     }
   ],
   "securityPolicies": [
-    {
-      "endpoint": "Display",
-      "name": "Data Admins"
-    },
-    {
-      "endpoint": "Submission Access",
-      "name": "Program Managers and Coaches"
-    },
-    {
-      "endpoint": "Submission Modification",
-      "name": "Program Managers and Coaches"
-    }
+
   ],
-  "slug": "journey-event",
-  "status": "Active",
-  "submissionLabelExpression": "${values('Record Type')}[${values('Record Name')}]-${values('Contact Type')}-${values('Template Name')}-${values('Status')}"
+  "slug": "pos-categories",
+  "status": "New",
+  "submissionLabelExpression": "${values('Status')}-${values('Type')}-${values('Label')}"
 }

@@ -6,7 +6,7 @@
 
   ],
   "customHeadContent": null,
-  "description": "",
+  "description": "POS Item sold to Member",
   "indexDefinitions": [
     {
       "name": "createdAt",
@@ -58,79 +58,49 @@
       "unique": false
     },
     {
-      "name": "values[Action]",
+      "name": "values[Person ID]",
       "parts": [
-        "values[Action]"
+        "values[Person ID]"
       ],
       "unique": false
     },
     {
-      "name": "values[Contact Type]",
+      "name": "values[Person Name]",
       "parts": [
-        "values[Contact Type]"
+        "values[Person Name]"
       ],
       "unique": false
     },
     {
-      "name": "values[Record ID]",
+      "name": "values[Price]",
       "parts": [
-        "values[Record ID]"
+        "values[Price]"
       ],
       "unique": false
     },
     {
-      "name": "values[Record ID],values[Status]",
+      "name": "values[Product ID]",
       "parts": [
-        "values[Record ID]",
-        "values[Status]"
+        "values[Product ID]"
       ],
       "unique": false
     },
     {
-      "name": "values[Record ID],values[Trigger ID]:UNIQUE",
+      "name": "values[Product Name]",
       "parts": [
-        "values[Record ID]",
-        "values[Trigger ID]"
-      ],
-      "unique": true
-    },
-    {
-      "name": "values[Record Name]",
-      "parts": [
-        "values[Record Name]"
+        "values[Product Name]"
       ],
       "unique": false
     },
     {
-      "name": "values[Record Type]",
+      "name": "values[Quantity]",
       "parts": [
-        "values[Record Type]"
-      ],
-      "unique": false
-    },
-    {
-      "name": "values[Status]",
-      "parts": [
-        "values[Status]"
-      ],
-      "unique": false
-    },
-    {
-      "name": "values[Template Name]",
-      "parts": [
-        "values[Template Name]"
-      ],
-      "unique": false
-    },
-    {
-      "name": "values[Trigger ID]",
-      "parts": [
-        "values[Trigger ID]"
+        "values[Quantity]"
       ],
       "unique": false
     }
   ],
-  "name": "Journey Event",
+  "name": "POS Purchased Item",
   "notes": null,
   "pages": [
     {
@@ -140,53 +110,9 @@
       "elements": [
         {
           "type": "field",
-          "name": "Status",
-          "label": "Status",
+          "name": "Product ID",
+          "label": "Product ID",
           "key": "f1",
-          "defaultValue": null,
-          "defaultResourceName": null,
-          "visible": true,
-          "enabled": true,
-          "required": false,
-          "requiredMessage": null,
-          "omitWhenHidden": null,
-          "pattern": null,
-          "constraints": [
-
-          ],
-          "events": [
-
-          ],
-          "renderAttributes": {
-          },
-          "dataType": "string",
-          "renderType": "radio",
-          "choicesResourceName": null,
-          "choicesRunIf": null,
-          "choices": [
-            {
-              "label": "New",
-              "value": "New"
-            },
-            {
-              "label": "Process",
-              "value": "Process"
-            },
-            {
-              "label": "Completed",
-              "value": "Completed"
-            },
-            {
-              "label": "Delete",
-              "value": "Delete"
-            }
-          ]
-        },
-        {
-          "type": "field",
-          "name": "Trigger ID",
-          "label": "Trigger ID",
-          "key": "f2",
           "defaultValue": null,
           "defaultResourceName": null,
           "visible": true,
@@ -209,8 +135,8 @@
         },
         {
           "type": "field",
-          "name": "Record Type",
-          "label": "Record Type",
+          "name": "Product Name",
+          "label": "Product Name",
           "key": "f3",
           "defaultValue": null,
           "defaultResourceName": null,
@@ -234,9 +160,9 @@
         },
         {
           "type": "field",
-          "name": "Record ID",
-          "label": "Record ID",
-          "key": "f7",
+          "name": "Person ID",
+          "label": "Person ID",
+          "key": "f2",
           "defaultValue": null,
           "defaultResourceName": null,
           "visible": true,
@@ -259,33 +185,8 @@
         },
         {
           "type": "field",
-          "name": "Record Name",
-          "label": "Record Name",
-          "key": "f8",
-          "defaultValue": null,
-          "defaultResourceName": null,
-          "visible": true,
-          "enabled": true,
-          "required": false,
-          "requiredMessage": null,
-          "omitWhenHidden": null,
-          "pattern": null,
-          "constraints": [
-
-          ],
-          "events": [
-
-          ],
-          "renderAttributes": {
-          },
-          "dataType": "string",
-          "renderType": "text",
-          "rows": 1
-        },
-        {
-          "type": "field",
-          "name": "Action",
-          "label": null,
+          "name": "Person Name",
+          "label": "Person Name",
           "key": "f4",
           "defaultValue": null,
           "defaultResourceName": null,
@@ -309,8 +210,8 @@
         },
         {
           "type": "field",
-          "name": "Contact Type",
-          "label": "Contact Type",
+          "name": "Quantity",
+          "label": "Quantity",
           "key": "f5",
           "defaultValue": null,
           "defaultResourceName": null,
@@ -334,8 +235,8 @@
         },
         {
           "type": "field",
-          "name": "Template Name",
-          "label": "Template Name",
+          "name": "Price",
+          "label": "Price",
           "key": "f6",
           "defaultValue": null,
           "defaultResourceName": null,
@@ -378,19 +279,15 @@
   ],
   "securityPolicies": [
     {
-      "endpoint": "Display",
-      "name": "Data Admins"
-    },
-    {
       "endpoint": "Submission Access",
-      "name": "Program Managers and Coaches"
+      "name": "Authenticated Users"
     },
     {
       "endpoint": "Submission Modification",
-      "name": "Program Managers and Coaches"
+      "name": "Authenticated Users"
     }
   ],
-  "slug": "journey-event",
-  "status": "Active",
-  "submissionLabelExpression": "${values('Record Type')}[${values('Record Name')}]-${values('Contact Type')}-${values('Template Name')}-${values('Status')}"
+  "slug": "pos-purchased-item",
+  "status": "New",
+  "submissionLabelExpression": "${values('Person Name')}-${values('Product Name')}-${values('Quantity')}-${values('Price')}"
 }

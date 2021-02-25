@@ -34,7 +34,7 @@
     {
       "name": "Kinetic Billing Server URL",
       "values": [
-        "https://gbbilling.com.au:8443/billingservice"
+        "http://localhost:8081/billingservice"
       ]
     },
     {

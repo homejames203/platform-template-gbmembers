@@ -207,13 +207,15 @@ imageVAL[imageVAL.index(",")+1..imageVAL.length].sub('"','').sub('&amp;quot','')
                 <deferrable>false</deferrable>
                 <visible>false</visible>
                 <parameters>
-                    <parameter dependsOnId="" dependsOnValue="" id="region" label="Region" menu="" required="true" tooltip="Id of the region the inteded S3 server is located in.">ap-southeast-2</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="region" label="Region" menu="" required="true" tooltip="Id of the region the inteded S3 server is located in.">&lt;%=  @space_attributes['AWS Region'].nil? ? "ap-southeast-2" : @space_attributes['AWS Region'] %&gt;</parameter>
                     <parameter dependsOnId="" dependsOnValue="" id="bucket" label="Bucket" menu="" required="true" tooltip="Name of the bucket to upload to.">gbmember-campaign-images</parameter>
                     <parameter dependsOnId="" dependsOnValue="" id="file_name" label="File Name" menu="" required="true" tooltip="Name of the file to upload.">&lt;%=@results['Image filename']['output']%&gt;</parameter>
                     <parameter dependsOnId="" dependsOnValue="" id="file_content" label="File Content" menu="" required="false" tooltip="String to upload as the contents of the new file."></parameter>
                     <parameter dependsOnId="" dependsOnValue="" id="file_location" label="File Location to upload" menu="" required="false" tooltip="Path to file to upload">&lt;%= @results['Work Directory']['output']+@results['Image filename']['output'].strip %&gt;</parameter>
                 </parameters>
-                <messages></messages>
+                <messages>
+                    <message type="Complete"></message>
+                </messages>
                 <dependents>
                     <task label="" type="Complete" value="">utilities_echo_v1_32</task>
                 </dependents>
@@ -378,9 +380,7 @@ File.delete(filename)
 @results['Load Body']['Body']
 %&gt;</parameter>
                 </parameters>
-                <messages>
-                    <message type="Complete"></message>
-                </messages>
+                <messages></messages>
                 <dependents>
                     <task label="" type="Complete" value="">utilities_echo_v1_36</task>
                 </dependents>

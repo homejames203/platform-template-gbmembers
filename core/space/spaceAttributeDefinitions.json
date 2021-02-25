@@ -21,6 +21,11 @@
   },
   {
     "allowsMultiple": false,
+    "description": "Region name for AWS file storage",
+    "name": "AWS Region"
+  },
+  {
+    "allowsMultiple": false,
     "description": "The company identifier for the Billing Service used by School",
     "name": "Billing Company"
   },
@@ -118,6 +123,21 @@
     "allowsMultiple": false,
     "description": "Weekly,Fortnightly,Monthly,Quarterly",
     "name": "Payment Frequencies"
+  },
+  {
+    "allowsMultiple": false,
+    "description": "Accepted cards ['visa', 'mastercard', 'discover', 'amex', 'jcb', 'dinersclub', 'maestro', 'laser', 'unionpay', 'elo', 'hipercard']",
+    "name": "POS Accepted Cards"
+  },
+  {
+    "allowsMultiple": false,
+    "description": "URL for processing POS credit card",
+    "name": "POS Service URL"
+  },
+  {
+    "allowsMultiple": false,
+    "description": "System name for process POS transactions",
+    "name": "POS System"
   },
   {
     "allowsMultiple": false,
