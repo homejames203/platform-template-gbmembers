@@ -552,15 +552,15 @@
   "securityPolicies": [
     {
       "endpoint": "Display",
-      "name": "Program Managers"
+      "name": "Paysmart Program Managers"
     },
     {
       "endpoint": "Submission Access",
-      "name": "Program Managers"
+      "name": "Paysmart Program Managers"
     },
     {
       "endpoint": "Submission Modification",
-      "name": "Program Managers"
+      "name": "Paysmart Program Managers"
     }
   ],
   "slug": "hire-resources",

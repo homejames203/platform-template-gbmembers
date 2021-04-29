@@ -107,6 +107,14 @@
       "unique": true
     },
     {
+      "name": "values[Product ID],values[Size]",
+      "parts": [
+        "values[Product ID]",
+        "values[Size]"
+      ],
+      "unique": false
+    },
+    {
       "name": "values[Product Name]",
       "parts": [
         "values[Product Name]"
@@ -386,7 +394,14 @@
     }
   ],
   "securityPolicies": [
-
+    {
+      "endpoint": "Submission Access",
+      "name": "Data Admins"
+    },
+    {
+      "endpoint": "Submission Modification",
+      "name": "Data Admins"
+    }
   ],
   "slug": "pos-stock",
   "status": "New",

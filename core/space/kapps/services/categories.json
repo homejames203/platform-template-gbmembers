@@ -31,6 +31,13 @@
     "attributes": [
 
     ],
+    "name": "Payline Billing",
+    "slug": "payline-billing"
+  },
+  {
+    "attributes": [
+
+    ],
     "name": "Registrations",
     "slug": "registrations"
   }

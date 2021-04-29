@@ -128,7 +128,7 @@
           "label": "Apply",
           "name": "Submit Button",
           "visible": true,
-          "enabled": true,
+          "enabled": "values('File').length!==0",
           "renderType": "submit-page",
           "renderAttributes": {
           }

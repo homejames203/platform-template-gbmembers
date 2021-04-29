@@ -21,6 +21,11 @@
   },
   {
     "allowsMultiple": false,
+    "description": "",
+    "name": "Australia School States"
+  },
+  {
+    "allowsMultiple": false,
     "description": "Region name for AWS file storage",
     "name": "AWS Region"
   },
@@ -126,6 +131,11 @@
   },
   {
     "allowsMultiple": false,
+    "description": "Specify the Phone Number format for the school country.\nAU ####-###-###\nUS ###-###-####",
+    "name": "PhoneNumber Format"
+  },
+  {
+    "allowsMultiple": false,
     "description": "Accepted cards ['visa', 'mastercard', 'discover', 'amex', 'jcb', 'dinersclub', 'maestro', 'laser', 'unionpay', 'elo', 'hipercard']",
     "name": "POS Accepted Cards"
   },
@@ -138,6 +148,11 @@
     "allowsMultiple": false,
     "description": "System name for process POS transactions",
     "name": "POS System"
+  },
+  {
+    "allowsMultiple": false,
+    "description": "Specify the Postcode format for the school country.\nAU ####\nUS ######",
+    "name": "Postcode Format"
   },
   {
     "allowsMultiple": false,
@@ -168,6 +183,11 @@
     "allowsMultiple": false,
     "description": null,
     "name": "School Name"
+  },
+  {
+    "allowsMultiple": false,
+    "description": "States for country the school is based in",
+    "name": "School States"
   },
   {
     "allowsMultiple": false,

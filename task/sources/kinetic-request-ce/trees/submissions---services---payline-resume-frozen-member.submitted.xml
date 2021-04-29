@@ -1,13 +1,13 @@
 <tree schema_version="1.0">
     <sourceName>Kinetic Request CE</sourceName>
-    <sourceGroup>Submissions > services > paysmart-resume-frozen-member</sourceGroup>
+    <sourceGroup>Submissions > services > payline-resume-frozen-member</sourceGroup>
     <type>Tree</type>
     <status>Active</status>
     <taskTree builder_version="" schema_version="1.0" version="">
         <name>Submitted</name>
         <author>unus.gaffoor@kineticdata.com</author>
         <notes></notes>
-        <lastID>19</lastID>
+        <lastID>21</lastID>
         <request>
             <task definition_id="system_start_v1" id="start" name="Start" x="11" y="11">
                 <version>1</version>
@@ -108,15 +108,17 @@ values.to_json
                 <parameters>
                     <parameter dependsOnId="" dependsOnValue="" id="service_value" label="Billing Service Value" menu="" required="true" tooltip="GBMembers Billing Service call value (registerUser,billingInfo,)">resumeSuspended</parameter>
                     <parameter dependsOnId="" dependsOnValue="" id="space" label="Space slug" menu="" required="true" tooltip="Space slug for School">&lt;%= @space['Slug']%&gt;</parameter>
-                    <parameter dependsOnId="" dependsOnValue="" id="billing_company" label="Billing Company" menu="" required="true" tooltip="Billing Company that the service will operate against.(eg, PaySmart)">PaySmart</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="billing_company" label="Billing Company" menu="" required="true" tooltip="Billing Company that the service will operate against.(eg, PaySmart)">Payline</parameter>
                     <parameter dependsOnId="" dependsOnValue="" id="json_args" label="JSON arguments" menu="" required="true" tooltip="A JSON structure containing all argument passed to the Billing Service">{
   "customerId": "&lt;%= @values['Billing Customer Id']%&gt;",
-  "billingService": "PaySmart",
+  "billingService": "Payline",
   "space": "&lt;%= @space['Slug']%&gt;",
   "effectiveDate": "&lt;%= Date.parse(@values['Date payment will resume'])%&gt;"
 }</parameter>
                 </parameters>
-                <messages></messages>
+                <messages>
+                    <message type="Complete"></message>
+                </messages>
                 <dependents>
                     <task label="Success" type="Complete" value="JSON.parse(@results['Resume Member']['Result JSON'])['error']==0">kinetic_request_ce_submission_activity_create_v1_7</task>
                     <task label="Error" type="Complete" value="JSON.parse(@results['Resume Member']['Result JSON'])['error']==100">kinetic_request_ce_submission_activity_create_v1_12</task>
@@ -174,28 +176,7 @@ startDt=Date.parse(@values['Date payment will resume'])
                 </parameters>
                 <messages></messages>
                 <dependents>
-                    <task label="" type="Complete" value="">gbmembers_billing_service_v1_16</task>
-                </dependents>
-            </task>
-            <task definition_id="gbmembers_billing_service_v1" id="gbmembers_billing_service_v1_16" name="Get Billing Info after Resume Date" x="135" y="440">
-                <version>1</version>
-                <configured>true</configured>
-                <defers>false</defers>
-                <deferrable>false</deferrable>
-                <visible>true</visible>
-                <parameters>
-                    <parameter dependsOnId="" dependsOnValue="" id="service_value" label="Billing Service Value" menu="" required="true" tooltip="GBMembers Billing Service call value (registerUser,billingInfo,)">billingInfo</parameter>
-                    <parameter dependsOnId="" dependsOnValue="" id="space" label="Space slug" menu="" required="true" tooltip="Space slug for School">&lt;%= @space['Slug']%&gt;</parameter>
-                    <parameter dependsOnId="" dependsOnValue="" id="billing_company" label="Billing Company" menu="" required="true" tooltip="Billing Company that the service will operate against.(eg, PaySmart)">PaySmart</parameter>
-                    <parameter dependsOnId="" dependsOnValue="" id="json_args" label="JSON arguments" menu="" required="true" tooltip="A JSON structure containing all argument passed to the Billing Service">{
-  "customerId": "&lt;%= @values['Billing Customer Id']%&gt;",
-  "billingService": "PaySmart",
-  "space": "&lt;%= @space['Slug']%&gt;"
-}</parameter>
-                </parameters>
-                <messages></messages>
-                <dependents>
-                    <task label="" type="Complete" value="">kinetic_request_ce_submission_update_v1_17</task>
+                    <task label="" type="Complete" value="">gbmembers_billing_service_v1_21</task>
                 </dependents>
             </task>
             <task definition_id="kinetic_request_ce_submission_update_v1" id="kinetic_request_ce_submission_update_v1_17" name="Update Status after Resume Date" x="133" y="550">
@@ -210,7 +191,7 @@ startDt=Date.parse(@values['Date payment will resume'])
                     <parameter dependsOnId="" dependsOnValue="" id="submission_id" label="Submission Id" menu="" required="true" tooltip="The id of the submission being updated.">&lt;%=  @values['Members'] %&gt;</parameter>
                     <parameter dependsOnId="" dependsOnValue="" id="state" label="State" menu="" required="false" tooltip="The value used to set the submission state."></parameter>
                     <parameter dependsOnId="" dependsOnValue="" id="values" label="Values" menu="" required="false" tooltip="A JSON map of field names to values that should be set.">{
-  "Status":"&lt;%= JSON.parse(@results['Get Billing Info after Resume Date']['Result JSON'])['data']['statusDescription'] %&gt;"
+  "Status":"Active"
 } 
 </parameter>
                     <parameter dependsOnId="" dependsOnValue="" id="current_page_name" label="Current Page Name" menu="" required="false" tooltip="Set the current page name."></parameter>
@@ -218,7 +199,9 @@ startDt=Date.parse(@values['Date payment will resume'])
                     <parameter dependsOnId="" dependsOnValue="" id="origin_id" label="Origin ID" menu="" required="false" tooltip="Set the origin ID."></parameter>
                     <parameter dependsOnId="" dependsOnValue="" id="parent_id" label="Parent ID" menu="" required="false" tooltip="Set the parent ID."></parameter>
                 </parameters>
-                <messages></messages>
+                <messages>
+                    <message type="Complete"></message>
+                </messages>
                 <dependents>
                     <task label="" type="Complete" value="">kinetic_request_ce_submission_activity_create_v1_18</task>
                 </dependents>
@@ -236,9 +219,11 @@ startDt=Date.parse(@values['Date payment will resume'])
                     <parameter dependsOnId="" dependsOnValue="" id="label" label="Label" menu="" required="false" tooltip="The label for the submission activity.">Resume Date reached updating Billing Status</parameter>
                     <parameter dependsOnId="" dependsOnValue="" id="description" label="Description" menu="" required="false" tooltip="The description of the submission activity."></parameter>
                     <parameter dependsOnId="" dependsOnValue="" id="type" label="Type" menu="" required="false" tooltip="Specifies the a submission activity 'Type', which should indicate what type of data is included."></parameter>
-                    <parameter dependsOnId="" dependsOnValue="" id="data" label="Data" menu="" required="false" tooltip="Additional data that can be used by resources consuming the submission activity record (for example a Request bundle may render submission details based upon JSON content in the activity data).">{"Message":"Last Debit Date &lt;%=  @values['Date payment will resume'] %&gt; has been reached. Updated member with Status[&lt;%= JSON.parse(@results['Get Billing Info after Resume Date']['Result JSON'])['data']['statusDescription']%&gt;]"}</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="data" label="Data" menu="" required="false" tooltip="Additional data that can be used by resources consuming the submission activity record (for example a Request bundle may render submission details based upon JSON content in the activity data).">{"Message":"Last Debit Date &lt;%=  @values['Date payment will resume'] %&gt; has been reached. Updated member with Status[Active]"}</parameter>
                 </parameters>
-                <messages></messages>
+                <messages>
+                    <message type="Complete"></message>
+                </messages>
                 <dependents></dependents>
             </task>
             <task definition_id="routine_kinetic_email_template_notification_send_v1" id="routine_kinetic_email_template_notification_send_v1_19" name="Notify of Error" x="1072" y="52">
@@ -258,12 +243,32 @@ startDt=Date.parse(@values['Date payment will resume'])
                     <parameter dependsOnId="" dependsOnValue="" id="Form Slug Initiating Notification" label="Form Slug Initiating Notification" menu="" required="false" tooltip="The slug of the Form sending the notification (ex: work-order, cleaning, etc.)">&lt;%= @form['Slug']%&gt;</parameter>
                     <parameter dependsOnId="" dependsOnValue="" id="Is Datastore" label="Is Datastore" menu="" required="false" tooltip="If the Related Submission Id, or Form Slug is a datastore form.">false</parameter>
                 </parameters>
+                <messages></messages>
+                <dependents></dependents>
+            </task>
+            <task definition_id="gbmembers_billing_service_v1" id="gbmembers_billing_service_v1_21" name="Set as Active" x="136" y="441">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>true</visible>
+                <parameters>
+                    <parameter dependsOnId="" dependsOnValue="" id="service_value" label="Billing Service Value" menu="" required="true" tooltip="GBMembers Billing Service call value (registerUser,billingInfo,)">customerStatusChange</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="space" label="Space slug" menu="" required="true" tooltip="Space slug for School">&lt;%= @space['Slug']%&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="billing_company" label="Billing Company" menu="" required="true" tooltip="Billing Company that the service will operate against.(eg, PaySmart)">Payline</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="json_args" label="JSON arguments" menu="" required="true" tooltip="A JSON structure containing all argument passed to the Billing Service">{
+  "customerId": "&lt;%= @values['Billing Customer Id']%&gt;",
+  "billingService": "Payline",
+  "space": "&lt;%= @space['Slug']%&gt;",
+  "newStatus": "Active"
+}</parameter>
+                </parameters>
                 <messages>
-                    <message type="Create"></message>
-                    <message type="Update"></message>
                     <message type="Complete"></message>
                 </messages>
-                <dependents></dependents>
+                <dependents>
+                    <task label="" type="Complete" value="">kinetic_request_ce_submission_update_v1_17</task>
+                </dependents>
             </task>
         </request>
     </taskTree>

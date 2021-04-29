@@ -1,0 +1,14 @@
+{"coreState":"Submitted","currentPage":"Main","label":"Active-Service-Events","values":{"Status":"Active","Label":"Events","Description":null,"Icon":"events","Type":"Service"}}
+{"coreState":"Submitted","currentPage":"Main","label":"Active-Service-Private Class","values":{"Status":"Active","Label":"Private Class","Description":null,"Icon":"private_class","Type":"Service"}}
+{"coreState":"Submitted","currentPage":"Main","label":"Active-Apparel-All","values":{"Status":"Active","Label":"All","Description":null,"Icon":null,"Type":"Apparel"}}
+{"coreState":"Submitted","currentPage":"Main","label":"Active-Apparel-Kimonos","values":{"Status":"Active","Label":"Kimonos","Description":null,"Icon":null,"Type":"Apparel"}}
+{"coreState":"Submitted","currentPage":"Main","label":"Active-Apparel-Tech Wear","values":{"Status":"Active","Label":"Tech Wear","Description":null,"Icon":null,"Type":"Apparel"}}
+{"coreState":"Submitted","currentPage":"Main","label":"Active-Apparel-Belts","values":{"Status":"Active","Label":"Belts","Description":null,"Icon":null,"Type":"Apparel"}}
+{"coreState":"Submitted","currentPage":"Main","label":"Active-Apparel-Accessories","values":{"Status":"Active","Label":"Accessories","Description":null,"Icon":null,"Type":"Apparel"}}
+{"coreState":"Submitted","currentPage":"Main","label":"Active-Apparel-Men","values":{"Status":"Active","Label":"Men","Description":null,"Icon":null,"Type":"Apparel"}}
+{"coreState":"Submitted","currentPage":"Main","label":"Active-Apparel-Women","values":{"Status":"Active","Label":"Women","Description":null,"Icon":null,"Type":"Apparel"}}
+{"coreState":"Submitted","currentPage":"Main","label":"Active-Apparel-Youth","values":{"Status":"Active","Label":"Youth","Description":null,"Icon":null,"Type":"Apparel"}}
+{"coreState":"Submitted","currentPage":"Main","label":"Active-Apparel-Collections","values":{"Status":"Active","Label":"Collections","Description":null,"Icon":null,"Type":"Apparel"}}
+{"coreState":"Submitted","currentPage":"Main","label":"Active-Apparel-Custom Apparel","values":{"Status":"Active","Label":"Custom Apparel","Description":null,"Icon":null,"Type":"Apparel"}}
+{"coreState":"Submitted","currentPage":"Main","label":"Active-Service-Promo","values":{"Status":"Active","Label":"Promo","Description":null,"Icon":"promotion","Type":"Service"}}
+{"coreState":"Submitted","currentPage":"Main","label":"Active-Package-All","values":{"Status":"Active","Label":"All","Description":null,"Icon":null,"Type":"Package"}}

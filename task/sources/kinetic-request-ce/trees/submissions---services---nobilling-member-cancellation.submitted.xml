@@ -193,9 +193,7 @@ startDt=Date.parse(@values['The last debit will be taken on'])
                     <parameter dependsOnId="" dependsOnValue="" id="limit" label="Limit" menu="" required="false" tooltip="An integer representing the max results that the search can return."></parameter>
                     <parameter dependsOnId="" dependsOnValue="" id="return_type" label="Return Type" menu="JSON,XML,ID List" required="true" tooltip="The format that the results should be returned in.">JSON</parameter>
                 </parameters>
-                <messages>
-                    <message type="Complete"></message>
-                </messages>
+                <messages></messages>
                 <dependents>
                     <task label="" type="Complete" value="">generate_journey_events_v1_76</task>
                 </dependents>
@@ -209,7 +207,7 @@ startDt=Date.parse(@values['The last debit will be taken on'])
                 <parameters>
                     <parameter dependsOnId="" dependsOnValue="" id="journey_triggers_json" label="Journey Triggers JSON" menu="" required="true" tooltip="Journney Trigger records as JSON">&lt;%= @results['Find Journey Triggers']['Result'] %&gt;</parameter>
                     <parameter dependsOnId="" dependsOnValue="" id="record_id" label="Record ID" menu="" required="true" tooltip="Record ID of Lead or member">&lt;%=  @values['Members'] %&gt;</parameter>
-                    <parameter dependsOnId="" dependsOnValue="" id="record_name" label="Record Name" menu="" required="true" tooltip="Record Name of Lead or member">&lt;%=  @values['Student First Name']+" "+@values['Student First Name'] %&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="record_name" label="Record Name" menu="" required="true" tooltip="Record Name of Lead or member">&lt;%=  @values['Student First Name']+" "+@values['Student Last Name'] %&gt;</parameter>
                 </parameters>
                 <messages>
                     <message type="Complete"></message>

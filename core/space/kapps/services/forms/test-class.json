@@ -290,7 +290,7 @@
   "securityPolicies": [
     {
       "endpoint": "Display",
-      "name": "Authenticated Users"
+      "name": "Admins"
     }
   ],
   "slug": "test-class",

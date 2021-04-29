@@ -79,6 +79,13 @@
       "unique": false
     },
     {
+      "name": "values[Discount]",
+      "parts": [
+        "values[Discount]"
+      ],
+      "unique": false
+    },
+    {
       "name": "values[POS Checkout JSON]",
       "parts": [
         "values[POS Checkout JSON]"
@@ -121,9 +128,23 @@
       "unique": false
     },
     {
+      "name": "values[SubTotal]",
+      "parts": [
+        "values[SubTotal]"
+      ],
+      "unique": false
+    },
+    {
       "name": "values[Token Reference]",
       "parts": [
         "values[Token Reference]"
+      ],
+      "unique": false
+    },
+    {
+      "name": "values[Total]",
+      "parts": [
+        "values[Total]"
       ],
       "unique": false
     },
@@ -456,6 +477,81 @@
           "rows": 1
         },
         {
+          "type": "field",
+          "name": "SubTotal",
+          "label": "SubTotal",
+          "key": "f15",
+          "defaultValue": null,
+          "defaultResourceName": null,
+          "visible": true,
+          "enabled": true,
+          "required": false,
+          "requiredMessage": null,
+          "omitWhenHidden": null,
+          "pattern": null,
+          "constraints": [
+
+          ],
+          "events": [
+
+          ],
+          "renderAttributes": {
+          },
+          "dataType": "string",
+          "renderType": "text",
+          "rows": 1
+        },
+        {
+          "type": "field",
+          "name": "Discount",
+          "label": "Discount",
+          "key": "f14",
+          "defaultValue": null,
+          "defaultResourceName": null,
+          "visible": true,
+          "enabled": true,
+          "required": false,
+          "requiredMessage": null,
+          "omitWhenHidden": null,
+          "pattern": null,
+          "constraints": [
+
+          ],
+          "events": [
+
+          ],
+          "renderAttributes": {
+          },
+          "dataType": "string",
+          "renderType": "text",
+          "rows": 1
+        },
+        {
+          "type": "field",
+          "name": "Total",
+          "label": "Total",
+          "key": "f13",
+          "defaultValue": null,
+          "defaultResourceName": null,
+          "visible": true,
+          "enabled": true,
+          "required": false,
+          "requiredMessage": null,
+          "omitWhenHidden": null,
+          "pattern": null,
+          "constraints": [
+
+          ],
+          "events": [
+
+          ],
+          "renderAttributes": {
+          },
+          "dataType": "string",
+          "renderType": "text",
+          "rows": 1
+        },
+        {
           "type": "button",
           "label": "Submit",
           "name": "Submit Button",
@@ -475,7 +571,10 @@
     }
   ],
   "securityPolicies": [
-
+    {
+      "endpoint": "Submission Access",
+      "name": "Authenticated Users"
+    }
   ],
   "slug": "pos-order",
   "status": "New",

@@ -61,7 +61,9 @@
                     <parameter dependsOnId="" dependsOnValue="" id="submission_id" label="Submission Id" menu="" required="true" tooltip="Submission Id that the attachment is located on.">&lt;%=@results['Get Submission ID']['output']%&gt;</parameter>
                     <parameter dependsOnId="" dependsOnValue="" id="field" label="Field Label" menu="" required="true" tooltip="Field Label for the attachment field.">Photo</parameter>
                 </parameters>
-                <messages></messages>
+                <messages>
+                    <message type="Complete"></message>
+                </messages>
                 <dependents>
                     <task label="" type="Complete" value="">kinetic_request_ce_submission_update_v1_55</task>
                 </dependents>
@@ -222,9 +224,7 @@
                     <parameter dependsOnId="" dependsOnValue="" id="limit" label="Limit" menu="" required="false" tooltip="An integer representing the max results that the search can return."></parameter>
                     <parameter dependsOnId="" dependsOnValue="" id="return_type" label="Return Type" menu="JSON,XML,ID List" required="true" tooltip="The format that the results should be returned in.">JSON</parameter>
                 </parameters>
-                <messages>
-                    <message type="Complete"></message>
-                </messages>
+                <messages></messages>
                 <dependents>
                     <task label="" type="Complete" value="">generate_journey_events_v1_67</task>
                 </dependents>
@@ -240,9 +240,7 @@
                     <parameter dependsOnId="" dependsOnValue="" id="record_id" label="Record ID" menu="" required="true" tooltip="Record ID of Lead or member">&lt;%=  @submission['Id'] %&gt;</parameter>
                     <parameter dependsOnId="" dependsOnValue="" id="record_name" label="Record Name" menu="" required="true" tooltip="Record Name of Lead or member">$&lt;%=  @values['First Name']+" "+ @values['Last Name']%&gt;</parameter>
                 </parameters>
-                <messages>
-                    <message type="Complete"></message>
-                </messages>
+                <messages></messages>
                 <dependents></dependents>
             </task>
         </request>

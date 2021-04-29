@@ -79,7 +79,7 @@
 require "logger"
 require "json"
 
-template_name = "platform-template-service-portal"
+template_name = "platform-template-gbmembers"
 
 logger = Logger.new(STDERR)
 logger.level = Logger::INFO
@@ -163,7 +163,7 @@ smtp = vars["data"]["smtp"] || {}
 task_handler_configurations={}
 task_handler_configurations["smtp_email_send_v1"] = {
     "server" => smtp["server"],
-    "port" => smtp["server"],
+    "port" => smtp["port"],
     "tls" => smtp["tls"],
     "username" => smtp["username"],
     "password" => smtp["password"],
@@ -191,14 +191,14 @@ task_handler_configurations["smtp_email_send_v1"] = {
 
   task_handler_configurations["generate_monthly_billing_statistics_v1"] = {
     "space" => vars["core"]["space_slug"],
-    "service_url" => "https://gbbilling.com.au:8443/billingservice",
+    "service_url" => vars["billingService"]["url"],
     "api_server" => vars["core"]["server"],
     "api_username" => vars["core"]["email_integration_user_username"],
     "api_password" => vars["core"]["email_integration_user_password"],
   }
   task_handler_configurations["generate_member_journey_events_v1"] = {
     "space" => vars["core"]["space_slug"],
-    "service_url" => "https://gbbilling.com.au:8443/billingservice",
+    "service_url" => vars["billingService"]["url"],
     "api_server" => vars["core"]["server"],
     "api_username" => vars["core"]["email_integration_user_username"],
     "api_password" => vars["core"]["email_integration_user_password"],
@@ -222,9 +222,9 @@ task_handler_configurations["smtp_email_send_v1"] = {
     "api_password" => vars["core"]["email_integration_user_password"],
   }
   task_handler_configurations["amazon_s3_file_upload_from_datastore_submission_v1"] = {
-    "access_key" => "AKIAIPDGK2F2PP75CWJA",
-    "secret_key" => "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",
-    "region" => "ap-southeast-2",
+    "access_key" => vars["aws"]["AWSAccessKeyId"],
+    "secret_key" => vars["aws"]["AWSSecretKey"],
+    "region" => vars["aws"]["Region"],
     "request_ce_server" => vars["core"]["server"],
     "request_ce_username" => vars["core"]["email_integration_user_username"],
     "request_ce_password" => vars["core"]["email_integration_user_password"],
@@ -232,9 +232,9 @@ task_handler_configurations["smtp_email_send_v1"] = {
     "enable_debug_logging" => "No",
   }
   task_handler_configurations["amazon_s3_file_upload_from_submission_v1"] = {
-    "access_key" => "AKIAIPDGK2F2PP75CWJA",
-    "secret_key" => "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",
-    "region" => "ap-southeast-2",
+    "access_key" => vars["aws"]["AWSAccessKeyId"],
+    "secret_key" => vars["aws"]["AWSSecretKey"],
+    "region" => vars["aws"]["Region"],
     "request_ce_server" => vars["core"]["server"],
     "request_ce_username" => vars["core"]["email_integration_user_username"],
     "request_ce_password" => vars["core"]["email_integration_user_password"],
@@ -242,9 +242,9 @@ task_handler_configurations["smtp_email_send_v1"] = {
     "enable_debug_logging" => "No",
   }
   task_handler_configurations["amazon_s3_file_upload_v2"] = {
-    "access_key" => "AKIAIPDGK2F2PP75CWJA",
-    "secret_key" => "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",
-    "region" => "ap-southeast-2",
+    "access_key" => vars["aws"]["AWSAccessKeyId"],
+    "secret_key" => vars["aws"]["AWSSecretKey"],
+    "region" => vars["aws"]["Region"],
     "enable_debug_logging" => "No",
   }
 
@@ -565,7 +565,7 @@ if (vars["data"]["requesting_user"])
     "email" => vars["data"]["requesting_user"]["email"],
     "displayName" => vars["data"]["requesting_user"]["displayName"],
 ##    "password" => KineticSdk::Utils::Random.simple(16),
-    "password" => "gbfms@2017",
+    "password" => "gbfms@2021",
     "enabled" => true,
     "spaceAdmin" => true,
     "memberships" => [

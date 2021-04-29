@@ -26,6 +26,12 @@
       ]
     },
     {
+      "name": "Australia School States",
+      "values": [
+        "ACT,NSW,NT,QLD,TAS,VIC,WA"
+      ]
+    },
+    {
       "name": "AWS Region",
       "values": [
         "ap-southeast-2"
@@ -34,7 +40,7 @@
     {
       "name": "Billing Company",
       "values": [
-        "PaySmart"
+        "Payline"
       ]
     },
     {
@@ -139,7 +145,7 @@
     {
       "name": "Payment Frequencies",
       "values": [
-        "Fortnightly,Weekly,Yearly"
+        "Fortnightly,Weekly,Monthly"
       ]
     },
     {
@@ -157,7 +163,13 @@
     {
       "name": "POS System",
       "values": [
-        "DebitSuccess"
+        "Payline"
+      ]
+    },
+    {
+      "name": "Postcode Format",
+      "values": [
+        "######"
       ]
     },
     {
@@ -194,6 +206,12 @@
       "name": "School Name",
       "values": [
         "Gracie Barra Template"
+      ]
+    },
+    {
+      "name": "School States",
+      "values": [
+        "AL,AK,AZ,AR,CA,CO,CT,DE,FL,GA,HI,ID,IL,IN,IA,KS,KY,LA,ME,MD,MA,MI,MN,MS,MO,MT,NE,NV,NH,NJ,NM,NY,NC,ND,OH,OK,OR,PA,RI,SC,SD,TN,TX,UT,VT,VA,WA,WV,WI,WY"
       ]
     },
     {
@@ -280,12 +298,13 @@
   ],
   "defaultDatastoreFormConfirmationPage": null,
   "defaultDatastoreFormDisplayPage": null,
-  "defaultLocale": "en-AU",
+  "defaultLocale": "en-US",
   "defaultTimezone": "Australia/Brisbane",
   "displayType": "Single Page App",
   "displayValue": "spa.jsp?location=https://s3-ap-southeast-2.amazonaws.com/gbmembers-v2",
   "enabledLocales": [
-    "en-AU"
+    "en-AU",
+    "en-US"
   ],
   "loginPage": null,
   "name": "GBMembers Template",

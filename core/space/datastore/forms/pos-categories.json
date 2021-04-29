@@ -176,8 +176,12 @@
               "value": "Apparel"
             },
             {
-              "label": "Services",
-              "value": "Services"
+              "label": "Service",
+              "value": "Service"
+            },
+            {
+              "label": "Package",
+              "value": "Package"
             }
           ]
         },
@@ -295,7 +299,18 @@
     }
   ],
   "securityPolicies": [
-
+    {
+      "endpoint": "Display",
+      "name": "Data Admins"
+    },
+    {
+      "endpoint": "Submission Access",
+      "name": "Data Admins"
+    },
+    {
+      "endpoint": "Submission Modification",
+      "name": "Data Admins"
+    }
   ],
   "slug": "pos-categories",
   "status": "New",

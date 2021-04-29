@@ -81,6 +81,9 @@ SUBMISSIONS_TO_EXPORT = [
   { "datastore" => true, "formSlug" => "journey-triggers" },
   { "datastore" => true, "formSlug" => "sms-templates" },
   { "datastore" => true, "formSlug" => "call-scripts" },
+  { "datastore" => true, "formSlug" => "pos-categories" },
+  { "datastore" => true, "formSlug" => "pos-discounts" },
+  { "datastore" => true, "formSlug" => "pos-product" },
 ]
 
 REMOVE_DATA_PROPERTIES = [

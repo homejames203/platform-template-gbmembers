@@ -98,6 +98,13 @@
         "values[Quantity]"
       ],
       "unique": false
+    },
+    {
+      "name": "values[Size]",
+      "parts": [
+        "values[Size]"
+      ],
+      "unique": false
     }
   ],
   "name": "POS Purchased Item",
@@ -138,6 +145,31 @@
           "name": "Product Name",
           "label": "Product Name",
           "key": "f3",
+          "defaultValue": null,
+          "defaultResourceName": null,
+          "visible": true,
+          "enabled": true,
+          "required": false,
+          "requiredMessage": null,
+          "omitWhenHidden": null,
+          "pattern": null,
+          "constraints": [
+
+          ],
+          "events": [
+
+          ],
+          "renderAttributes": {
+          },
+          "dataType": "string",
+          "renderType": "text",
+          "rows": 1
+        },
+        {
+          "type": "field",
+          "name": "Size",
+          "label": "Size",
+          "key": "f7",
           "defaultValue": null,
           "defaultResourceName": null,
           "visible": true,

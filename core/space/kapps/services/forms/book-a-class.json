@@ -252,11 +252,11 @@
               "key": "f17",
               "defaultValue": null,
               "defaultResourceName": null,
-              "visible": true,
+              "visible": false,
               "enabled": true,
               "required": false,
               "requiredMessage": null,
-              "omitWhenHidden": null,
+              "omitWhenHidden": true,
               "pattern": null,
               "constraints": [
 
@@ -288,11 +288,11 @@
               "key": "f16",
               "defaultValue": null,
               "defaultResourceName": null,
-              "visible": true,
+              "visible": false,
               "enabled": true,
               "required": false,
               "requiredMessage": null,
-              "omitWhenHidden": null,
+              "omitWhenHidden": true,
               "pattern": null,
               "constraints": [
 
@@ -324,11 +324,11 @@
               "key": "f14",
               "defaultValue": null,
               "defaultResourceName": null,
-              "visible": true,
+              "visible": false,
               "enabled": true,
               "required": false,
               "requiredMessage": null,
-              "omitWhenHidden": null,
+              "omitWhenHidden": true,
               "pattern": null,
               "constraints": [
 
@@ -360,11 +360,11 @@
               "key": "f15",
               "defaultValue": null,
               "defaultResourceName": null,
-              "visible": true,
+              "visible": false,
               "enabled": true,
               "required": false,
               "requiredMessage": null,
-              "omitWhenHidden": null,
+              "omitWhenHidden": true,
               "pattern": null,
               "constraints": [
 
@@ -844,7 +844,7 @@
           "label": "Complete Booking",
           "name": "Submit Button",
           "visible": true,
-          "enabled": "values('Travel in Fourteen days')==\"No\" && values('Contact Made')==\"No\" && values('Night sweats and chills')==\"No\" && values('Respiratory Infection')==\"No\"",
+          "enabled": true,
           "renderType": "submit-page",
           "renderAttributes": {
           }

@@ -133,7 +133,7 @@
           "label": "Apply",
           "name": "Submit Button",
           "visible": false,
-          "enabled": true,
+          "enabled": "values('Photo').length!==0 || values('Photo Image')!==null",
           "renderType": "submit-page",
           "renderAttributes": {
           }
@@ -167,7 +167,7 @@
     },
     {
       "endpoint": "Submission Modification",
-      "name": "Program Managers"
+      "name": "Authenticated Users"
     }
   ],
   "slug": "member-photo",

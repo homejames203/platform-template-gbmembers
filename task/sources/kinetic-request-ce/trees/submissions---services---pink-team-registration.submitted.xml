@@ -100,6 +100,10 @@ values.to_json
   "Email": "&lt;%= @values['Email']%&gt;",
   "Phone Number": "&lt;%= @values['Phone']%&gt;",
   "DOB": "&lt;%= @values['Date of birth']%&gt;",
+  "Emergency Contact Name": "&lt;%=  @values['Emergency Contact Name'] %&gt;",
+  "Emergency Contact Phone": "&lt;%=  @values['Emergency Contact Phone'] %&gt;",
+  "Emergency Contact Relationship": "&lt;%=  @values['Emergency Contact Relationship'] %&gt;",
+  "Medical Allergies": "&lt;%=  @values['If yes How can we help'] %&gt;",
   "GB Waiver": "Agreed",
   "Is New Reply Received": "true",
   "Source Reference 4": "&lt;%=  @values['How did you find out about us'] %&gt;"
@@ -144,6 +148,10 @@ values.to_json
   "Email": "&lt;%= @values['Email']%&gt;",
   "Phone Number": "&lt;%= @values['Phone']%&gt;",
   "DOB": "&lt;%= @values['Date of birth']%&gt;",
+  "Emergency Contact Name": "&lt;%=  @values['Emergency Contact Name'] %&gt;",
+  "Emergency Contact Phone": "&lt;%=  @values['Emergency Contact Phone'] %&gt;",
+  "Emergency Contact Relationship": "&lt;%=  @values['Emergency Contact Relationship'] %&gt;",
+  "Medical Allergies": "&lt;%=  @values['If yes How can we help'] %&gt;",
   "GB Waiver": "Agreed",
   "History": "[{\"note\":\"&lt;%= @form['Name']%&gt;\",\"contactMethod\":\"in_person\",\"contactDate\":\"&lt;%= @submission['Created At']%&gt;\"}]",
   "Source Reference 4": "&lt;%=  @values['How did you find out about us'] %&gt;"

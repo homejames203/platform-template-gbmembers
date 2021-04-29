@@ -17,6 +17,18 @@
       ],
       "qualification": "Get Categories",
       "status": "Active"
+    },
+    {
+      "model": "POS Products",
+      "name": "Get Products",
+      "order": [
+
+      ],
+      "parameters": [
+
+      ],
+      "qualification": "Get Products",
+      "status": "Active"
     }
   ],
   "customHeadContent": null,
@@ -142,6 +154,13 @@
       "unique": false
     },
     {
+      "name": "values[Package Products]",
+      "parts": [
+        "values[Package Products]"
+      ],
+      "unique": false
+    },
+    {
       "name": "values[Price]",
       "parts": [
         "values[Price]"
@@ -225,6 +244,10 @@
             {
               "label": "Inactive",
               "value": "Inactive"
+            },
+            {
+              "label": "Delete",
+              "value": "Delete"
             }
           ]
         },
@@ -284,8 +307,12 @@
               "value": "Apparel"
             },
             {
-              "label": "Services",
-              "value": "Services"
+              "label": "Service",
+              "value": "Service"
+            },
+            {
+              "label": "Package",
+              "value": "Package"
             }
           ]
         },
@@ -361,11 +388,11 @@
           "key": "f12",
           "defaultValue": null,
           "defaultResourceName": null,
-          "visible": true,
+          "visible": "values('Product Type')===\"Apparel\"",
           "enabled": true,
           "required": false,
           "requiredMessage": null,
-          "omitWhenHidden": null,
+          "omitWhenHidden": true,
           "pattern": null,
           "constraints": [
 
@@ -386,11 +413,11 @@
           "key": "f13",
           "defaultValue": null,
           "defaultResourceName": null,
-          "visible": true,
+          "visible": "values('Product Type')===\"Apparel\"",
           "enabled": true,
           "required": false,
           "requiredMessage": null,
-          "omitWhenHidden": null,
+          "omitWhenHidden": true,
           "pattern": null,
           "constraints": [
 
@@ -418,11 +445,11 @@
           "key": "f15",
           "defaultValue": null,
           "defaultResourceName": null,
-          "visible": true,
+          "visible": "values('Product Type')!==\"Package\"",
           "enabled": true,
           "required": false,
           "requiredMessage": null,
-          "omitWhenHidden": null,
+          "omitWhenHidden": true,
           "pattern": null,
           "constraints": [
 
@@ -454,11 +481,11 @@
           "key": "f14",
           "defaultValue": null,
           "defaultResourceName": null,
-          "visible": "values('Image Type')===\"File Upload\"",
+          "visible": "values('Image Type')===\"File Upload\" && values('Product Type')!==\"Package\"",
           "enabled": true,
           "required": "values('Image Type')===\"File Upload\"",
           "requiredMessage": null,
-          "omitWhenHidden": false,
+          "omitWhenHidden": true,
           "pattern": null,
           "constraints": [
 
@@ -468,7 +495,7 @@
               "name": "Build URL",
               "type": "Change",
               "action": "Custom",
-              "code": "debugger;\n//https://gbmembers-template.kinops.io/app/datastore/submissions/2d5fc9c4-61b1-11eb-9540-dd28e3686ec3/files/Image/0/EasterKidsCamp.png\nfileJSON=K('field[Image]').value();\nurl=\"/app/datastore/submissions/\"+K('form').submission().id()+\"/files/Image/0/\"+fileJSON[0].name;\nK('field[Image URL]').value(url);"
+              "code": "debugger;\nfileJSON=K('field[Image]').value();\nurl=\"/app/datastore/submissions/\"+K('form').submission().id()+\"/files/Image/0/\"+fileJSON[0].name;\nK('field[Image URL]').value(url);"
             }
           ],
           "renderAttributes": {
@@ -484,7 +511,7 @@
           "key": "f4",
           "defaultValue": null,
           "defaultResourceName": null,
-          "visible": "values('Image Type')===\"URL\"",
+          "visible": "values('Image Type')===\"URL\" && values('Product Type')!==\"Package\"",
           "enabled": true,
           "required": "values('Image Type')===\"URL\"",
           "requiredMessage": null,
@@ -536,7 +563,7 @@
           "defaultResourceName": null,
           "visible": true,
           "enabled": true,
-          "required": false,
+          "required": "values('Product Type')===\"Package\"",
           "requiredMessage": null,
           "omitWhenHidden": null,
           "pattern": null,
@@ -551,6 +578,36 @@
           "dataType": "string",
           "renderType": "text",
           "rows": 10
+        },
+        {
+          "type": "field",
+          "name": "Package Products",
+          "label": "Package Products",
+          "key": "f19",
+          "defaultValue": null,
+          "defaultResourceName": null,
+          "visible": "values('Product Type')===\"Package\"",
+          "enabled": true,
+          "required": false,
+          "requiredMessage": null,
+          "omitWhenHidden": true,
+          "pattern": null,
+          "constraints": [
+
+          ],
+          "events": [
+
+          ],
+          "renderAttributes": {
+          },
+          "dataType": "json",
+          "renderType": "checkbox",
+          "choicesResourceName": "Get Products",
+          "choicesRunIf": null,
+          "choices": {
+            "label": "${resources('Get Products:Name')}-${resources('Get Products:Colour')}",
+            "value": "${resources('Get Products:id')}"
+          }
         },
         {
           "type": "field",
@@ -609,11 +666,11 @@
           "key": "f16",
           "defaultValue": null,
           "defaultResourceName": null,
-          "visible": true,
+          "visible": "values('Product Type')===\"Apparel\"",
           "enabled": true,
           "required": false,
           "requiredMessage": null,
-          "omitWhenHidden": null,
+          "omitWhenHidden": true,
           "pattern": null,
           "constraints": [
 
@@ -817,6 +874,10 @@
               "value": "40"
             },
             {
+              "label": "42",
+              "value": "42"
+            },
+            {
               "label": "44",
               "value": "44"
             },
@@ -833,11 +894,11 @@
           "key": "f17",
           "defaultValue": null,
           "defaultResourceName": null,
-          "visible": true,
+          "visible": "values('Product Type')===\"Apparel\"",
           "enabled": true,
           "required": false,
           "requiredMessage": null,
-          "omitWhenHidden": null,
+          "omitWhenHidden": true,
           "pattern": null,
           "constraints": [
 
@@ -860,7 +921,7 @@
           "defaultResourceName": null,
           "visible": true,
           "enabled": true,
-          "required": false,
+          "required": true,
           "requiredMessage": null,
           "omitWhenHidden": null,
           "pattern": null,
@@ -883,7 +944,7 @@
         },
         {
           "type": "button",
-          "label": "Submit",
+          "label": "Apply",
           "name": "Submit Button",
           "visible": true,
           "enabled": true,
@@ -893,7 +954,13 @@
         }
       ],
       "events": [
-
+        {
+          "name": "Load Products",
+          "type": "Load",
+          "action": "Custom",
+          "code": "bundle.config.widgets.selectMultiMenu({\n  element: K(\"form\").find(\"#selectProductsMenu\")[0],\n  options: K('field[Package Products]').options(),\n  onChange: function(option) {\n    debugger;\n    K('field[Package Products]').value(option[0].value);\n/*    setTimeout(function(){\n      $(K(\"form\").find(\"#selectProductsMenu .css-1492t68\")).html(option.label);\n    },100);*/\n  },\n  value: K('field[Package Products]').value(),\n});\n",
+          "runIf": "1===0"
+        }
       ],
       "name": "Main",
       "renderType": "submittable",
