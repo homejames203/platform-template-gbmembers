@@ -306,9 +306,9 @@ space_sdk.update_space({
   "attributesMap" => space_attributes_map,
   "name" => vars["core"]["space_name"],
   "displayType" => "Single Page App",
-  "displayValue" => (vars["data"].has_key?("space") && vars["data"]["space"].has_key?("settings")) ? "spa.jsp?location=#{vars["data"]["space"]["displayValue"]}" : "space.jsp",
-  "defaultLocale" => (vars["data"].has_key?("space") && vars["data"]["space"].has_key?("settings")) ? vars["data"]["space"]["defaultLocale"] : "",
-  "defaultTimezone" => (vars["data"].has_key?("space") && vars["data"]["space"].has_key?("settings")) ? vars["data"]["space"]["defaultTimezone"] : "",
+  "displayValue" => (vars["data"].has_key?("space") && vars["data"]["space"].has_key?("settings")) ? "spa.jsp?location=#{vars["data"]["space"]["settings"]["displayValue"]}" : "space.jsp",
+  "defaultLocale" => (vars["data"].has_key?("space") && vars["data"]["space"].has_key?("settings")) ? vars["data"]["space"]["settings"]["defaultLocale"] : "",
+  "defaultTimezone" => (vars["data"].has_key?("space") && vars["data"]["space"].has_key?("settings")) ? vars["data"]["space"]["settings"]["defaultTimezone"] : "",
 })
 
 # import kapp & datastore submissions
