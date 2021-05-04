@@ -194,41 +194,41 @@ task_handler_configurations["smtp_email_send_v1"] = {
     "space" => vars["core"]["space_slug"],
     "service_url" => vars["data"]["billingService"]["url"],
     "api_server" => vars["core"]["server"],
-    "api_username" => vars["core"]["email_integration_user_username"],
-    "api_password" => vars["core"]["email_integration_user_password"],
+    "api_username" => vars["core"]["service_user_username"],
+    "api_password" => vars["core"]["service_user_password"],
   }
   task_handler_configurations["generate_member_journey_events_v1"] = {
     "space" => vars["core"]["space_slug"],
     "service_url" => vars["data"]["billingService"]["url"],
     "api_server" => vars["core"]["server"],
-    "api_username" => vars["core"]["email_integration_user_username"],
-    "api_password" => vars["core"]["email_integration_user_password"],
+    "api_username" => vars["core"]["service_user_username"],
+    "api_password" => vars["core"]["service_user_password"],
   }
   task_handler_configurations["generate_lead_journey_events_v1"] = {
     "space" => vars["core"]["space_slug"],
     "api_server" => vars["core"]["server"],
-    "api_username" => vars["core"]["email_integration_user_username"],
-    "api_password" => vars["core"]["email_integration_user_password"],
+    "api_username" => vars["core"]["service_user_username"],
+    "api_password" => vars["core"]["service_user_password"],
   }
   task_handler_configurations["generate_member_recurring_bookings_v1"] = {
     "space" => vars["core"]["space_slug"],
     "api_server" => vars["core"]["server"],
-    "api_username" => vars["core"]["email_integration_user_username"],
-    "api_password" => vars["core"]["email_integration_user_password"],
+    "api_username" => vars["core"]["service_user_username"],
+    "api_password" => vars["core"]["service_user_password"],
   }
   task_handler_configurations["generate_journey_events_v1"] = {
     "space" => vars["core"]["space_slug"],
     "api_server" => vars["core"]["server"],
-    "api_username" => vars["core"]["email_integration_user_username"],
-    "api_password" => vars["core"]["email_integration_user_password"],
+    "api_username" => vars["core"]["service_user_username"],
+    "api_password" => vars["core"]["service_user_password"],
   }
   task_handler_configurations["amazon_s3_file_upload_from_datastore_submission_v1"] = {
     "access_key" => vars["data"]["aws"]["AWSAccessKeyId"],
     "secret_key" => vars["data"]["aws"]["AWSSecretKey"],
     "region" => vars["data"]["aws"]["Region"],
     "request_ce_server" => vars["core"]["server"],
-    "request_ce_username" => vars["core"]["email_integration_user_username"],
-    "request_ce_password" => vars["core"]["email_integration_user_password"],
+    "api_username" => vars["core"]["service_user_username"],
+    "api_password" => vars["core"]["service_user_password"],
     "space_slug" => "",
     "enable_debug_logging" => "No",
   }
@@ -237,8 +237,8 @@ task_handler_configurations["smtp_email_send_v1"] = {
     "secret_key" => vars["data"]["aws"]["AWSSecretKey"],
     "region" => vars["data"]["aws"]["Region"],
     "request_ce_server" => vars["core"]["server"],
-    "request_ce_username" => vars["core"]["email_integration_user_username"],
-    "request_ce_password" => vars["core"]["email_integration_user_password"],
+    "api_username" => vars["core"]["service_user_username"],
+    "api_password" => vars["core"]["service_user_password"],
     "space_slug" => "",
     "enable_debug_logging" => "No",
   }
