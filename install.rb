@@ -297,7 +297,7 @@ vars_space_attributes_map = (vars["data"].has_key?("space") &&
                              vars["data"]["space"].has_key?("attributesMap")) ?
   vars["data"]["space"]["attributesMap"] : {}
 # merge in any space attributes passed in the variable data
-space_attributes_map = space_attributes_map.merge(vars_space_attributes_map)
+#space_attributes_map = space_attributes_map.merge(vars_space_attributes_map)
 
 # update the space properties
 #   set required space attributes
