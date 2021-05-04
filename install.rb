@@ -305,6 +305,9 @@ space_attributes_map = space_attributes_map.merge(vars_space_attributes_map)
 space_sdk.update_space({
   "attributesMap" => space_attributes_map,
   "name" => vars["core"]["space_name"],
+  "displayValue" => (vars["data"].has_key?("space") && vars["data"]["space"].has_key?("settings")) ? vars["data"]["space"][displayValue] : "",
+  "defaultLocale" => (vars["data"].has_key?("space") && vars["data"]["space"].has_key?("settings")) ? vars["data"]["space"][defaultLocale] : "",
+  "defaultTimezone" => (vars["data"].has_key?("space") && vars["data"]["space"].has_key?("settings")) ? vars["data"]["space"][defaultTimezone] : "",
 })
 
 # import kapp & datastore submissions
