@@ -297,7 +297,7 @@ vars_space_attributes_map = (vars["data"].has_key?("space") &&
                              vars["data"]["space"].has_key?("attributesMap")) ?
   vars["data"]["space"]["attributesMap"] : {}
 # merge in any space attributes passed in the variable data
-space_attributes_map = space_attributes_map.merge(vars_space_attributes_map)
+#space_attributes_map = space_attributes_map.merge(vars_space_attributes_map)
 
 displayValue=(vars["data"].has_key?("space") && vars["data"]["space"].has_key?("settings")) ? "spa.jsp?location=#{vars["data"]["space"]["settings"]["displayValue"]}" : "space.jsp"
 defaultLocale=(vars["data"].has_key?("space") && vars["data"]["space"].has_key?("settings")) ? vars["data"]["space"]["settings"]["defaultLocale"] : ""
