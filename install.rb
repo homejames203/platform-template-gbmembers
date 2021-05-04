@@ -568,7 +568,7 @@ if (vars["data"]["requesting_user"])
     "email" => vars["data"]["requesting_user"]["email"],
     "displayName" => vars["data"]["requesting_user"]["displayName"],
 ##    "password" => KineticSdk::Utils::Random.simple(16),
-    "password" => "gbfms@2021",
+    "password" => vars["data"]["requesting_user"]["password"],
     "enabled" => true,
     "spaceAdmin" => true,
     "memberships" => [
