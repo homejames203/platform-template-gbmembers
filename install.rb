@@ -81,9 +81,9 @@ require "json"
 
 template_name = "platform-template-gbmembers"
 
-logger = Logger.new(STDERR)
-logger.level = Logger::INFO
-logger.formatter = proc do |severity, datetime, progname, msg|
+@logger = Logger.new(STDERR)
+@logger.level = Logger::INFO
+@logger.formatter = proc do |severity, datetime, progname, msg|
   date_format = datetime.utc.strftime("%Y-%m-%dT%H:%M:%S.%LZ")
   "[#{date_format}] #{severity}: #{msg}\n"
 end
@@ -99,6 +99,7 @@ end
 
 # determine the directory paths
 platform_template_path = File.dirname(File.expand_path(__FILE__))
+@logger.info "platform_template_path: #{platform_template_path}"
 core_path = File.join(platform_template_path, "core")
 task_path = File.join(platform_template_path, "task")
 
@@ -106,7 +107,7 @@ task_path = File.join(platform_template_path, "task")
 # setup
 # ------------------------------------------------------------------------------
 
-logger.info "Installing gems for the \"#{template_name}\" template."
+@logger.info "Installing gems for the \"#{template_name}\" template."
 Dir.chdir(platform_template_path) { system("bundle", "install") }
 
 require "kinetic_sdk"
@@ -191,14 +192,14 @@ task_handler_configurations["smtp_email_send_v1"] = {
 
   task_handler_configurations["generate_monthly_billing_statistics_v1"] = {
     "space" => vars["core"]["space_slug"],
-    "service_url" => vars["billingService"]["url"],
+    "service_url" => vars["data"]["billingService"]["url"],
     "api_server" => vars["core"]["server"],
     "api_username" => vars["core"]["email_integration_user_username"],
     "api_password" => vars["core"]["email_integration_user_password"],
   }
   task_handler_configurations["generate_member_journey_events_v1"] = {
     "space" => vars["core"]["space_slug"],
-    "service_url" => vars["billingService"]["url"],
+    "service_url" => vars["data"]["billingService"]["url"],
     "api_server" => vars["core"]["server"],
     "api_username" => vars["core"]["email_integration_user_username"],
     "api_password" => vars["core"]["email_integration_user_password"],
@@ -222,9 +223,9 @@ task_handler_configurations["smtp_email_send_v1"] = {
     "api_password" => vars["core"]["email_integration_user_password"],
   }
   task_handler_configurations["amazon_s3_file_upload_from_datastore_submission_v1"] = {
-    "access_key" => vars["aws"]["AWSAccessKeyId"],
-    "secret_key" => vars["aws"]["AWSSecretKey"],
-    "region" => vars["aws"]["Region"],
+    "access_key" => vars["data"]["aws"]["AWSAccessKeyId"],
+    "secret_key" => vars["data"]["aws"]["AWSSecretKey"],
+    "region" => vars["data"]["aws"]["Region"],
     "request_ce_server" => vars["core"]["server"],
     "request_ce_username" => vars["core"]["email_integration_user_username"],
     "request_ce_password" => vars["core"]["email_integration_user_password"],
@@ -232,9 +233,9 @@ task_handler_configurations["smtp_email_send_v1"] = {
     "enable_debug_logging" => "No",
   }
   task_handler_configurations["amazon_s3_file_upload_from_submission_v1"] = {
-    "access_key" => vars["aws"]["AWSAccessKeyId"],
-    "secret_key" => vars["aws"]["AWSSecretKey"],
-    "region" => vars["aws"]["Region"],
+    "access_key" => vars["data"]["aws"]["AWSAccessKeyId"],
+    "secret_key" => vars["data"]["aws"]["AWSSecretKey"],
+    "region" => vars["data"]["aws"]["Region"],
     "request_ce_server" => vars["core"]["server"],
     "request_ce_username" => vars["core"]["email_integration_user_username"],
     "request_ce_password" => vars["core"]["email_integration_user_password"],
@@ -242,9 +243,9 @@ task_handler_configurations["smtp_email_send_v1"] = {
     "enable_debug_logging" => "No",
   }
   task_handler_configurations["amazon_s3_file_upload_v2"] = {
-    "access_key" => vars["aws"]["AWSAccessKeyId"],
-    "secret_key" => vars["aws"]["AWSSecretKey"],
-    "region" => vars["aws"]["Region"],
+    "access_key" => vars["data"]["aws"]["AWSAccessKeyId"],
+    "secret_key" => vars["data"]["aws"]["AWSSecretKey"],
+    "region" => vars["data"]["aws"]["Region"],
     "enable_debug_logging" => "No",
   }
 
@@ -258,6 +259,8 @@ end
 # core
 # ------------------------------------------------------------------------------
 
+@logger.info "space_server_url: #{vars["core"]["server"]}"
+@logger.info "space_slug: #{vars["core"]["space_slug"]}"
 space_sdk = KineticSdk::Core.new({
   space_server_url: vars["core"]["server"],
   space_slug: vars["core"]["space_slug"],
@@ -265,7 +268,6 @@ space_sdk = KineticSdk::Core.new({
   password: vars["core"]["service_user_password"],
   options: http_options.merge({ export_directory: "#{core_path}" }),
 })
-
 # cleanup any kapps that are precreated with the space (catalog)
 (space_sdk.find_kapps.content["kapps"] || []).each do |item|
   space_sdk.delete_kapp(item["slug"])
@@ -274,8 +276,9 @@ end
 # cleanup any existing spds that are precreated with the space (everyone, etc)
 space_sdk.delete_space_security_policy_definitions
 
-logger.info "Installing the core components for the \"#{template_name}\" template."
-logger.info "  installing with api: #{space_sdk.api_url}"
+@logger.info "Installing the core components for the \"#{template_name}\" template."
+@logger.info "  installing with api: #{space_sdk.api_url}"
+@logger.info "  installing into slug: #{vars["core"]["space_slug"]}"
 
 # import the space for the template
 space_sdk.import_space(vars["core"]["space_slug"])
@@ -386,8 +389,8 @@ task_sdk = KineticSdk::Task.new({
   options: http_options.merge({ export_directory: "#{task_path}" }),
 })
 
-logger.info "Installing the task components for the \"#{template_name}\" template."
-logger.info "  installing with api: #{task_sdk.api_url}"
+@logger.info "Installing the task components for the \"#{template_name}\" template."
+@logger.info "  installing with api: #{task_sdk.api_url}"
 
 # cleanup playground data
 task_sdk.delete_categories
@@ -437,13 +440,13 @@ task_sdk.find_handlers.content["handlers"].each do |handler|
   handler_definition_id = handler["definitionId"]
 
   if task_handler_configurations.has_key?(handler_definition_id)
-    logger.info "Updating handler #{handler_definition_id}"
+    @logger.info "Updating handler #{handler_definition_id}"
     task_sdk.update_handler(handler_definition_id, {
       "properties" => task_handler_configurations[handler_definition_id],
     })
   else
     if handler_definition_id.start_with?("kinetic_core_api_v1")
-      logger.info "Updating handler #{handler_definition_id}"
+      @logger.info "Updating handler #{handler_definition_id}"
       task_sdk.update_handler(handler_definition_id, {
         "properties" => {
           "api_location" => vars["core"]["api"],
@@ -452,7 +455,7 @@ task_sdk.find_handlers.content["handlers"].each do |handler|
         },
       })
     elsif handler_definition_id.start_with?("kinetic_discussions_api_v1")
-      logger.info "Updating handler #{handler_definition_id}"
+      @logger.info "Updating handler #{handler_definition_id}"
       task_sdk.update_handler(handler_definition_id, {
         "properties" => {
           "api_oauth_location" => "#{vars["core"]["server"]}/app/oauth/token?grant_type=client_credentials&response_type=token",
@@ -462,7 +465,7 @@ task_sdk.find_handlers.content["handlers"].each do |handler|
         },
       })
     elsif handler_definition_id.start_with?("kinetic_task_api_v1")
-      logger.info "Updating handler #{handler_definition_id}"
+      @logger.info "Updating handler #{handler_definition_id}"
       task_sdk.update_handler(handler_definition_id, {
         "properties" => {
           "api_location" => vars["core"]["task_api_v1"],
@@ -473,7 +476,7 @@ task_sdk.find_handlers.content["handlers"].each do |handler|
         },
       })
     elsif handler_definition_id.start_with?("kinetic_task_api_v2")
-      logger.info "Updating handler #{handler_definition_id}"
+      @logger.info "Updating handler #{handler_definition_id}"
       task_sdk.update_handler(handler_definition_id, {
         "properties" => {
           "api_location" => vars["core"]["task_api_v2"],
@@ -482,7 +485,7 @@ task_sdk.find_handlers.content["handlers"].each do |handler|
         },
       })
     elsif handler_definition_id.start_with?("kinetic_task_tree")
-      logger.info "Updating handler #{handler_definition_id}"
+      @logger.info "Updating handler #{handler_definition_id}"
       task_sdk.update_handler(handler_definition_id, {
         "properties" => {
           "username" => vars["core"]["service_user_username"],
@@ -677,4 +680,4 @@ end
 # complete
 # ------------------------------------------------------------------------------
 
-logger.info "Finished installing the \"#{template_name}\" template."
+@logger.info "Finished installing the \"#{template_name}\" template."

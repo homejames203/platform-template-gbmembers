@@ -75,14 +75,16 @@
                 <deferrable>false</deferrable>
                 <visible>false</visible>
                 <parameters>
-                    <parameter dependsOnId="" dependsOnValue="" id="region" label="Region" menu="" required="false" tooltip="Id of the region the inteded S3 server is located in (can also be configured as an info value).">ap-southeast-2</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="region" label="Region" menu="" required="false" tooltip="Id of the region the inteded S3 server is located in (can also be configured as an info value).">&lt;%=  @space_attributes['AWS Region'].nil? ? "ap-southeast-2" : @space_attributes['AWS Region'] %&gt;</parameter>
                     <parameter dependsOnId="" dependsOnValue="" id="space_slug" label="Space Slug" menu="" required="false" tooltip="Slug for the space the submission is in (can also be configured as an info value)."></parameter>
-                    <parameter dependsOnId="" dependsOnValue="" id="bucket" label="Bucket" menu="" required="true" tooltip="Name of the bucket to upload to.">gbmembers-photos</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="bucket" label="Bucket" menu="" required="true" tooltip="Name of the bucket to upload to.">&lt;%=  @space_attributes['AWS Photos Bucket'].nil? ? "gbmembers-photos" : @space_attributes['AWS Photos Bucket'] %&gt;</parameter>
                     <parameter dependsOnId="" dependsOnValue="" id="file_name" label="File Name" menu="" required="false" tooltip="Name that will be given to the file on upload (if not provided, will default to the default filename stored in Request CE).">&lt;%=@results['Get Filename']['output']%&gt;</parameter>
                     <parameter dependsOnId="" dependsOnValue="" id="submission_id" label="Submission Id" menu="" required="true" tooltip="Submission Id that the attachment is located on.">&lt;%=@results['Get Submission ID']['output']%&gt;</parameter>
                     <parameter dependsOnId="" dependsOnValue="" id="field" label="Field Label" menu="" required="true" tooltip="Field Label for the attachment field.">Photo</parameter>
                 </parameters>
-                <messages></messages>
+                <messages>
+                    <message type="Complete"></message>
+                </messages>
                 <dependents>
                     <task label="" type="Complete" value="">kinetic_request_ce_submission_update_v1_4</task>
                 </dependents>
@@ -124,9 +126,7 @@
                     <parameter dependsOnId="" dependsOnValue="" id="limit" label="Limit" menu="" required="false" tooltip="An integer representing the max results that the search can return."></parameter>
                     <parameter dependsOnId="" dependsOnValue="" id="return_type" label="Return Type" menu="JSON,XML,ID List" required="true" tooltip="The format that the results should be returned in.">JSON</parameter>
                 </parameters>
-                <messages>
-                    <message type="Complete"></message>
-                </messages>
+                <messages></messages>
                 <dependents>
                     <task label="" type="Complete" value="">generate_journey_events_v1_6</task>
                 </dependents>
@@ -142,9 +142,7 @@
                     <parameter dependsOnId="" dependsOnValue="" id="record_id" label="Record ID" menu="" required="true" tooltip="Record ID of Lead or member">&lt;%=  @submission['Id'] %&gt;</parameter>
                     <parameter dependsOnId="" dependsOnValue="" id="record_name" label="Record Name" menu="" required="true" tooltip="Record Name of Lead or member">&lt;%=  @values['First Name'] +" "+ @values['Last Name'] %&gt;</parameter>
                 </parameters>
-                <messages>
-                    <message type="Complete"></message>
-                </messages>
+                <messages></messages>
                 <dependents></dependents>
             </task>
         </request>

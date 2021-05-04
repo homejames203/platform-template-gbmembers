@@ -26,6 +26,16 @@
   },
   {
     "allowsMultiple": false,
+    "description": "gbmembers-gbshop, us-gbmembers-gbshop",
+    "name": "AWS GBShop Bucket"
+  },
+  {
+    "allowsMultiple": false,
+    "description": "gbmembers-photos, us-gbmembers-photos",
+    "name": "AWS Photos Bucket"
+  },
+  {
+    "allowsMultiple": false,
     "description": "Region name for AWS file storage",
     "name": "AWS Region"
   },
