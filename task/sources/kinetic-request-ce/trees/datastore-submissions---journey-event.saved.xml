@@ -7,7 +7,7 @@
         <name>Saved</name>
         <author></author>
         <notes></notes>
-        <lastID>18</lastID>
+        <lastID>19</lastID>
         <request>
             <task definition_id="system_start_v1" id="start" name="Start" x="10" y="10">
                 <version>1</version>
@@ -62,7 +62,7 @@
                     <task label="" type="Complete" value="">routine_kinetic_request_ce_submission_create_v1_8</task>
                 </dependents>
             </task>
-            <task definition_id="kinetic_request_ce_datastore_submission_search_v1" id="kinetic_request_ce_datastore_submission_search_v1_3" name="Get SMS Template" x="680" y="291">
+            <task definition_id="kinetic_request_ce_datastore_submission_search_v1" id="kinetic_request_ce_datastore_submission_search_v1_3" name="Get SMS Template" x="568" y="275">
                 <version>1</version>
                 <configured>true</configured>
                 <defers>false</defers>
@@ -79,7 +79,7 @@
                 </parameters>
                 <messages></messages>
                 <dependents>
-                    <task label="" type="Complete" value="">utilities_echo_v1_16</task>
+                    <task label="" type="Complete" value="">routine_kinetic_request_ce_user_retrieve_v1_19</task>
                 </dependents>
             </task>
             <task definition_id="kinetic_request_ce_notification_variables_build_v1" id="kinetic_request_ce_notification_variables_build_v1_6" name="Build Variables" x="-37" y="199">
@@ -126,11 +126,7 @@
                     <parameter dependsOnId="" dependsOnValue="" id="Origin Id" label="Origin Id" menu="" required="false" tooltip="Sets the Origin Id"></parameter>
                     <parameter dependsOnId="" dependsOnValue="" id="Parent Id" label="Parent Id" menu="" required="false" tooltip="Sets the Parent Id"></parameter>
                 </parameters>
-                <messages>
-                    <message type="Create"></message>
-                    <message type="Update"></message>
-                    <message type="Complete"></message>
-                </messages>
+                <messages></messages>
                 <dependents>
                     <task label="" type="Complete" value="">routine_kinetic_datastore_submission_update_v1_9</task>
                 </dependents>
@@ -186,7 +182,7 @@
                     <parameter dependsOnId="" dependsOnValue="" id="error_handling" label="Error Handling" menu="Error Message,Raise Error" required="true" tooltip="Determine what to return if an error is encountered.">Error Message</parameter>
                     <parameter dependsOnId="" dependsOnValue="" id="space_slug" label="Space Slug" menu="" required="false" tooltip="The Space the submission is being retrieved from (defaults to info value if not provided)."></parameter>
                     <parameter dependsOnId="" dependsOnValue="" id="kapp_slug" label="Kapp Slug" menu="" required="true" tooltip="The slug of the Kapp the submission is for.">gbmembers</parameter>
-                    <parameter dependsOnId="" dependsOnValue="" id="form_slug" label="Form Slug" menu="" required="true" tooltip="The slug of the form the submission is for.">&lt;%= JSON.parse(@results['Get Source Record']['Values JSON'])['Record Type']=="Member" ? "member-activities" : "lead-activities" %&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="form_slug" label="Form Slug" menu="" required="true" tooltip="The slug of the form the submission is for.">&lt;%= @values['Record Type']=="Member" ? "member-activities" : "lead-activities" %&gt;</parameter>
                     <parameter dependsOnId="" dependsOnValue="" id="values" label="Values" menu="" required="false" tooltip="JSON map of submission field values.">&lt;%=
 sms = {}
 sms["To"] = JSON.parse(@results['Get Source Record']['Values JSON'])['Phone Number']
@@ -277,7 +273,7 @@ values.to_json
                 <messages></messages>
                 <dependents></dependents>
             </task>
-            <task definition_id="utilities_echo_v1" id="utilities_echo_v1_15" name="Replace Variables" x="1096" y="289">
+            <task definition_id="utilities_echo_v1" id="utilities_echo_v1_15" name="Replace Variables" x="1132" y="283">
                 <version>1</version>
                 <configured>true</configured>
                 <defers>false</defers>
@@ -306,7 +302,7 @@ content
                     <task label="" type="Complete" value="">gbmembers_messaging_service_v1_10</task>
                 </dependents>
             </task>
-            <task definition_id="utilities_echo_v1" id="utilities_echo_v1_16" name="Resolve Names" x="890" y="289">
+            <task definition_id="utilities_echo_v1" id="utilities_echo_v1_16" name="Resolve Names" x="945" y="275">
                 <version>1</version>
                 <configured>true</configured>
                 <defers>false</defers>
@@ -322,8 +318,8 @@ content.gsub!("member(&amp;#039;First Name&amp;#039;)", JSON.parse(@results['Get
 content.gsub!("member('First Name')", JSON.parse(@results['Get Source Record']['Values JSON'])["First Name"])
 content.gsub!("member(&amp;#039;Last Name&amp;#039;)", JSON.parse(@results['Get Source Record']['Values JSON'])["Last Name"])
 content.gsub!("member('Last Name')", JSON.parse(@results['Get Source Record']['Values JSON'])["Last Name"])
-
-content.gsub!("${date}", DateTime.parse(introDate).strftime("%d %B %Y"))
+content.gsub!("member('Last Name')", JSON.parse(@results['Get Source Record']['Values JSON'])["Last Name"])
+content.gsub!("${submitterName}", @results['Get Submitter']['Display Name'])
 
 if @values['Record Type']=="Lead" &amp;&amp; content.index("${Intro Scheduled Date}")!=-1
   history=JSON.parse(@results['Get Source Record']['Values JSON'])['History']
@@ -362,11 +358,24 @@ end
 content
 %&gt;</parameter>
                 </parameters>
-                <messages>
-                    <message type="Complete"></message>
-                </messages>
+                <messages></messages>
                 <dependents>
                     <task label="" type="Complete" value="">utilities_echo_v1_15</task>
+                </dependents>
+            </task>
+            <task definition_id="routine_kinetic_request_ce_user_retrieve_v1" id="routine_kinetic_request_ce_user_retrieve_v1_19" name="Get Submitter" x="753" y="277">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>true</defers>
+                <deferrable>true</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter dependsOnId="" dependsOnValue="" id="Space Slug" label="Space Slug" menu="" required="false" tooltip="Slug of the space in which the user exists">&lt;%=  @space['Slug'] %&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="Username" label="Username" menu="" required="true" tooltip="Username of the user to retrieve">&lt;%=  @submission['Submitted By'] %&gt;</parameter>
+                </parameters>
+                <messages></messages>
+                <dependents>
+                    <task label="" type="Complete" value="">utilities_echo_v1_16</task>
                 </dependents>
             </task>
         </request>

@@ -80,11 +80,11 @@
       "unique": false
     },
     {
-      "name": "values[Template Name]",
+      "name": "values[Template Name]:UNIQUE",
       "parts": [
         "values[Template Name]"
       ],
-      "unique": false
+      "unique": true
     }
   ],
   "name": "SMS Templates",

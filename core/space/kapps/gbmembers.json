@@ -4,7 +4,7 @@
     {
       "name": "Billing Company",
       "values": [
-        "Payline"
+        "PaySmart"
       ]
     },
     {
@@ -34,7 +34,13 @@
     {
       "name": "Kinetic Billing Server URL",
       "values": [
-        "http://localhost:8081/billingservice"
+        "https://services.gbmembers.net/billingservice"
+      ]
+    },
+    {
+      "name": "Kinetic Email Server URL",
+      "values": [
+        "https://gbbilling.com.au:8443/mail-handler"
       ]
     },
     {
@@ -190,6 +196,15 @@
   ],
   "slug": "gbmembers",
   "webApis": [
-
+    {
+      "method": "POST",
+      "securityPolicies": [
+        {
+          "endpoint": "Execution",
+          "name": "Authenticated Users"
+        }
+      ],
+      "slug": "billing-transaction"
+    }
   ]
 }

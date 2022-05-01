@@ -121,6 +121,13 @@
       "unique": false
     },
     {
+      "name": "values[Sales Tax]",
+      "parts": [
+        "values[Sales Tax]"
+      ],
+      "unique": false
+    },
+    {
       "name": "values[Status]",
       "parts": [
         "values[Status]"
@@ -528,6 +535,31 @@
         },
         {
           "type": "field",
+          "name": "Sales Tax",
+          "label": "Sales Tax",
+          "key": "f16",
+          "defaultValue": null,
+          "defaultResourceName": null,
+          "visible": true,
+          "enabled": true,
+          "required": false,
+          "requiredMessage": null,
+          "omitWhenHidden": null,
+          "pattern": null,
+          "constraints": [
+
+          ],
+          "events": [
+
+          ],
+          "renderAttributes": {
+          },
+          "dataType": "string",
+          "renderType": "text",
+          "rows": 1
+        },
+        {
+          "type": "field",
           "name": "Total",
           "label": "Total",
           "key": "f13",
@@ -572,8 +604,16 @@
   ],
   "securityPolicies": [
     {
-      "endpoint": "Submission Access",
+      "endpoint": "Display",
       "name": "Authenticated Users"
+    },
+    {
+      "endpoint": "Submission Access",
+      "name": "Data Admins"
+    },
+    {
+      "endpoint": "Submission Modification",
+      "name": "Data Admins"
     }
   ],
   "slug": "pos-order",

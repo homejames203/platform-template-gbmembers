@@ -63,11 +63,11 @@
       "unique": false
     },
     {
-      "name": "values[Script Name]",
+      "name": "values[Script Name]:UNIQUE",
       "parts": [
         "values[Script Name]"
       ],
-      "unique": false
+      "unique": true
     },
     {
       "name": "values[Script]",

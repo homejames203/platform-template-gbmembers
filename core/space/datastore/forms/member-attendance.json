@@ -381,16 +381,20 @@
           "choicesRunIf": null,
           "choices": [
             {
-              "label": "Ontime",
-              "value": "Ontime"
+              "label": "Class Only",
+              "value": "Class Only"
             },
             {
               "label": "Late",
               "value": "Late"
             },
             {
-              "label": "Spa Only",
-              "value": "Spa Only"
+              "label": "Spar Only",
+              "value": "Spar Only"
+            },
+            {
+              "label": "Full Class",
+              "value": "Full Class"
             }
           ]
         },

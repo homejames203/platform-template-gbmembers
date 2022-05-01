@@ -13,7 +13,7 @@
             <visible>false</visible>
             <deferrable>true</deferrable>
             <parameters>
-                <parameter id="Space Slug" label="Space Slug" required="false" tooltip="Slug of the space the user belongs to"></parameter>
+                <parameter id="Space Slug" label="Space Slug" required="true" tooltip="Slug of the space the user belongs to"></parameter>
                 <parameter id="Team Name" label="Team Name" required="true" tooltip="Name of the Team to Retrieve"></parameter>
                 <parameter id="Username" label="Username" required="true" tooltip="Username of the user to add to the given team"></parameter>
             </parameters>

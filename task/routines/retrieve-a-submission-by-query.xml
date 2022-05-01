@@ -8,7 +8,7 @@
         <name>Retrieve a Submission by Query</name>
         <author></author>
         <notes></notes>
-        <lastID>42</lastID>
+        <lastID>43</lastID>
         <taskDefinition id="routine_kinetic_request_ce_submission_retrieve_by_query_v1" name="Retrieve a Submission by Query" schema_version="1.0" version="1">
             <visible>false</visible>
             <deferrable>true</deferrable>
@@ -55,7 +55,7 @@
                 <parameters></parameters>
                 <messages></messages>
                 <dependents>
-                    <task label="" type="Complete" value="">kinetic_request_ce_submission_retrieve_v2_39</task>
+                    <task label="" type="Complete" value="">kinetic_request_ce_submission_retrieve_v2_43</task>
                 </dependents>
             </task>
             <task definition_id="routine_handler_failure_error_process_v1" id="routine_handler_failure_error_process_v1_10" name="Error Process" x="528" y="44">
@@ -65,56 +65,27 @@
                 <deferrable>true</deferrable>
                 <visible>false</visible>
                 <parameters>
-                    <parameter id="Error Message" label="Error Message" menu="" required="false" tooltip="Error Message ">&lt;%=@results['Retrieve Submission']['Handler Error Message']%&gt;</parameter>
-                    <parameter id="Handler Name" label="Handler Name" menu="" required="false" tooltip="">kinetic_request_ce_submission_retrieve_v2</parameter>
-                    <parameter id="Run Id" label="Run Id" menu="" required="false" tooltip="">&lt;%=@run['Id']%&gt;</parameter>
-                    <parameter id="Inputs JSON" label="Inputs JSON" menu="" required="false" tooltip="">&lt;%=@inputs.to_json%&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="Error Message" label="Error Message" menu="" required="false" tooltip="Error Message ">&lt;%=@results['Retrieve Submission']['Handler Error Message']%&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="Handler Name" label="Handler Name" menu="" required="false" tooltip="">kinetic_request_ce_submission_retrieve_v2</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="Run Id" label="Run Id" menu="" required="false" tooltip="">&lt;%=@run['Id']%&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="Inputs JSON" label="Inputs JSON" menu="" required="false" tooltip="">&lt;%=@inputs.to_json%&gt;</parameter>
                 </parameters>
-                <messages>
-                    <message type="Create"></message>
-                    <message type="Update"></message>
-                    <message type="Complete"></message>
-                </messages>
+                <messages></messages>
                 <dependents>
                     <task label="" type="Complete" value="">routine_kinetic_request_ce_submission_retrieve_by_query_v1_42</task>
                 </dependents>
             </task>
-            <task definition_id="kinetic_request_ce_submission_retrieve_v2" id="kinetic_request_ce_submission_retrieve_v2_39" name="Retrieve Submission" x="304" y="54">
-                <version>2</version>
-                <configured>true</configured>
-                <defers>false</defers>
-                <deferrable>false</deferrable>
-                <visible>true</visible>
-                <parameters>
-                    <parameter id="error_handling" label="Error Handling" menu="Error Message,Raise Error" required="true" tooltip="Determine what to return if an error is encountered.">Error Message</parameter>
-                    <parameter id="space_slug" label="Space Slug" menu="" required="false" tooltip="The Space the submission is being retrieved from (defaults to info value if not provided).">&lt;%=@inputs['Space Slug']%&gt;</parameter>
-                    <parameter id="retrieve_by" label="Retrieve By" menu="Id,Query" required="true" tooltip="How to retrieve the submission. Id or Query.">Query</parameter><!-- Retrieve By Query parameters -->
-                    <parameter dependsOnId="retrieve_by" dependsOnValue="Query" id="kapp_slug" label="Kapp Slug" menu="" required="true" tooltip="Slug of the kapp to query">&lt;%=@inputs['Kapp Slug']%&gt;</parameter>
-                    <parameter dependsOnId="retrieve_by" dependsOnValue="Query" id="form_slug" label="Form Slug" menu="" required="true" tooltip="Slug of the form to query">&lt;%=@inputs['Form Slug']%&gt;</parameter>
-                    <parameter dependsOnId="retrieve_by" dependsOnValue="Query" id="query" label="Query" menu="" required="true" tooltip="A query that will retrieve a single submission">&lt;%=@inputs['Query']%&gt;</parameter><!-- Retrieve By Id parameters -->
-                    <parameter dependsOnId="retrieve_by" dependsOnValue="Id" id="submission_id" label="Submission Id" menu="" required="true" tooltip="The id of the submission being retrieved.">&lt;%=@inputs['Submission Id']%&gt;</parameter>
-                </parameters>
-                <messages>
-                    <message type="Create"></message>
-                    <message type="Update"></message>
-                    <message type="Complete"></message>
-                </messages>
-                <dependents>
-                    <task label="Error" type="Complete" value="!@results['Retrieve Submission']['Handler Error Message'].nil?">routine_handler_failure_error_process_v1_10</task>
-                    <task label="No Error" type="Complete" value="@results['Retrieve Submission']['Handler Error Message'].nil?">system_tree_return_v1_40</task>
-                </dependents>
-            </task>
-            <task definition_id="system_tree_return_v1" id="system_tree_return_v1_40" name="Return" x="321" y="209">
+            <task definition_id="system_tree_return_v1" id="system_tree_return_v1_40" name="Return" x="325" y="214">
                 <version>1</version>
                 <configured>true</configured>
                 <defers>false</defers>
                 <deferrable>false</deferrable>
                 <visible>false</visible>
                 <parameters>
-                    <parameter id="Id" label="Id" menu="" required="false" tooltip="Id of the retrieved submission">&lt;%=@results['Retrieve Submission']['ID']%&gt;</parameter>
-                    <parameter id="Label" label="Label" menu="" required="false" tooltip="Label of the retrieved submission">&lt;%=@results['Retrieve Submission']['Label']%&gt;</parameter>
-                    <parameter id="Handle" label="Handle" menu="" required="false" tooltip="Handle of the retrieved submission">&lt;%=@results['Retrieve Submission']['Handle']%&gt;</parameter>
-                    <parameter id="Origin Id" label="Origin Id" menu="" required="false" tooltip="Origin Id of the retrieved submission">&lt;%=
+                    <parameter dependsOnId="" dependsOnValue="" id="Id" label="Id" menu="" required="false" tooltip="Id of the retrieved submission">&lt;%=@results['Retrieve Submission']['ID']%&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="Label" label="Label" menu="" required="false" tooltip="Label of the retrieved submission">&lt;%=@results['Retrieve Submission']['Label']%&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="Handle" label="Handle" menu="" required="false" tooltip="Handle of the retrieved submission">&lt;%=@results['Retrieve Submission']['Handle']%&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="Origin Id" label="Origin Id" menu="" required="false" tooltip="Origin Id of the retrieved submission">&lt;%=
     if !@results['Retrieve Submission']['Origin'].nil?
       # Look for quotes plus "=&gt;" characters.  
       # If found, this returns a hash object as a string and needs to be converted
@@ -131,7 +102,7 @@
       end
     end
     %&gt;</parameter>
-                    <parameter id="Parent Id" label="Parent Id" menu="" required="false" tooltip="Parent Id of the retrieved submission">&lt;%=
+                    <parameter dependsOnId="" dependsOnValue="" id="Parent Id" label="Parent Id" menu="" required="false" tooltip="Parent Id of the retrieved submission">&lt;%=
     if !@results['Retrieve Submission']['Origin'].nil?
       # Look for quotes plus "=&gt;" characters.  
       # If found, this returns a hash object as a string and needs to be converted
@@ -148,30 +119,26 @@
       end
     end
     %&gt;</parameter>
-                    <parameter id="Submitted At" label="Submitted At" menu="" required="false" tooltip="When the submission was submitted">&lt;%=@results['Retrieve Submission']['Submitted At']%&gt;</parameter>
-                    <parameter id="Submitted By" label="Submitted By" menu="" required="false" tooltip="Who the submission was last submitted by">&lt;%=@results['Retrieve Submission']['Submitted By']%&gt;</parameter>
-                    <parameter id="Type" label="Type" menu="" required="false" tooltip="Type of submission">&lt;%=@results['Retrieve Submission']['Type']%&gt;</parameter>
-                    <parameter id="Updated At" label="Updated At" menu="" required="false" tooltip="When the submission was last updated">&lt;%=@results['Retrieve Submission']['Updated At']%&gt;</parameter>
-                    <parameter id="Updated By" label="Updated By" menu="" required="false" tooltip="Who the submission was last updated by">&lt;%=@results['Retrieve Submission']['Updated By']%&gt;</parameter>
-                    <parameter id="Created At" label="Created At" menu="" required="false" tooltip="When the submission was created">&lt;%=@results['Retrieve Submission']['Created At']%&gt;</parameter>
-                    <parameter id="Created By" label="Created By" menu="" required="false" tooltip="Who the submission was created by">&lt;%=@results['Retrieve Submission']['Created By']%&gt;</parameter>
-                    <parameter id="Closed At" label="Closed At" menu="" required="false" tooltip="When the submission was closed">&lt;%=@results['Retrieve Submission']['Closed At']%&gt;</parameter>
-                    <parameter id="Core State" label="Core State" menu="" required="false" tooltip="The core state of the submission">&lt;%=@results['Retrieve Submission']['Core State']%&gt;</parameter>
-                    <parameter id="Form Description" label="Form Description" menu="" required="false" tooltip="The description of the form the submission is associated with">&lt;%=@results['Retrieve Submission']['Form Description']%&gt;</parameter>
-                    <parameter id="Form Name" label="Form Name" menu="" required="false" tooltip="The name of the form the submission is associated with">&lt;%=@results['Retrieve Submission']['Form Name']%&gt;</parameter>
-                    <parameter id="Form Notes" label="Form Notes" menu="" required="false" tooltip="The notes from the form the submission is associated with">&lt;%=@results['Retrieve Submission']['Form Notes']%&gt;</parameter>
-                    <parameter id="Form Slug" label="Form Slug" menu="" required="false" tooltip="The slug of the form the submission is associated with">&lt;%=@results['Retrieve Submission']['Form Slug']%&gt;</parameter>
-                    <parameter id="Form Status" label="Form Status" menu="" required="false" tooltip="The status of the form the submission is associated with">&lt;%=@results['Retrieve Submission']['Form Status']%&gt;</parameter>
-                    <parameter id="Kapp Name" label="Kapp Name" menu="" required="false" tooltip="The name of the kapp the submission is associated with">&lt;%=@results['Retrieve Submission']['Kapp Name']%&gt;</parameter>
-                    <parameter id="Kapp Slug" label="Kapp Slug" menu="" required="false" tooltip="The slug of the kapp the submission is associated with">&lt;%=@results['Retrieve Submission']['Kapp Slug']%&gt;</parameter>
-                    <parameter id="Current Page" label="Current Page" menu="" required="false" tooltip="The current page of the submission">&lt;%=@results['Retrieve Submission']['Current Page']%&gt;</parameter>
-                    <parameter id="Values JSON" label="Values JSON" menu="" required="false" tooltip="A JSON map of submission values">&lt;%=@results['Retrieve Submission']['Values JSON']%&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="Submitted At" label="Submitted At" menu="" required="false" tooltip="When the submission was submitted">&lt;%=@results['Retrieve Submission']['Submitted At']%&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="Submitted By" label="Submitted By" menu="" required="false" tooltip="Who the submission was last submitted by">&lt;%=@results['Retrieve Submission']['Submitted By']%&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="Type" label="Type" menu="" required="false" tooltip="Type of submission">&lt;%=@results['Retrieve Submission']['Type']%&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="Updated At" label="Updated At" menu="" required="false" tooltip="When the submission was last updated">&lt;%=@results['Retrieve Submission']['Updated At']%&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="Updated By" label="Updated By" menu="" required="false" tooltip="Who the submission was last updated by">&lt;%=@results['Retrieve Submission']['Updated By']%&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="Created At" label="Created At" menu="" required="false" tooltip="When the submission was created">&lt;%=@results['Retrieve Submission']['Created At']%&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="Created By" label="Created By" menu="" required="false" tooltip="Who the submission was created by">&lt;%=@results['Retrieve Submission']['Created By']%&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="Closed At" label="Closed At" menu="" required="false" tooltip="When the submission was closed">&lt;%=@results['Retrieve Submission']['Closed At']%&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="Core State" label="Core State" menu="" required="false" tooltip="The core state of the submission">&lt;%=@results['Retrieve Submission']['Core State']%&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="Form Description" label="Form Description" menu="" required="false" tooltip="The description of the form the submission is associated with">&lt;%=@results['Retrieve Submission']['Form Description']%&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="Form Name" label="Form Name" menu="" required="false" tooltip="The name of the form the submission is associated with">&lt;%=@results['Retrieve Submission']['Form Name']%&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="Form Notes" label="Form Notes" menu="" required="false" tooltip="The notes from the form the submission is associated with">&lt;%=@results['Retrieve Submission']['Form Notes']%&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="Form Slug" label="Form Slug" menu="" required="false" tooltip="The slug of the form the submission is associated with">&lt;%=@results['Retrieve Submission']['Form Slug']%&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="Form Status" label="Form Status" menu="" required="false" tooltip="The status of the form the submission is associated with">&lt;%=@results['Retrieve Submission']['Form Status']%&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="Kapp Name" label="Kapp Name" menu="" required="false" tooltip="The name of the kapp the submission is associated with">&lt;%=@results['Retrieve Submission']['Kapp Name']%&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="Kapp Slug" label="Kapp Slug" menu="" required="false" tooltip="The slug of the kapp the submission is associated with">&lt;%=@results['Retrieve Submission']['Kapp Slug']%&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="Current Page" label="Current Page" menu="" required="false" tooltip="The current page of the submission">&lt;%=@results['Retrieve Submission']['Current Page']%&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="Values JSON" label="Values JSON" menu="" required="false" tooltip="A JSON map of submission values">&lt;%=@results['Retrieve Submission']['Values JSON']%&gt;</parameter>
                 </parameters>
-                <messages>
-                    <message type="Create"></message>
-                    <message type="Update"></message>
-                    <message type="Complete"></message>
-                </messages>
+                <messages></messages>
                 <dependents></dependents>
             </task>
             <task definition_id="system_tree_return_v1" id="system_tree_return_v1_41" name="Return From Error" x="933" y="66">
@@ -181,35 +148,31 @@
                 <deferrable>false</deferrable>
                 <visible>false</visible>
                 <parameters>
-                    <parameter id="Id" label="Id" menu="" required="false" tooltip="Id of the retrieved submission">&lt;%=@results['Retry']['Id']%&gt;</parameter>
-                    <parameter id="Label" label="Label" menu="" required="false" tooltip="Label of the retrieved submission">&lt;%=@results['Retry']['Label']%&gt;</parameter>
-                    <parameter id="Handle" label="Handle" menu="" required="false" tooltip="Handle of the retrieved submission">&lt;%=@results['Retry']['Handle']%&gt;</parameter>
-                    <parameter id="Origin Id" label="Origin Id" menu="" required="false" tooltip="Origin Id of the retrieved submission">&lt;%=@results['Retry']['Origin Id']%&gt;</parameter>
-                    <parameter id="Parent Id" label="Parent Id" menu="" required="false" tooltip="Parent Id of the retrieved submission">&lt;%=@results['Retry']['Parent Id']%&gt;</parameter>
-                    <parameter id="Submitted At" label="Submitted At" menu="" required="false" tooltip="When the submission was submitted">&lt;%=@results['Retry']['Submitted At']%&gt;</parameter>
-                    <parameter id="Submitted By" label="Submitted By" menu="" required="false" tooltip="Who the submission was last submitted by">&lt;%=@results['Retry']['Submitted By']%&gt;</parameter>
-                    <parameter id="Type" label="Type" menu="" required="false" tooltip="Type of submission">&lt;%=@results['Retry']['Type']%&gt;</parameter>
-                    <parameter id="Updated At" label="Updated At" menu="" required="false" tooltip="When the submission was last updated">&lt;%=@results['Retry']['Updated At']%&gt;</parameter>
-                    <parameter id="Updated By" label="Updated By" menu="" required="false" tooltip="Who the submission was last updated by">&lt;%=@results['Retry']['Updated By']%&gt;</parameter>
-                    <parameter id="Created At" label="Created At" menu="" required="false" tooltip="When the submission was created">&lt;%=@results['Retry']['Created At']%&gt;</parameter>
-                    <parameter id="Created By" label="Created By" menu="" required="false" tooltip="Who the submission was created by">&lt;%=@results['Retry']['Created By']%&gt;</parameter>
-                    <parameter id="Closed At" label="Closed At" menu="" required="false" tooltip="When the submission was closed">&lt;%=@results['Retry']['Closed At']%&gt;</parameter>
-                    <parameter id="Core State" label="Core State" menu="" required="false" tooltip="The core state of the submission">&lt;%=@results['Retry']['Core State']%&gt;</parameter>
-                    <parameter id="Form Description" label="Form Description" menu="" required="false" tooltip="The description of the form the submission is associated with">&lt;%=@results['Retry']['Form Description']%&gt;</parameter>
-                    <parameter id="Form Name" label="Form Name" menu="" required="false" tooltip="The name of the form the submission is associated with">&lt;%=@results['Retry']['Form Name']%&gt;</parameter>
-                    <parameter id="Form Notes" label="Form Notes" menu="" required="false" tooltip="The notes from the form the submission is associated with">&lt;%=@results['Retry']['Form Notes']%&gt;</parameter>
-                    <parameter id="Form Slug" label="Form Slug" menu="" required="false" tooltip="The slug of the form the submission is associated with">&lt;%=@results['Retry']['Form Slug']%&gt;</parameter>
-                    <parameter id="Form Status" label="Form Status" menu="" required="false" tooltip="The status of the form the submission is associated with">&lt;%=@results['Retry']['Form Status']%&gt;</parameter>
-                    <parameter id="Kapp Name" label="Kapp Name" menu="" required="false" tooltip="The name of the kapp the submission is associated with">&lt;%=@results['Retry']['Kapp Name']%&gt;</parameter>
-                    <parameter id="Kapp Slug" label="Kapp Slug" menu="" required="false" tooltip="The slug of the kapp the submission is associated with">&lt;%=@results['Retry']['Kapp Slug']%&gt;</parameter>
-                    <parameter id="Current Page" label="Current Page" menu="" required="false" tooltip="The current page of the submission">&lt;%=@results['Retry']['Current Page']%&gt;</parameter>
-                    <parameter id="Values JSON" label="Values JSON" menu="" required="false" tooltip="A JSON map of submission values">&lt;%=@results['Retry']['Values JSON']%&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="Id" label="Id" menu="" required="false" tooltip="Id of the retrieved submission">&lt;%=@results['Retry']['Id']%&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="Label" label="Label" menu="" required="false" tooltip="Label of the retrieved submission">&lt;%=@results['Retry']['Label']%&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="Handle" label="Handle" menu="" required="false" tooltip="Handle of the retrieved submission">&lt;%=@results['Retry']['Handle']%&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="Origin Id" label="Origin Id" menu="" required="false" tooltip="Origin Id of the retrieved submission">&lt;%=@results['Retry']['Origin Id']%&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="Parent Id" label="Parent Id" menu="" required="false" tooltip="Parent Id of the retrieved submission">&lt;%=@results['Retry']['Parent Id']%&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="Submitted At" label="Submitted At" menu="" required="false" tooltip="When the submission was submitted">&lt;%=@results['Retry']['Submitted At']%&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="Submitted By" label="Submitted By" menu="" required="false" tooltip="Who the submission was last submitted by">&lt;%=@results['Retry']['Submitted By']%&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="Type" label="Type" menu="" required="false" tooltip="Type of submission">&lt;%=@results['Retry']['Type']%&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="Updated At" label="Updated At" menu="" required="false" tooltip="When the submission was last updated">&lt;%=@results['Retry']['Updated At']%&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="Updated By" label="Updated By" menu="" required="false" tooltip="Who the submission was last updated by">&lt;%=@results['Retry']['Updated By']%&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="Created At" label="Created At" menu="" required="false" tooltip="When the submission was created">&lt;%=@results['Retry']['Created At']%&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="Created By" label="Created By" menu="" required="false" tooltip="Who the submission was created by">&lt;%=@results['Retry']['Created By']%&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="Closed At" label="Closed At" menu="" required="false" tooltip="When the submission was closed">&lt;%=@results['Retry']['Closed At']%&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="Core State" label="Core State" menu="" required="false" tooltip="The core state of the submission">&lt;%=@results['Retry']['Core State']%&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="Form Description" label="Form Description" menu="" required="false" tooltip="The description of the form the submission is associated with">&lt;%=@results['Retry']['Form Description']%&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="Form Name" label="Form Name" menu="" required="false" tooltip="The name of the form the submission is associated with">&lt;%=@results['Retry']['Form Name']%&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="Form Notes" label="Form Notes" menu="" required="false" tooltip="The notes from the form the submission is associated with">&lt;%=@results['Retry']['Form Notes']%&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="Form Slug" label="Form Slug" menu="" required="false" tooltip="The slug of the form the submission is associated with">&lt;%=@results['Retry']['Form Slug']%&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="Form Status" label="Form Status" menu="" required="false" tooltip="The status of the form the submission is associated with">&lt;%=@results['Retry']['Form Status']%&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="Kapp Name" label="Kapp Name" menu="" required="false" tooltip="The name of the kapp the submission is associated with">&lt;%=@results['Retry']['Kapp Name']%&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="Kapp Slug" label="Kapp Slug" menu="" required="false" tooltip="The slug of the kapp the submission is associated with">&lt;%=@results['Retry']['Kapp Slug']%&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="Current Page" label="Current Page" menu="" required="false" tooltip="The current page of the submission">&lt;%=@results['Retry']['Current Page']%&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="Values JSON" label="Values JSON" menu="" required="false" tooltip="A JSON map of submission values">&lt;%=@results['Retry']['Values JSON']%&gt;</parameter>
                 </parameters>
-                <messages>
-                    <message type="Create"></message>
-                    <message type="Update"></message>
-                    <message type="Complete"></message>
-                </messages>
+                <messages></messages>
                 <dependents></dependents>
             </task>
             <task definition_id="routine_kinetic_request_ce_submission_retrieve_by_query_v1" id="routine_kinetic_request_ce_submission_retrieve_by_query_v1_42" name="Retry" x="706" y="52">
@@ -219,18 +182,35 @@
                 <deferrable>true</deferrable>
                 <visible>false</visible>
                 <parameters>
-                    <parameter id="Space Slug" label="Space Slug" menu="" required="false" tooltip="Slug of the space to find the submission in">&lt;%=@results['Error Process']['Space Slug']%&gt;</parameter>
-                    <parameter id="Kapp Slug" label="Kapp Slug" menu="" required="true" tooltip="Kapp Slug to retrieve the submission for">&lt;%=@results['Error Process']['Kapp Slug']%&gt;</parameter>
-                    <parameter id="Form Slug" label="Form Slug" menu="" required="false" tooltip="Form Slug to retrieve the submission for">&lt;%=@results['Error Process']['Form Slug']%&gt;</parameter>
-                    <parameter id="Query" label="Query" menu="" required="false" tooltip="Query used to retrieve the submission (values[Field 1]=&quot;my favorite color&quot;">&lt;%=@results['Error Process']['Query']%&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="Space Slug" label="Space Slug" menu="" required="false" tooltip="Slug of the space to find the submission in">&lt;%=@results['Error Process']['Space Slug']%&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="Kapp Slug" label="Kapp Slug" menu="" required="true" tooltip="Kapp Slug to retrieve the submission for">&lt;%=@results['Error Process']['Kapp Slug']%&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="Form Slug" label="Form Slug" menu="" required="false" tooltip="Form Slug to retrieve the submission for">&lt;%=@results['Error Process']['Form Slug']%&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="Query" label="Query" menu="" required="false" tooltip="Query used to retrieve the submission (values[Field 1]=&quot;my favorite color&quot;">&lt;%=@results['Error Process']['Query']%&gt;</parameter>
                 </parameters>
-                <messages>
-                    <message type="Create"></message>
-                    <message type="Update"></message>
-                    <message type="Complete"></message>
-                </messages>
+                <messages></messages>
                 <dependents>
                     <task label="" type="Complete" value="">system_tree_return_v1_41</task>
+                </dependents>
+            </task>
+            <task definition_id="kinetic_request_ce_submission_retrieve_v2" id="kinetic_request_ce_submission_retrieve_v2_43" name="Retrieve Submission" x="229" y="64">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>true</visible>
+                <parameters>
+                    <parameter dependsOnId="" dependsOnValue="" id="error_handling" label="Error Handling" menu="Error Message,Raise Error" required="true" tooltip="Determine what to return if an error is encountered.">Error Message</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="space_slug" label="Space Slug" menu="" required="false" tooltip="The Space the submission is being retrieved from (defaults to info value if not provided)."></parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="retrieve_by" label="Retrieve By" menu="Id,Query" required="true" tooltip="How to retrieve the submission. Id or Query.">Query</parameter>
+                    <parameter dependsOnId="retrieve_by" dependsOnValue="Query" id="kapp_slug" label="Kapp Slug" menu="" required="true" tooltip="Slug of the kapp to query">&lt;%=@inputs['Kapp Slug']%&gt;</parameter>
+                    <parameter dependsOnId="retrieve_by" dependsOnValue="Query" id="form_slug" label="Form Slug" menu="" required="true" tooltip="Slug of the form to query">&lt;%=@inputs['Form Slug']%&gt;</parameter>
+                    <parameter dependsOnId="retrieve_by" dependsOnValue="Query" id="query" label="Query" menu="" required="true" tooltip="A query that will retrieve a single submission">&lt;%=@inputs['Query']%&gt;</parameter>
+                    <parameter dependsOnId="retrieve_by" dependsOnValue="Id" id="submission_id" label="Submission Id" menu="" required="false" tooltip="The id of the submission being retrieved."></parameter>
+                </parameters>
+                <messages></messages>
+                <dependents>
+                    <task label="Error" type="Complete" value="!@results['Retrieve Submission']['Handler Error Message'].nil?">routine_handler_failure_error_process_v1_10</task>
+                    <task label="No Error" type="Complete" value="@results['Retrieve Submission']['Handler Error Message'].nil?">system_tree_return_v1_40</task>
                 </dependents>
             </task>
         </request>

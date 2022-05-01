@@ -45,6 +45,10 @@
         {
           "name": "Get Email Template",
           "query": "id=${parameters('ID')}"
+        },
+        {
+          "name": "Get Email Template by Name",
+          "query": "formSlug=email-templates&limit=1&index=values[Template Name]&q=values[Template Name]=\"${parameters(\"name\")}\""
         }
       ],
       "structure": "Datastore Submissions"
@@ -67,6 +71,15 @@
         }
       ],
       "resultType": "Single"
+    },
+    {
+      "name": "Get Email Template by Name",
+      "parameters": [
+        {
+          "name": "name"
+        }
+      ],
+      "resultType": "Multiple"
     }
   ],
   "status": "Active"

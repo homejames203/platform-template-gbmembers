@@ -115,13 +115,13 @@
   "categorizations": [
     {
       "category": {
-        "slug": "billing-registration"
+        "slug": "bombara-billing"
       }
     }
   ],
   "customHeadContent": "<style>\n  .hidden{\n   display:none; \n  }\n</style>\n<script>\nvar discounts;\nfunction completeTableChange(){\n  K('field[Family Member]').value(\"\");\n  K('field[Programs]').value(\"\");\n  K('field[tableMemberID]').value(\"\");\n  K('field[tableMemberName]').value(\"\");\n  K('field[tableProgram]').value(\"\");\n  K('field[tableFee]').value(\"\");\n  \n  // Sort table\n  viewerConfig.response.sort(function(a, b){return b.cost - a.cost});\n  // Let calculate the discounts\n  viewerConfig.response.forEach(function(item, index){\n    if (index<=discounts.length-1){\n      item.discount=discounts[index].discount;\n      item.fee=((new Number(item.cost))*discounts[index].cost).toFixed(2);\n    } else if (index>discounts.length-1 && discounts.length>0){\n      item.discount=discounts[discounts.length-1].discount;\n      item.fee=((new Number(item.cost))*discounts[discounts.length-1].cost).toFixed(2);\n    } else {\n    item.discount=\"0%\";\n    item.fee=((new Number(item.cost))).toFixed(2);\n    }\n  });\n  \n  // Set payment value\n  var total=0;\n  viewerConfig.response.forEach(function(item, index){\n\t\ttotal=total+(new Number((new Number(item.fee)).toFixed(2)));\n  });\n  K('field[Payment Total]').value(total);\n\n  global.viewerConfig.renderer.type($('#memberTableDiv'),global.viewerConfig);\n\n  $('#member-table tbody tr').on( 'click', function () {\n    if ( $(this).hasClass('selected') ) {\n      $(this).removeClass('selected');\n    }\n    else {\n      $('#member-table').DataTable().$('tr.selected').removeClass('selected');\n      $(this).addClass('selected');\n    }\n  } );  \n  \n}  \n  \nfunction memberProgramAdded(memberID, feeProgram) {\n  found=false;\n\n  viewerConfig.response.forEach(function(item){\n      if (item.id===memberID && item.feeProgram===feeProgram) {\n        found=true;\n      }\n  });  \n  return found;\n}\n</script>",
-  "description": "Configure Family Member Billing relationships.\nNo Billing changes are applied.",
-  "name": "Setup Biller Details",
+  "description": "Bombara Use to configure an existing Billing Member to assign programs and fees.",
+  "name": "Bombara Setup Biller Details",
   "notes": null,
   "pages": [
     {
@@ -160,7 +160,7 @@
                   "name": "Get Members",
                   "type": "Change",
                   "action": "Custom",
-                  "code": "K('bridgedResource[Get Member]').load({\n  attributes: ['Member ID', 'First Name', 'Last Name'],\n  values: {'ID' : 'Allen'},\n  success: function(bridgedData) {\n    K('field[Member ID]').value(bridgedData['Member ID']);\n    K('field[Student First Name]').value(bridgedData['First Name']);\n    K('field[Student Last Name]').value(bridgedData['Last Name']);\n    K('section[Student Information]').show();\n  }\n});",
+                  "code": "K('bridgedResource[Get Member]').load({\n  attributes: ['Member ID', 'First Name', 'Last Name'],\n  values: {'ID' : 'Allen'},\n  success: function(bridgedData) {\n    debugger;\n    K('field[Member ID]').value(bridgedData['Member ID']);\n    K('field[Billing Customer Id]').value(bridgedData['Billing Customer Id']);\n    K('field[Student First Name]').value(bridgedData['First Name']);\n    K('field[Student Last Name]').value(bridgedData['Last Name']);\n    K('field[Payment Frequency]').value(bridgedData['Billing Period']);\n    K('field[Billing Period]').value(bridgedData['Billing Period']);\n    K('field[Billing Start Date]').value(bridgedData['Billing Start Date']);\n    K('field[Current Payment]').value(bridgedData['Payment']);\n    K('field[Current Fee]').value(bridgedData['Admin Fee'].replace(\"$\",\"\"));\n    K('section[Student Information]').show();\n    var paymentPeriod=bridgedData['Billing Period'];\n    var period=\"months\";\n    if (paymentPeriod===\"Daily\") {\n      period=\"days\";\n    } else if (paymentPeriod===\"Weekly\") {\n      period=\"weeks\"; \n    } else if (paymentPeriod===\"Monthly\") {\n      period=\"months\"; \n    } \n    var nextBillingDate=moment(bridgedData['Billing Start Date'],\"YYYY-MM-DD\").add(moment().diff(moment(bridgedData['Billing Start Date'],\"YYYY-MM-DD\"), period)+1,period);\n    K('field[Date Affective]').value(nextBillingDate.format('YYYY-MM-DD'));\n    K('field[Billing Next Date]').value(nextBillingDate.format('YYYY-MM-DD'));\n\n    bundle.config.widgets.xdsoftDatepickerRemove({\n      element: K(\"form\").find(\"#dateaffective\")[0]\n    });          \n    bundle.config.widgets.xdsoftDatepickerRemove({\n      element: K(\"form\").find(\"#datepaymentsresume\")[0]\n    });          \n    period=1;\n    span=\"days\";\n    if (paymentPeriod===\"Weekly\"){\n      period=7;\n    }\n    if (paymentPeriod===\"Fortnightly\"){\n      period=14;\n    }\n    if (paymentPeriod===\"Monthly\"){\n      span=\"months\";\n    }\n    debugger;\n    allowDates=[];\n    for (i=0;i<22;i++){\n      if (moment(nextBillingDate, \"YYYY-MM-DD\").add(period*i,span).isAfter(moment())) {\n        allowDates[allowDates.length]=moment(nextBillingDate, \"YYYY-MM-DD\").add(period*i,span).format(\"DD-MM-YYYY\");\n      }\n    }\n    bundle.config.widgets.xdsoftDatepicker({\n      element: K(\"form\").find(\"#dateaffective\")[0],\n      timepicker: false,\n      displayDateFormat: \"DD/MM/YYYY\",\n      options: {\n        allowDates: allowDates,\n        formatDate:\"d-m-Y\",\n        validateOnBlur:false\n      },\n      onSelectDate:function(ct,$i){\n        K('field[Date Affective]').value(ct.dateFormat('YYYY-MM-DD'));\n      }                \n    });          \n    bundle.config.widgets.xdsoftDatepicker({\n      element: K(\"form\").find(\"#datepaymentsresume\")[0],\n      timepicker: false,\n      displayDateFormat: \"DD/MM/YYYY\",\n      options: {\n        allowDates: allowDates,\n        formatDate:\"d-m-Y\",\n        validateOnBlur:false\n      },\n      onSelectDate:function(ct,$i){\n        K('field[Date Payments Resume]').value(ct.dateFormat('YYYY-MM-DD'));\n      }                \n    });          \n  }\n});",
                   "bridgedResourceName": null,
                   "runIf": "values('Members')!==\"\""
                 },
@@ -176,11 +176,11 @@
               },
               "dataType": "string",
               "renderType": "dropdown",
-              "choicesResourceName": "Members",
+              "choicesResourceName": "Get Billing Members",
               "choicesRunIf": null,
               "choices": {
-                "label": "${resources('Members:First Name')} ${resources('Members:Last Name')}",
-                "value": "${resources('Members:id')}"
+                "label": "${resources('Get Billing Members:First Name')} ${resources('Get Billing Members:Last Name')}",
+                "value": "${resources('Get Billing Members:id')}"
               }
             },
             {
@@ -246,18 +246,7 @@
 
               ],
               "events": [
-                {
-                  "name": "Set Requested For",
-                  "type": "Change",
-                  "action": "Set Fields",
-                  "mappings": [
-                    {
-                      "field": "Requested For",
-                      "value": "${values('Student First Name')} ${values('Student Last Name')}",
-                      "visible": null
-                    }
-                  ]
-                }
+
               ],
               "renderAttributes": {
               },
@@ -282,18 +271,7 @@
 
               ],
               "events": [
-                {
-                  "name": "Set Requested For",
-                  "type": "Change",
-                  "action": "Set Fields",
-                  "mappings": [
-                    {
-                      "field": "Requested For",
-                      "value": "${values('Student First Name')} ${values('Student Last Name')}",
-                      "visible": null
-                    }
-                  ]
-                }
+
               ],
               "renderAttributes": {
               },
@@ -303,16 +281,141 @@
             },
             {
               "type": "field",
-              "name": "Requested For",
-              "label": "Requested For",
+              "name": "Billing Customer Id",
+              "label": "Billing Customer Id",
               "key": "f55",
               "defaultValue": null,
               "defaultResourceName": null,
-              "visible": false,
+              "visible": true,
+              "enabled": false,
+              "required": false,
+              "requiredMessage": null,
+              "omitWhenHidden": null,
+              "pattern": null,
+              "constraints": [
+
+              ],
+              "events": [
+
+              ],
+              "renderAttributes": {
+              },
+              "dataType": "string",
+              "renderType": "text",
+              "rows": 1
+            },
+            {
+              "type": "field",
+              "name": "Billing Period",
+              "label": "Billing Period",
+              "key": "f60",
+              "defaultValue": null,
+              "defaultResourceName": null,
+              "visible": true,
+              "enabled": false,
+              "required": false,
+              "requiredMessage": null,
+              "omitWhenHidden": null,
+              "pattern": null,
+              "constraints": [
+
+              ],
+              "events": [
+
+              ],
+              "renderAttributes": {
+              },
+              "dataType": "string",
+              "renderType": "text",
+              "rows": 1
+            },
+            {
+              "type": "field",
+              "name": "Billing Start Date",
+              "label": "Billing Start Date",
+              "key": "f68",
+              "defaultValue": null,
+              "defaultResourceName": null,
+              "visible": true,
               "enabled": true,
               "required": false,
               "requiredMessage": null,
-              "omitWhenHidden": false,
+              "omitWhenHidden": null,
+              "pattern": null,
+              "constraints": [
+
+              ],
+              "events": [
+
+              ],
+              "renderAttributes": {
+              },
+              "dataType": "string",
+              "renderType": "text",
+              "rows": 1
+            },
+            {
+              "type": "field",
+              "name": "Billing Next Date",
+              "label": "Billing Next Date",
+              "key": "f64",
+              "defaultValue": null,
+              "defaultResourceName": null,
+              "visible": true,
+              "enabled": true,
+              "required": false,
+              "requiredMessage": null,
+              "omitWhenHidden": null,
+              "pattern": null,
+              "constraints": [
+
+              ],
+              "events": [
+
+              ],
+              "renderAttributes": {
+              },
+              "dataType": "string",
+              "renderType": "text",
+              "rows": 1
+            },
+            {
+              "type": "field",
+              "name": "Current Payment",
+              "label": "Current Payment",
+              "key": "f66",
+              "defaultValue": null,
+              "defaultResourceName": null,
+              "visible": true,
+              "enabled": true,
+              "required": false,
+              "requiredMessage": null,
+              "omitWhenHidden": null,
+              "pattern": null,
+              "constraints": [
+
+              ],
+              "events": [
+
+              ],
+              "renderAttributes": {
+              },
+              "dataType": "string",
+              "renderType": "text",
+              "rows": 1
+            },
+            {
+              "type": "field",
+              "name": "Current Fee",
+              "label": "Current Fee",
+              "key": "f67",
+              "defaultValue": null,
+              "defaultResourceName": null,
+              "visible": true,
+              "enabled": true,
+              "required": false,
+              "requiredMessage": null,
+              "omitWhenHidden": null,
               "pattern": null,
               "constraints": [
 
@@ -403,7 +506,19 @@
 
               ],
               "events": [
-
+                {
+                  "name": "Set Dates",
+                  "type": "Change",
+                  "action": "Custom",
+                  "code": "paymentPeriod=K('field[Payment Frequency]').value();\nnextBillingDate=K('field[Billing Next Date]').value();\n\nbundle.config.widgets.xdsoftDatepickerRemove({\n  element: K(\"form\").find(\"#dateaffective\")[0]\n});          \nbundle.config.widgets.xdsoftDatepickerRemove({\n  element: K(\"form\").find(\"#datepaymentsresume\")[0]\n});          \nperiod=1;\nspan=\"days\";\nif (paymentPeriod===\"Weekly\"){\n  period=7;\n}\nif (paymentPeriod===\"Fortnightly\"){\n  period=14;\n}\nif (paymentPeriod===\"Monthly\"){\n  span=\"months\";\n}\ndebugger;\nallowDates=[];\nfor (i=0;i<22;i++){\n  if (moment(nextBillingDate, \"YYYY-MM-DD\").add(period*i,span).isAfter(moment())) {\n    allowDates[allowDates.length]=moment(nextBillingDate, \"YYYY-MM-DD\").add(period*i,span).format(\"DD-MM-YYYY\");\n  }\n}\nbundle.config.widgets.xdsoftDatepicker({\n  element: K(\"form\").find(\"#dateaffective\")[0],\n  timepicker: false,\n  displayDateFormat: \"DD/MM/YYYY\",\n  options: {\n    allowDates: allowDates,\n    formatDate:\"d-m-Y\",\n    validateOnBlur:false\n  },\n  onSelectDate:function(ct,$i){\n    K('field[Date Affective]').value(ct.dateFormat('YYYY-MM-DD'));\n  }                \n});          \nbundle.config.widgets.xdsoftDatepicker({\n  element: K(\"form\").find(\"#datepaymentsresume\")[0],\n  timepicker: false,\n  displayDateFormat: \"DD/MM/YYYY\",\n  options: {\n    allowDates: allowDates,\n    formatDate:\"d-m-Y\",\n    validateOnBlur:false\n  },\n  onSelectDate:function(ct,$i){\n    K('field[Date Payments Resume]').value(ct.dateFormat('YYYY-MM-DD'));\n  }                \n});          \n"
+                },
+                {
+                  "name": "Set Fees",
+                  "type": "Change",
+                  "action": "Custom",
+                  "code": "if (K('field[Payment Frequency]').value()===\"Daily\"){\n  K('field[Admin Fee]').value(\"0.10\");\n} else if (K('field[Payment Frequency]').value()===\"Weekly\"){\n  K('field[Admin Fee]').value(\"0.50\");\n//  K('field[Setup Fee]').value(\"5.50\");\n} else if (K('field[Payment Frequency]').value()===\"Fortnightly\"){\n  K('field[Admin Fee]').value(\"0.99\");\n//  K('field[Setup Fee]').value(\"5.50\");\n} else if (K('field[Payment Frequency]').value()===\"Monthly\"){\n  K('field[Admin Fee]').value(\"1.99\");\n//  K('field[Setup Fee]').value(\"5.50\");\n} else if (K('field[Payment Frequency]').value()===\"Quarterly\"){\n  K('field[Admin Fee]').value(\"5.99\");\n//  K('field[Setup Fee]').value(\"5.50\");\n}",
+                  "runIf": "values('Payment Frequency')!==null"
+                }
               ],
               "renderAttributes": {
               },
@@ -412,6 +527,10 @@
               "choicesResourceName": null,
               "choicesRunIf": null,
               "choices": [
+                {
+                  "label": "Daily",
+                  "value": "Daily"
+                },
                 {
                   "label": "Weekly",
                   "value": "Weekly"
@@ -827,6 +946,232 @@
               "dataType": "string",
               "renderType": "text",
               "rows": 1
+            },
+            {
+              "type": "field",
+              "name": "Admin Fee",
+              "label": "Admin Fee",
+              "key": "f65",
+              "defaultValue": null,
+              "defaultResourceName": null,
+              "visible": true,
+              "enabled": false,
+              "required": false,
+              "requiredMessage": null,
+              "omitWhenHidden": null,
+              "pattern": null,
+              "constraints": [
+
+              ],
+              "events": [
+
+              ],
+              "renderAttributes": {
+              },
+              "dataType": "string",
+              "renderType": "text",
+              "rows": 1
+            },
+            {
+              "type": "content",
+              "renderType": "html",
+              "name": "Update Information",
+              "text": "If you want to also apply this update to Bombara, please select the <b>Update Bombara</b> option.",
+              "visible": true,
+              "renderAttributes": {
+              }
+            },
+            {
+              "type": "field",
+              "name": "Update Bombara",
+              "label": "",
+              "key": "f56",
+              "defaultValue": null,
+              "defaultResourceName": null,
+              "visible": true,
+              "enabled": true,
+              "required": false,
+              "requiredMessage": null,
+              "omitWhenHidden": null,
+              "pattern": null,
+              "constraints": [
+
+              ],
+              "events": [
+
+              ],
+              "renderAttributes": {
+              },
+              "dataType": "json",
+              "renderType": "checkbox",
+              "choicesResourceName": null,
+              "choicesRunIf": null,
+              "choices": [
+                {
+                  "label": "Update Bombara",
+                  "value": "Update Bombara"
+                }
+              ]
+            },
+            {
+              "type": "section",
+              "renderType": null,
+              "name": "Update Payline details",
+              "title": null,
+              "visible": "values('Update Bombara')==\"Update Bombara\"",
+              "omitWhenHidden": true,
+              "renderAttributes": {
+              },
+              "elements": [
+                {
+                  "type": "content",
+                  "renderType": "html",
+                  "name": "Date Affective HTML",
+                  "text": "<div class=\"form-group required\" linkedField=\"Date Affective\">  \n  <label class=\"field-label\" for=\"dateaffective\">Date Affective</label>\n  <div id=\"dateaffective\"></div>\n</div>",
+                  "visible": "!form('review') ",
+                  "renderAttributes": {
+                  }
+                },
+                {
+                  "type": "field",
+                  "name": "Date Affective",
+                  "label": "Date Affective",
+                  "key": "f57",
+                  "defaultValue": null,
+                  "defaultResourceName": null,
+                  "visible": "form('review')",
+                  "enabled": true,
+                  "required": "values('Update Bombara')==\"Update Bombara\"",
+                  "requiredMessage": null,
+                  "omitWhenHidden": false,
+                  "pattern": null,
+                  "constraints": [
+
+                  ],
+                  "events": [
+
+                  ],
+                  "renderAttributes": {
+                  },
+                  "dataType": "string",
+                  "renderType": "date"
+                },
+                {
+                  "type": "field",
+                  "name": "Resume Date Option",
+                  "label": "Resume Date Option",
+                  "key": "f61",
+                  "defaultValue": null,
+                  "defaultResourceName": null,
+                  "visible": "!form('review') ",
+                  "enabled": true,
+                  "required": "values('Update Bombara')==\"Update Bombara\"",
+                  "requiredMessage": null,
+                  "omitWhenHidden": true,
+                  "pattern": null,
+                  "constraints": [
+
+                  ],
+                  "events": [
+
+                  ],
+                  "renderAttributes": {
+                  },
+                  "dataType": "string",
+                  "renderType": "radio",
+                  "choicesResourceName": null,
+                  "choicesRunIf": null,
+                  "choices": [
+                    {
+                      "label": "Until Further Notice",
+                      "value": "Until Further Notice"
+                    },
+                    {
+                      "label": "Resume Date",
+                      "value": "Resume Date"
+                    }
+                  ]
+                },
+                {
+                  "type": "content",
+                  "renderType": "html",
+                  "name": "Date Payments Resume HTML",
+                  "text": "<div class=\"form-group required\" linkedField=\"Date Payments Resume\">  \n  <label class=\"field-label\" for=\"datepaymentsresume\">Date Payments Resume</label>\n  <div id=\"datepaymentsresume\"></div>\n</div>",
+                  "visible": "!form('review') && values('Resume Date Option')==\"Resume Date\"",
+                  "renderAttributes": {
+                  }
+                },
+                {
+                  "type": "field",
+                  "name": "Date Payments Resume",
+                  "label": "Date Payments Resume",
+                  "key": "f59",
+                  "defaultValue": null,
+                  "defaultResourceName": null,
+                  "visible": "form('review') ",
+                  "enabled": "values('Resume Date Option')==\"Resume Date\"",
+                  "required": "values('Resume Date Option')==\"Resume Date\"",
+                  "requiredMessage": null,
+                  "omitWhenHidden": false,
+                  "pattern": null,
+                  "constraints": [
+
+                  ],
+                  "events": [
+
+                  ],
+                  "renderAttributes": {
+                  },
+                  "dataType": "string",
+                  "renderType": "date"
+                }
+              ]
+            },
+            {
+              "type": "section",
+              "renderType": null,
+              "name": "Signature",
+              "title": null,
+              "visible": true,
+              "omitWhenHidden": null,
+              "renderAttributes": {
+              },
+              "elements": [
+                {
+                  "type": "field",
+                  "name": "Encoded Person Signature",
+                  "label": "Encoded Person Signature",
+                  "key": "f63",
+                  "defaultValue": null,
+                  "defaultResourceName": null,
+                  "visible": false,
+                  "enabled": true,
+                  "required": false,
+                  "requiredMessage": null,
+                  "omitWhenHidden": false,
+                  "pattern": null,
+                  "constraints": [
+
+                  ],
+                  "events": [
+
+                  ],
+                  "renderAttributes": {
+                  },
+                  "dataType": "string",
+                  "renderType": "text",
+                  "rows": 1
+                },
+                {
+                  "type": "content",
+                  "renderType": "html",
+                  "name": "Person Signature",
+                  "text": "<label class=\"field-label\">Person Signature</label><div id=\"person-signature-canvas\"/>",
+                  "visible": true,
+                  "renderAttributes": {
+                  }
+                }
+              ]
             }
           ]
         },
@@ -901,6 +1246,12 @@
           "type": "Submit",
           "action": "Custom",
           "code": "K('field[feesJSON]').value(JSON.stringify(viewerConfig.response));\n\nmembers=new Array();\nviewerConfig.response.forEach(function(item){\n  members.push(item.id);\n});\nK('field[membersJSON]').value(JSON.stringify(members));\n\n"
+        },
+        {
+          "name": "Load Signatures",
+          "type": "Load",
+          "action": "Custom",
+          "code": "bundle.config.widgets.signatureCanvas({\n  element: K(\"form\").find(\"#person-signature-canvas\")[0],\n  initialValue: K(\"field[Encoded Person Signature]\").value(),\n  onChange: function(value) {\n\t  K(\"field[Encoded Person Signature]\").value(value);\n\t},\n  height: 250,\n  width: 500,\n  disable: form('review'),\n  ref: function(el) {\n    window.personSignaturePad = el;\n  },\n});\n"
         }
       ],
       "name": "Instalment Information",
@@ -911,7 +1262,7 @@
   "securityPolicies": [
     {
       "endpoint": "Display",
-      "name": "NoBilling Program Managers"
+      "name": "Bombara Program Managers"
     },
     {
       "endpoint": "Submission Access",
@@ -922,7 +1273,7 @@
       "name": "Program Managers"
     }
   ],
-  "slug": "nobilling-setup-biller-details",
+  "slug": "bombara-setup-biller-details",
   "status": "Active",
   "submissionLabelExpression": "${values('First Name')} ${values('Last Name')} Start : ${values('Billing Start Date')}",
   "type": "Service"

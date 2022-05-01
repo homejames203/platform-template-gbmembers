@@ -10,6 +10,13 @@
     "attributes": [
 
     ],
+    "name": "Bombara Billing",
+    "slug": "bombara-billing"
+  },
+  {
+    "attributes": [
+
+    ],
     "name": "Class Bookings",
     "slug": "class-bookings"
   },

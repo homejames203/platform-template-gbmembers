@@ -5,6 +5,9 @@
       "name": "Address"
     },
     {
+      "name": "Admin Fee"
+    },
+    {
       "name": "Billing Customer Id"
     },
     {
@@ -208,6 +211,10 @@
         {
           "name": "Max Weekly Classes",
           "structureField": "${fields('values[Max Weekly Classes]')}"
+        },
+        {
+          "name": "Admin Fee",
+          "structureField": "${fields('values[Admin Fee]')}"
         }
       ],
       "bridgeSlug": "kinetic-core",

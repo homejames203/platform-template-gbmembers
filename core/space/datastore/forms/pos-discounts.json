@@ -84,6 +84,13 @@
         "values[Value]"
       ],
       "unique": false
+    },
+    {
+      "name": "values[Voucher]",
+      "parts": [
+        "values[Voucher]"
+      ],
+      "unique": false
     }
   ],
   "name": "POS Discounts",
@@ -157,6 +164,38 @@
         },
         {
           "type": "field",
+          "name": "Voucher",
+          "label": "Voucher",
+          "key": "f5",
+          "defaultValue": null,
+          "defaultResourceName": null,
+          "visible": true,
+          "enabled": true,
+          "required": false,
+          "requiredMessage": null,
+          "omitWhenHidden": null,
+          "pattern": null,
+          "constraints": [
+
+          ],
+          "events": [
+
+          ],
+          "renderAttributes": {
+          },
+          "dataType": "json",
+          "renderType": "checkbox",
+          "choicesResourceName": null,
+          "choicesRunIf": null,
+          "choices": [
+            {
+              "label": "Voucher",
+              "value": "Voucher"
+            }
+          ]
+        },
+        {
+          "type": "field",
           "name": "Type",
           "label": "Type",
           "key": "f3",
@@ -198,11 +237,11 @@
           "key": "f4",
           "defaultValue": null,
           "defaultResourceName": null,
-          "visible": true,
+          "visible": "values('Voucher').length===0",
           "enabled": true,
-          "required": true,
+          "required": "values('Voucher').length===0",
           "requiredMessage": null,
-          "omitWhenHidden": null,
+          "omitWhenHidden": true,
           "pattern": null,
           "constraints": [
 
@@ -236,6 +275,10 @@
     }
   ],
   "securityPolicies": [
+    {
+      "endpoint": "Display",
+      "name": "Authenticated Users"
+    },
     {
       "endpoint": "Submission Access",
       "name": "Data Admins"

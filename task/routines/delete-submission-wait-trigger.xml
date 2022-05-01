@@ -1,0 +1,152 @@
+<tree schema_version="1.0">
+    <sourceName>-</sourceName>
+    <sourceGroup>-</sourceGroup>
+    <definitionId>routine_delete_submission_wait_trigger</definitionId>
+    <type>Global Routine</type>
+    <status>Active</status>
+    <taskTree builder_version="" schema_version="1.0" version="">
+        <name>Delete Submission Wait Trigger</name>
+        <author></author>
+        <notes>Locate and delete a wait trigger for a previous submission.
+Eg, found a previous Freeze request and delete a new &amp;quot;Resume Date&amp;quot; trigger.
+To avoid a previous submission affecting a new request.</notes>
+        <lastID>6</lastID>
+        <taskDefinition id="routine_delete_submission_wait_trigger" name="Delete Submission Wait Trigger" schema_version="1.0" version="1">
+            <visible>false</visible>
+            <deferrable>true</deferrable>
+            <parameters>
+                <parameter id="Form Slug" label="Form Slug" required="true" tooltip="Form slug for submission"></parameter>
+                <parameter id="Created At" label="Created At" required="true" tooltip="Date current submission was created at"></parameter>
+                <parameter id="Qualification" label="Qualification" required="true" tooltip="Query to match previous records by"></parameter>
+                <parameter id="Source Group" label="Source Group" required="true" tooltip="Group name eg, Submissions &gt; services &gt; test-wait-nodes"></parameter>
+                <parameter id="Trigger Node Name" label="Trigger Node Name" required="true" tooltip="Name of wait trigger eg, Wait 3 hours"></parameter>
+                <parameter id="Tree Name" label="Tree Name" required="true" tooltip="Name of tree with wait node"></parameter>
+            </parameters>
+            <handler name="system_tree_call" version="1"></handler>
+            <results format="xml">
+                <result name="Output" tooltip=""></result>
+            </results>
+        </taskDefinition>
+        <request>
+            <task definition_id="system_start_v1" id="start" name="Start" x="10" y="10">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters></parameters>
+                <messages></messages>
+                <dependents>
+                    <task label="" type="Complete" value="">kinetic_core_api_v1_1</task>
+                </dependents>
+            </task>
+            <task definition_id="kinetic_core_api_v1" id="kinetic_core_api_v1_1" name="Get Previous Submission" x="87" y="203">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter dependsOnId="" dependsOnValue="" id="error_handling" label="Error Handling" menu="Error Message,Raise Error" required="true" tooltip="Determine what to return if an error is encountered.">Error Message</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="method" label="Method" menu="GET,POST,PUT,PATCH,DELETE" required="true" tooltip="GET,POST,PUT,PATCH,DELETE (Defaults to GET)">GET</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="path" label="Path" menu="" required="true" tooltip="Example: /kapps/:kappSlug/forms/:formSlug">&lt;%="kapps/services/forms/#{@inputs['Form Slug']}/submissions?timeline=createdAt&amp;end=#{@inputs['Created At']}&amp;include=values&amp;direction=DESC&amp;limit=1&amp;q=#{@inputs['Qualification']}"%&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="body" label="Body" menu="" required="false" tooltip="JSON body if applicable (POST,PUT,PATCH)"></parameter>
+                </parameters>
+                <messages></messages>
+                <dependents>
+                    <task label="Found" type="Complete" value="JSON.parse(@results['Get Previous Submission']['Response Body'])['submissions'].length&gt;0">kinetic_task_api_v2_2</task>
+                    <task label="None found" type="Complete" value="JSON.parse(@results['Get Previous Submission']['Response Body'])['submissions'].length==0">system_tree_return_v1_3</task>
+                </dependents>
+            </task>
+            <task definition_id="kinetic_task_api_v2" id="kinetic_task_api_v2_2" name="Get Run execution" x="443" y="131">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter dependsOnId="" dependsOnValue="" id="error_handling" label="Error Handling" menu="Error Message,Raise Error" required="true" tooltip="Determine what to return if an error is encountered.">Error Message</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="method" label="Method" menu="GET,POST,PUT,PATCH,DELETE" required="true" tooltip="GET,POST,PUT,PATCH,DELETE (Defaults to GET)">GET</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="path" label="Path" menu="" required="true" tooltip="Example: /kapps/:kappSlug/forms/:formSlug">&lt;%="/runs?sourceId=#{JSON.parse(@results['Get Previous Submission']['Response Body'])['submissions'][0]['id']}&amp;#{ERB::Util.url_encode(@inputs['Source Group'])}&amp;tree=#{@inputs['Tree Name']}&amp;limit=1&amp;include=triggers" %&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="body" label="Body" menu="" required="false" tooltip="JSON body if applicable (POST,PUT,PATCH)"></parameter>
+                </parameters>
+                <messages></messages>
+                <dependents>
+                    <task label="Found runs" type="Complete" value="JSON.parse(@results['Get Run execution']['Response Body'])['count']&gt;0">utilities_echo_v1_4</task>
+                </dependents>
+            </task>
+            <task definition_id="system_tree_return_v1" id="system_tree_return_v1_3" name="No previous submission found" x="431" y="297">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter dependsOnId="" dependsOnValue="" id="Output" label="Output" menu="" required="false" tooltip="">No Previous Submission found</parameter>
+                </parameters>
+                <messages></messages>
+                <dependents></dependents>
+            </task>
+            <task definition_id="utilities_echo_v1" id="utilities_echo_v1_4" name="Get Wait Trigger" x="804" y="131">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>true</visible>
+                <parameters>
+                    <parameter dependsOnId="" dependsOnValue="" id="input" label="Input" menu="" required="true" tooltip="">&lt;%
+runs=JSON.parse(@results['Get Run execution']['Response Body'])['runs']
+triggers=runs[0]['triggers']
+waitTrigger=nil
+for i in 0..triggers.length-1 do
+  if triggers[i]['nodeName']==@inputs['Trigger Node Name']  &amp;&amp; triggers[i]['status']=="New"
+    waitTrigger=triggers[i]
+  end
+end
+%&gt;
+&lt;%= waitTrigger.nil? ? nil : waitTrigger['token'] %&gt;</parameter>
+                </parameters>
+                <messages></messages>
+                <dependents>
+                    <task label="Found Trigger as New" type="Complete" value="!@results['Get Wait Trigger']['output'].nil?">kinetic_task_api_v2_5</task>
+                </dependents>
+            </task>
+            <task definition_id="kinetic_task_api_v2" id="kinetic_task_api_v2_5" name="Get Trigger Detail" x="1188" y="132">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter dependsOnId="" dependsOnValue="" id="error_handling" label="Error Handling" menu="Error Message,Raise Error" required="true" tooltip="Determine what to return if an error is encountered.">Error Message</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="method" label="Method" menu="GET,POST,PUT,PATCH,DELETE" required="true" tooltip="GET,POST,PUT,PATCH,DELETE (Defaults to GET)">GET</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="path" label="Path" menu="" required="true" tooltip="Example: /kapps/:kappSlug/forms/:formSlug">&lt;%="/triggers?sourceId=#{JSON.parse(@results['Get Previous Submission']['Response Body'])['submissions'][0]['id']}&amp;status=New&amp;token=#{@results['Get Wait Trigger']['output']}&amp;direction=DESC&amp;limit=100&amp;include=details" %&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="body" label="Body" menu="" required="false" tooltip="JSON body if applicable (POST,PUT,PATCH)"></parameter>
+                </parameters>
+                <messages>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents>
+                    <task label="Found trigger detail" type="Complete" value="JSON.parse(@results['Get Trigger Detail']['Response Body'])['count']!=0">kinetic_task_api_v2_6</task>
+                </dependents>
+            </task>
+            <task definition_id="kinetic_task_api_v2" id="kinetic_task_api_v2_6" name="Delete Trigger" x="1192" y="368">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters>
+                    <parameter dependsOnId="" dependsOnValue="" id="error_handling" label="Error Handling" menu="Error Message,Raise Error" required="true" tooltip="Determine what to return if an error is encountered.">Error Message</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="method" label="Method" menu="GET,POST,PUT,PATCH,DELETE" required="true" tooltip="GET,POST,PUT,PATCH,DELETE (Defaults to GET)">DELETE</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="path" label="Path" menu="" required="true" tooltip="Example: /kapps/:kappSlug/forms/:formSlug">&lt;%="/triggers/#{JSON.parse(@results['Get Trigger Detail']['Response Body'])['triggers'][0]['id']}"%&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="body" label="Body" menu="" required="false" tooltip="JSON body if applicable (POST,PUT,PATCH)"></parameter>
+                </parameters>
+                <messages>
+                    <message type="Complete"></message>
+                </messages>
+                <dependents></dependents>
+            </task>
+        </request>
+    </taskTree>
+</tree>

@@ -1,3 +1,5 @@
 {"coreState":"Submitted","currentPage":"Main","label":"[\"Active\"]-Staff Discount-Percentage-10","values":{"Name":"Staff Discount","Status":["Active"],"Type":"Percentage","Value":"10"}}
 {"coreState":"Submitted","currentPage":"Main","label":"[\"Active\"]-School Owner-Percentage-15","values":{"Name":"School Owner","Status":["Active"],"Type":"Percentage","Value":"15"}}
 {"coreState":"Submitted","currentPage":"Main","label":"[\"Active\"]-Bring a Friend-Value-50","values":{"Name":"Bring a Friend","Status":["Active"],"Type":"Value","Value":"50"}}
+{"coreState":"Submitted","currentPage":"Main","label":"[\"Active\"]-Percentage Voucher-Percentage-","values":{"Name":"Percentage Voucher","Status":["Active"],"Type":"Percentage","Value":null,"Voucher":["Voucher"]}}
+{"coreState":"Submitted","currentPage":"Main","label":"[\"Active\"]-Value Voucher-Value-","values":{"Name":"Value Voucher","Status":["Active"],"Type":"Value","Value":null,"Voucher":["Voucher"]}}

@@ -1,0 +1,281 @@
+<tree schema_version="1.0">
+    <sourceName>-</sourceName>
+    <sourceGroup>-</sourceGroup>
+    <definitionId>routine_email_campaign_member_send</definitionId>
+    <type>Global Routine</type>
+    <status>Active</status>
+    <taskTree builder_version="" schema_version="1.0" version="">
+        <name>Email Campaign Member Send</name>
+        <author></author>
+        <notes></notes>
+        <lastID>9</lastID>
+        <taskDefinition id="routine_email_campaign_member_send" name="Email Campaign Member Send" schema_version="1.0" version="1">
+            <visible>false</visible>
+            <deferrable>true</deferrable>
+            <parameters>
+                <parameter id="Member GUID" label="Member GUID" required="true" tooltip="ID of Member record"></parameter>
+                <parameter id="Load Body" label="Load Body" required="true" tooltip="Email content"></parameter>
+                <parameter id="Space Slug" label="Space Slug" required="true" tooltip=""></parameter>
+                <parameter id="From Email" label="From Email" required="true" tooltip=""></parameter>
+                <parameter id="Subject" label="Subject" required="true" tooltip=""></parameter>
+                <parameter id="Attachments" label="Attachments" required="true" tooltip=""></parameter>
+                <parameter id="Campaign ID" label="Campaign ID" required="true" tooltip=""></parameter>
+                <parameter id="Build Variables" label="Build Variables" required="true" tooltip=""></parameter>
+                <parameter id="Sent Date" label="Sent Date" required="true" tooltip=""></parameter>
+                <parameter id="School From Alias" label="School From Alias" required="true" tooltip="Alias for school From email address"></parameter>
+                <parameter id="Sender" label="Sender" required="false" tooltip=""></parameter>
+            </parameters>
+            <handler name="system_tree_call" version="1"></handler>
+            <results format="xml"></results>
+        </taskDefinition>
+        <request>
+            <task definition_id="system_start_v1" id="start" name="Start" x="10" y="10">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters></parameters>
+                <messages></messages>
+                <dependents>
+                    <task label="" type="Complete" value="">kinetic_request_ce_submission_retrieve_v2_1</task>
+                </dependents>
+            </task>
+            <task definition_id="kinetic_request_ce_submission_retrieve_v2" id="kinetic_request_ce_submission_retrieve_v2_1" name="Retrieve member" x="196" y="28">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>true</visible>
+                <parameters>
+                    <parameter dependsOnId="" dependsOnValue="" id="error_handling" label="Error Handling" menu="Error Message,Raise Error" required="true" tooltip="Determine what to return if an error is encountered.">Error Message</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="space_slug" label="Space Slug" menu="" required="false" tooltip="The Space the submission is being retrieved from (defaults to info value if not provided)."></parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="retrieve_by" label="Retrieve By" menu="Id,Query" required="true" tooltip="How to retrieve the submission. Id or Query.">Id</parameter>
+                    <parameter dependsOnId="retrieve_by" dependsOnValue="Query" id="kapp_slug" label="Kapp Slug" menu="" required="true" tooltip="Slug of the kapp to query"></parameter>
+                    <parameter dependsOnId="retrieve_by" dependsOnValue="Query" id="form_slug" label="Form Slug" menu="" required="true" tooltip="Slug of the form to query"></parameter>
+                    <parameter dependsOnId="retrieve_by" dependsOnValue="Query" id="query" label="Query" menu="" required="true" tooltip="A query that will retrieve a single submission"></parameter>
+                    <parameter dependsOnId="retrieve_by" dependsOnValue="Id" id="submission_id" label="Submission Id" menu="" required="true" tooltip="The id of the submission being retrieved.">&lt;%= @inputs['Member GUID'] %&gt;</parameter>
+                </parameters>
+                <messages></messages>
+                <dependents>
+                    <task label="" type="Complete" value="">utilities_echo_v1_3</task>
+                </dependents>
+            </task>
+            <task definition_id="utilities_echo_v1" id="utilities_echo_v1_2" name="Replace Variables" x="429" y="175">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>true</visible>
+                <parameters>
+                    <parameter dependsOnId="" dependsOnValue="" id="input" label="Input" menu="" required="true" tooltip="">&lt;%=
+content=@results['Resolve Names']['output']
+replace_values=JSON.parse(@inputs['Build Variables'])
+replace_values.keys.each{|key|
+  content = content.gsub(/\$\{#{key}\('(.*?)'\)\}/) do
+    if replace_values[key].has_key?($1)
+      replace_values[key][$1]
+    else
+      "${#{key}('#{$1}')}"
+    end
+  end
+}
+content=content.gsub(/\$\{space\}/, @inputs['Space Slug'])
+
+endIdx=0
+while !content.index("&lt;a href",endIdx).nil?
+  idx=content.index("&lt;a href", endIdx)
+  endIdx = content.index('"', idx + '&lt;a href="'.length);
+  url = content.slice(idx + '&lt;a href="'.length, endIdx-(idx+ '&lt;a href="'.length));
+  if (url!="")
+    encodeVal = Base64.encode64(url).gsub("\n","").gsub("/","X2fX");
+    newUrl = "https://gbbilling.com.au:8443/billingservice/goToUrl/#{@inputs['Space Slug']}/__campaign_id__/__member_id__/#{encodeVal}"
+  
+    content = content.sub(url, newUrl);  
+  else
+    endIdx=endIdx+1
+  end
+    
+end
+
+content
+%&gt;</parameter>
+                </parameters>
+                <messages></messages>
+                <dependents>
+                    <task label="" type="Complete" value="">smtp_email_send_v1_9</task>
+                </dependents>
+            </task>
+            <task definition_id="utilities_echo_v1" id="utilities_echo_v1_3" name="Resolve Names" x="193" y="170">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>true</visible>
+                <parameters>
+                    <parameter dependsOnId="" dependsOnValue="" id="input" label="Input" menu="" required="true" tooltip="">&lt;%=
+@inputs['Load Body'].gsub!("${spaceSlug}", @inputs['Space Slug'])
+@inputs['Load Body'].gsub!("member(&amp;#039;ID&amp;#039;)", @results['Retrieve member']['ID'])
+@inputs['Load Body'].gsub!("member('ID')", @results['Retrieve member']['ID'])
+@inputs['Load Body'].gsub!("member('Username')", !JSON.parse(@results['Retrieve member']['Values JSON'])["Member ID"].nil? ?JSON.parse(@results['Retrieve member']['Values JSON'])["Member ID"] : "")
+@inputs['Load Body'].gsub!("member(&amp;#039;First Name&amp;#039;)", JSON.parse(@results['Retrieve member']['Values JSON'])["First Name"])
+@inputs['Load Body'].gsub!("member('First Name')", JSON.parse(@results['Retrieve member']['Values JSON'])["First Name"])
+@inputs['Load Body'].gsub!("member(&amp;#039;Last Name&amp;#039;)", JSON.parse(@results['Retrieve member']['Values JSON'])["Last Name"])
+@inputs['Load Body'].gsub!("member('Last Name')", JSON.parse(@results['Retrieve member']['Values JSON'])["Last Name"])
+@inputs['Load Body'].gsub!("${submitterName}", @inputs['Sender']) if @inputs.has_key?('Sender')
+
+@inputs['Load Body'].gsub!("${date}",  DateTime.now.strftime("%d %B %Y"))
+
+@inputs['Load Body']
+%&gt;</parameter>
+                </parameters>
+                <messages></messages>
+                <dependents>
+                    <task label="" type="Complete" value="">utilities_echo_v1_2</task>
+                </dependents>
+            </task>
+            <task definition_id="kinetic_request_ce_submission_create_v1" id="kinetic_request_ce_submission_create_v1_5" name="Create Member Email Activity" x="550" y="343">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>true</visible>
+                <parameters>
+                    <parameter dependsOnId="" dependsOnValue="" id="error_handling" label="Error Handling" menu="Error Message,Raise Error" required="true" tooltip="Determine what to return if an error is encountered.">Error Message</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="space_slug" label="Space Slug" menu="" required="false" tooltip="The Space the submission is being retrieved from (defaults to info value if not provided)."></parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="kapp_slug" label="Kapp Slug" menu="" required="true" tooltip="The slug of the Kapp the submission is for.">gbmembers</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="form_slug" label="Form Slug" menu="" required="true" tooltip="The slug of the form the submission is for.">member-activities</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="values" label="Values" menu="" required="false" tooltip="JSON map of submission field values.">&lt;%=
+campaignId = @inputs['Campaign ID']
+subject= @inputs['Subject']
+sentDate = @inputs['Sent Date']
+newEmail = {}
+newEmail["Campaign Id"] = campaignId
+newEmail["Subject"] = subject
+newEmail["Sent Date"] = sentDate
+
+values = {}
+values["Member ID"] = @results['Retrieve member']['ID']
+values["Type"] = "Email"
+values["Direction"] = "Outbound"
+values["Content"] = newEmail.to_json
+
+values.to_json
+%&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="current_page_name" label="Current Page Name" menu="" required="false" tooltip="Set the current page name."></parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="current_page_navigation" label="Current Page Navigation" menu="" required="false" tooltip="Set the current page navigation."></parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="origin_id" label="Origin ID" menu="" required="false" tooltip="Set the origin ID."></parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="parent_id" label="Parent ID" menu="" required="false" tooltip="Set the parent ID."></parameter>
+                </parameters>
+                <messages></messages>
+                <dependents>
+                    <task label="" type="Complete" value="">kinetic_request_ce_submission_update_v1_7</task>
+                </dependents>
+            </task>
+            <task definition_id="kinetic_request_ce_submission_create_v1" id="kinetic_request_ce_submission_create_v1_6" name="Create Lead Email Activity" x="819" y="343">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>true</visible>
+                <parameters>
+                    <parameter dependsOnId="" dependsOnValue="" id="error_handling" label="Error Handling" menu="Error Message,Raise Error" required="true" tooltip="Determine what to return if an error is encountered.">Error Message</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="space_slug" label="Space Slug" menu="" required="false" tooltip="The Space the submission is being retrieved from (defaults to info value if not provided)."></parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="kapp_slug" label="Kapp Slug" menu="" required="true" tooltip="The slug of the Kapp the submission is for.">gbmembers</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="form_slug" label="Form Slug" menu="" required="true" tooltip="The slug of the form the submission is for.">lead-activities</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="values" label="Values" menu="" required="false" tooltip="JSON map of submission field values.">&lt;%=
+campaignId = @inputs['Campaign ID']
+subject= @inputs['Subject']
+sentDate = @inputs['Sent Date']
+newEmail = {}
+newEmail["Campaign Id"] = campaignId
+newEmail["Subject"] = subject
+newEmail["Sent Date"] = sentDate
+
+values = {}
+values["Lead ID"] = @results['Retrieve member']['ID']
+values["Type"] = "Email"
+values["Direction"] = "Outbound"
+values["Content"] = newEmail.to_json
+
+values.to_json
+%&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="current_page_name" label="Current Page Name" menu="" required="false" tooltip="Set the current page name."></parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="current_page_navigation" label="Current Page Navigation" menu="" required="false" tooltip="Set the current page navigation."></parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="origin_id" label="Origin ID" menu="" required="false" tooltip="Set the origin ID."></parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="parent_id" label="Parent ID" menu="" required="false" tooltip="Set the parent ID."></parameter>
+                </parameters>
+                <messages></messages>
+                <dependents>
+                    <task label="" type="Complete" value="">kinetic_request_ce_submission_update_v1_7</task>
+                </dependents>
+            </task>
+            <task definition_id="kinetic_request_ce_submission_update_v1" id="kinetic_request_ce_submission_update_v1_7" name="Update member" x="682" y="469">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>true</visible>
+                <parameters>
+                    <parameter dependsOnId="" dependsOnValue="" id="error_handling" label="Error Handling" menu="Error Message,Raise Error" required="true" tooltip="Determine what to return if an error is encountered.">Error Message</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="space_slug" label="Space Slug" menu="" required="false" tooltip="The Space the submission is being retrieved from (defaults to info value if not provided).">&lt;%= @inputs['Space Slug'] %&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="submission_id" label="Submission Id" menu="" required="true" tooltip="The id of the submission being updated.">&lt;%=@results['Retrieve member']["ID"]%&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="state" label="State" menu="" required="false" tooltip="The value used to set the submission state.">&lt;%=@results['Retrieve member']['Core State']%&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="values" label="Values" menu="" required="false" tooltip="A JSON map of field names to values that should be set.">&lt;%=
+emailsSentCount = 1
+count=JSON.parse(@results['Retrieve member']['Values JSON'])['Emails Sent Count']
+if !count.nil?
+  emailsSentCount = count.to_i + 1
+end
+values = {}
+values["Emails Sent Count"] = emailsSentCount 
+values.to_json
+%&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="current_page_name" label="Current Page Name" menu="" required="false" tooltip="Set the current page name."></parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="current_page_navigation" label="Current Page Navigation" menu="" required="false" tooltip="Set the current page navigation."></parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="origin_id" label="Origin ID" menu="" required="false" tooltip="Set the origin ID."></parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="parent_id" label="Parent ID" menu="" required="false" tooltip="Set the parent ID."></parameter>
+                </parameters>
+                <messages></messages>
+                <dependents>
+                    <task label="" type="Complete" value="">system_tree_return_v1_8</task>
+                </dependents>
+            </task>
+            <task definition_id="system_tree_return_v1" id="system_tree_return_v1_8" name="Return" x="681" y="572">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>false</visible>
+                <parameters></parameters>
+                <messages></messages>
+                <dependents></dependents>
+            </task>
+            <task definition_id="smtp_email_send_v1" id="smtp_email_send_v1_9" name="SMTP Email Send" x="720" y="30">
+                <version>1</version>
+                <configured>true</configured>
+                <defers>false</defers>
+                <deferrable>false</deferrable>
+                <visible>true</visible>
+                <parameters>
+                    <parameter dependsOnId="" dependsOnValue="" id="from" label="From (email address)" menu="" required="true" tooltip="The email address of the simulated sender.">&lt;%= @inputs['From Email'] %&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="fromAlias" label="From Alias(name)" menu="" required="false" tooltip="The email alias such as Gracie Barra.">&lt;%= @inputs['School From Alias'] %&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="to" label="To (email address)" menu="" required="true" tooltip="The email address of the intended recipient.">&lt;%=JSON.parse(@results['Retrieve member']['Values JSON'])["Email"].concat(JSON.parse(@results['Retrieve member']['Values JSON'])["Additional Email"] == nil ? "" : ("," + JSON.parse(@results['Retrieve member']['Values JSON'])["Additional Email"]))%&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="subject" label="Subject" menu="" required="true" tooltip="The subject of the email.">&lt;%= @inputs['Subject'] %&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="htmlbody" label="HTML Body" menu="" required="true" tooltip="HTML representing the body of a rich email.">&lt;%=@results['Replace Variables']['output']%&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="textbody" label="Alternate (text) Body" menu="" required="false" tooltip="A plaintext message that will be displayed if the recipient can't display multipart HTML emails.">&lt;%=@results['Replace Variables']['output']%&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="attachments" label="Email Attachments" menu="" required="false" tooltip="Email Attachments if any.">&lt;%= @inputs['Attachments'] %&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="fieldname" label="Attachment Field Name" menu="" required="false" tooltip="Attachment Field Name">Attachments</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="memberId" label="Member Id" menu="" required="false" tooltip="Member Id">&lt;%= @inputs['Member GUID'] %&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="campaignId" label="Campaign Id" menu="" required="false" tooltip="Campaign Id">&lt;%= @inputs['Campaign ID'] %&gt;</parameter>
+                    <parameter dependsOnId="" dependsOnValue="" id="space" label="Space Slug" menu="" required="false" tooltip="Space slug">&lt;%= @inputs['Space Slug'] %&gt;</parameter>
+                </parameters>
+                <messages></messages>
+                <dependents>
+                    <task label="For Member" type="Complete" value="@results['Retrieve member']['Form Name']==&quot;Member&quot;">kinetic_request_ce_submission_create_v1_5</task>
+                    <task label="For Lead" type="Complete" value="@results['Retrieve member']['Form Name']==&quot;Lead&quot;">kinetic_request_ce_submission_create_v1_6</task>
+                </dependents>
+            </task>
+        </request>
+    </taskTree>
+</tree>

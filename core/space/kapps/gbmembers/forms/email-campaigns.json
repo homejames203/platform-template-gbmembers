@@ -283,6 +283,6 @@
   ],
   "slug": "email-campaigns",
   "status": "New",
-  "submissionLabelExpression": "${values('Attachments')}",
+  "submissionLabelExpression": "${values('From')}-${values('Attachments')}",
   "type": "Content"
 }

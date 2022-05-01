@@ -51,8 +51,8 @@
           "query": "id=${parameters('ID')}"
         },
         {
-          "name": "Get Lead Script By Name",
-          "query": "formSlug=call-scripts&limit=1&index=values[Target],values[Script Name]&q=values[Target]=\"Leads\",values[Script Name]=${parameters('Script Name')}"
+          "name": "Get Script By Name",
+          "query": "formSlug=call-scripts&limit=1&index=values[Script Name]&q=values[Script Name]=\"${parameters(\"name\")}\""
         }
       ],
       "structure": "Datastore Submissions"
@@ -61,15 +61,6 @@
   "name": "Call Scripts",
   "qualifications": [
     {
-      "name": "Get Lead Script By Name",
-      "parameters": [
-        {
-          "name": "Script Name"
-        }
-      ],
-      "resultType": "Single"
-    },
-    {
       "name": "Get Script",
       "parameters": [
         {
@@ -77,6 +68,15 @@
         }
       ],
       "resultType": "Single"
+    },
+    {
+      "name": "Get Script By Name",
+      "parameters": [
+        {
+          "name": "name"
+        }
+      ],
+      "resultType": "Multiple"
     },
     {
       "name": "Lead Scripts",

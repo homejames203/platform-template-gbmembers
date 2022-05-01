@@ -121,7 +121,8 @@
                     <parameter dependsOnId="" dependsOnValue="" id="service_value" label="Billing Service Value" menu="" required="true" tooltip="GBMembers Billing Service call value (billingInfo,)">overdues</parameter>
                     <parameter dependsOnId="" dependsOnValue="" id="billing_company" label="Billing Company" menu="" required="true" tooltip="Billing Company that the service will operate against.(eg, PaySmart)">&lt;%= JSON.parse(@results['Get Space']['Attributes Map JSON'])['Billing Company'] %&gt;</parameter>
                     <parameter dependsOnId="" dependsOnValue="" id="json_args" label="JSON arguments" menu="" required="true" tooltip="A JSON structure containing all argument passed to the Billing Service">{
-  "space":"&lt;%= @results['Get Kapp']['Slug'] %&gt;"
+  "space":"&lt;%= @results['Get Space']['Slug'] %&gt;",
+  "billingService":"PaySmart"
 }</parameter>
                 </parameters>
                 <messages>

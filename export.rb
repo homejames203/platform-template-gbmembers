@@ -70,7 +70,6 @@ end
 SUBMISSIONS_TO_EXPORT = [
   { "datastore" => true, "formSlug" => "notification-data" },
   { "datastore" => true, "formSlug" => "notification-template-dates" },
-  { "datastore" => true, "formSlug" => "all-scripts" },
   { "datastore" => true, "formSlug" => "email-templates" },
   { "datastore" => true, "formSlug" => "membership-fees" },
   { "datastore" => true, "formSlug" => "membership-types" },
@@ -84,6 +83,7 @@ SUBMISSIONS_TO_EXPORT = [
   { "datastore" => true, "formSlug" => "pos-categories" },
   { "datastore" => true, "formSlug" => "pos-discounts" },
   { "datastore" => true, "formSlug" => "pos-product" },
+  { "datastore" => true, "formSlug" => "pos-barcodes" },
 ]
 
 REMOVE_DATA_PROPERTIES = [
@@ -170,6 +170,31 @@ Dir["#{core_path}/**/*.json"].each do |filename|
   model = remove_discussion_id_attribute(JSON.parse(File.read(filename)))
   File.open(filename, "w") { |file| file.write(JSON.pretty_generate(model)) }
 end
+
+# use a custom Http client because the translations SDK doesn't yet exist
+custom_http = KineticSdk::CustomHttp.new({
+  username: vars["core"]["service_user_username"],
+  password: vars["core"]["service_user_password"],
+  options: {
+    log_level: "off"
+  }
+})
+
+# export translations
+path = "#{space_sdk.api_url}/translations/entries"
+parameters = { "export" => "csv" }
+response = space_sdk.get(path, parameters, custom_http.default_headers)
+if response.status != 200
+  raise "Unable to export translations: #{response.inspect}"
+end
+exported_entries = response.content_string
+translationFilename = "#{core_path}/space/translations.csv"
+# create directory if not exists and write the file
+dir_path = File.dirname(translationFilename)
+FileUtils.mkdir_p(dir_path, :mode => 0700)
+File.open(translationFilename, 'w') { |file| file.write(exported_entries) }
+puts "Translations exported to #{translationFilename}"
+
 
 # export submissions
 logger.info "  - exporting and writing submission data"

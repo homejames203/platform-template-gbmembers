@@ -2,6 +2,18 @@
   "afterLogoutPath": "",
   "attributes": [
     {
+      "name": "ABN",
+      "values": [
+        "123 456"
+      ]
+    },
+    {
+      "name": "ACN",
+      "values": [
+        "123 456 7890"
+      ]
+    },
+    {
       "name": "Admin Kapp Slug",
       "values": [
         "admin"
@@ -40,7 +52,7 @@
     {
       "name": "Billing Company",
       "values": [
-        "Payline"
+        "PaySmart"
       ]
     },
     {
@@ -65,6 +77,24 @@
       "name": "Company Logo",
       "values": [
         "/app/datastore/submissions/617f9165-c2cb-11e8-aff8-15815e938e2a/files/Image%20File/0/Logo-GB-Sydney1.png"
+      ]
+    },
+    {
+      "name": "Cooling Period",
+      "values": [
+        "5 days"
+      ]
+    },
+    {
+      "name": "Covid Check Required",
+      "values": [
+        "TRUE"
+      ]
+    },
+    {
+      "name": "Currency",
+      "values": [
+        "AUD"
       ]
     },
     {
@@ -127,7 +157,7 @@
     {
       "name": "Kinetic Billing Server URL",
       "values": [
-        "http://localhost:8081/billingservice"
+        "https://services.gbmembers.net/billingservice"
       ]
     },
     {
@@ -143,6 +173,18 @@
       ]
     },
     {
+      "name": "Online Week Family Price",
+      "values": [
+        "40"
+      ]
+    },
+    {
+      "name": "Online Week Individual Price",
+      "values": [
+        "25"
+      ]
+    },
+    {
       "name": "Payment Frequencies",
       "values": [
         "Fortnightly,Weekly,Monthly"
@@ -155,21 +197,45 @@
       ]
     },
     {
+      "name": "POS Sales Tax",
+      "values": [
+        "0.016"
+      ]
+    },
+    {
+      "name": "POS Sales Tax Label",
+      "values": [
+        "Surcharge"
+      ]
+    },
+    {
+      "name": "POS Sales Total Label",
+      "values": [
+        "Total (GST Included)"
+      ]
+    },
+    {
       "name": "POS Service URL",
       "values": [
-        "http://localhost:8081/billingservice/processPOS"
+        "https://services.gbmembers.net/billingservice/processPOS"
       ]
     },
     {
       "name": "POS System",
       "values": [
-        "Payline"
+        "Square"
       ]
     },
     {
       "name": "Postcode Format",
       "values": [
-        "######"
+        "####"
+      ]
+    },
+    {
+      "name": "Privacy Policy",
+      "values": [
+        "https://gbbroadbeach.com.au/newsItem/privacypolicy"
       ]
     },
     {
@@ -197,6 +263,18 @@
       ]
     },
     {
+      "name": "School Email Alias",
+      "values": [
+        "alias.gboceania@gmail.com"
+      ]
+    },
+    {
+      "name": "School From Alias",
+      "values": [
+        "GBMembers Template"
+      ]
+    },
+    {
       "name": "School Legal Name",
       "values": [
         "Members Template Pty LTD"
@@ -206,6 +284,12 @@
       "name": "School Name",
       "values": [
         "Gracie Barra Template"
+      ]
+    },
+    {
+      "name": "School State",
+      "values": [
+        "NSW"
       ]
     },
     {
@@ -239,9 +323,21 @@
       ]
     },
     {
+      "name": "Services Slugs",
+      "values": [
+        "setup-biller-details,paysmart-resume-frozen-member,membership-freeze,paysmart-member-registration,paysmart-member-refund,member-cancellation,paysmart-change-payment-type,cash-member-registration,incident-report,kids-registration,mens-registration,pink-team-registration"
+      ]
+    },
+    {
       "name": "Shared Workflow Engine",
       "values": [
         "False"
+      ]
+    },
+    {
+      "name": "Square Device ID",
+      "values": [
+        ""
       ]
     },
     {
@@ -298,10 +394,10 @@
   ],
   "defaultDatastoreFormConfirmationPage": null,
   "defaultDatastoreFormDisplayPage": null,
-  "defaultLocale": "en-US",
-  "defaultTimezone": "Australia/Brisbane",
+  "defaultLocale": "en-AU",
+  "defaultTimezone": "America/Los_Angeles",
   "displayType": "Single Page App",
-  "displayValue": "spa.jsp?location=https://s3-ap-southeast-2.amazonaws.com/gbmembers-v2",
+  "displayValue": "spa.jsp?location=https://s3-ap-southeast-2.amazonaws.com/gbmembers",
   "enabledLocales": [
     "en-AU",
     "en-US"

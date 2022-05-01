@@ -311,6 +311,10 @@
   ],
   "securityPolicies": [
     {
+      "endpoint": "Display",
+      "name": "Authenticated Users"
+    },
+    {
       "endpoint": "Submission Access",
       "name": "Authenticated Users"
     },

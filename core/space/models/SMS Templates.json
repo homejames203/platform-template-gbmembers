@@ -45,6 +45,10 @@
         {
           "name": "Get SMS Template",
           "query": "id=${parameters('ID')}"
+        },
+        {
+          "name": "Get SMS Template by Name",
+          "query": "formSlug=sms-templates&limit=1&index=values[Template Name]&q=values[Template Name]=\"${parameters(\"name\")}\""
         }
       ],
       "structure": "Datastore Submissions"
@@ -60,6 +64,15 @@
         }
       ],
       "resultType": "Single"
+    },
+    {
+      "name": "Get SMS Template by Name",
+      "parameters": [
+        {
+          "name": "name"
+        }
+      ],
+      "resultType": "Multiple"
     },
     {
       "name": "SMS Templates",

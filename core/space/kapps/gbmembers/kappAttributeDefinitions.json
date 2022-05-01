@@ -36,6 +36,11 @@
   },
   {
     "allowsMultiple": false,
+    "description": "Email server for processing GB Members email watching and Calendar events",
+    "name": "Kinetic Email Server URL"
+  },
+  {
+    "allowsMultiple": false,
     "description": "Messaging server URL to send and receive SMS to and from members",
     "name": "Kinetic Messaging Server URL"
   },
